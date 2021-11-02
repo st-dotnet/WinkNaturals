@@ -61,18 +61,19 @@ namespace WinkNaturals.Controllers
                 return _shoppingCart;
             }
         }
-        //working....
-        //public ShoppingCartCheckoutPropertyBag PropertyBag
-        //{
-        //    get
-        //    {
-        //        if (_propertyBag == null)
-        //        {
-        //            _propertyBag = DAL.PropertyBags.Get<ShoppingCartCheckoutPropertyBag>(_config.Value.Globalization.CookieKey + "ReplicatedSiteShopping" + "PropertyBag");
-        //        }
-        //        return _propertyBag;
-        //    }
-        //}
+
+       // working....
+        public ShoppingCartCheckoutPropertyBag PropertyBag
+        {
+            get
+            {
+                if (_propertyBag == null)
+                {
+                    _propertyBag = null;//DAL.PropertyBags.Get<ShoppingCartCheckoutPropertyBag>(_config.Value.Globalization.CookieKey + "ReplicatedSiteShopping" + "PropertyBag");
+                }
+                return _propertyBag;
+            }
+        }
         private ShoppingCartCheckoutPropertyBag _propertyBag;
         private ShoppingCartItemsPropertyBag _shoppingCart;
         /// <summary>
@@ -529,7 +530,7 @@ namespace WinkNaturals.Controllers
             {
                 item.PriceEachOverride = decimal.Parse(item.Field5);
                 ShoppingCart.Items.Add(item);
-                // PropertyBag.ContainsSpecial = true;
+                PropertyBag.ContainsSpecial = true;
                 _propertyBagService.UpdateCacheData(ShoppingCart);
             }
             return Ok();
@@ -542,8 +543,8 @@ namespace WinkNaturals.Controllers
             var itemType = item.Type;
             if (!string.IsNullOrEmpty(item.Field5))
             {
-                // PropertyBag.ContainsSpecial = false;
-                //DAL.PropertyBags.Update(PropertyBag);
+                 PropertyBag.ContainsSpecial = false;
+               //  PropertyBags.Update(PropertyBag);
             }
             ShoppingCart.Items.Remove(id); if (ShoppingCart.Items.Count() == 1 && !string.IsNullOrEmpty(ShoppingCart.Items.First().Field5))
             {

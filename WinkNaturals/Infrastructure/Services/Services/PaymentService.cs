@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +9,14 @@ using WinkNatural.Web.Services.DTO.Shopping;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Net.Http;
-using static WinkNatural.Web.Services.DTO.AuthPaymentModel;
 using AutoMapper;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Options;
 using WinkNaturals.Setting;
+using AuthorizeNet.Api.Controllers.Bases;
+using AuthorizeNet.APICore;
+using AuthorizeNet.Api.Controllers;
+using AuthorizeNet.Api.Contracts.V1;
 
 namespace WinkNatural.Web.Services.Services
 {
@@ -95,76 +97,90 @@ namespace WinkNatural.Web.Services.Services
             return finalResponse;
         }
 
-        public async Task<AddCardResponse> AddPayment(AddPaymentModel model)
+
+        public async Task<AddCardResponse> PaymentUsingAuthorizeNet(AddPaymentModel addPaymentModel)
         {
-            var finalResponse = new AddCardResponse();
-            if (model.CreditCardId > 0)
+            var finalResponse = new AddCardResponse(); 
+            ApiOperationBase<AuthorizeNet.Api.Contracts.V1.ANetApiRequest, AuthorizeNet.Api.Contracts.V1.ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.SANDBOX; // define the merchant information (authentication / transaction id)
+            ApiOperationBase<AuthorizeNet.Api.Contracts.V1.ANetApiRequest, AuthorizeNet.Api.Contracts.V1.ANetApiResponse>.MerchantAuthentication = new AuthorizeNet.Api.Contracts.V1.merchantAuthenticationType()
             {
-                var jsonData = JsonConvert.SerializeObject(new PaymentRequest
+                name =  _configsetting.Value.AppSettings.APIKey,
+                ItemElementName = AuthorizeNet.Api.Contracts.V1.ItemChoiceType.transactionKey,
+                Item = _configsetting.Value.AppSettings.TransactionKey,
+            }; 
+            var creditCard = new AuthorizeNet.Api.Contracts.V1.creditCardType
+            {
+                cardNumber = addPaymentModel.CardNumber,
+                expirationDate = addPaymentModel.ExpMonth + "" + addPaymentModel.ExpYear, //"1028",
+                cardCode = addPaymentModel.CVV.ToString()
+            }; var billingAddress = new AuthorizeNet.Api.Contracts.V1.customerAddressType
+            {
+                firstName = addPaymentModel.FirstName,
+                address = addPaymentModel.Address1,
+                city = addPaymentModel.City,
+                zip = addPaymentModel.ZipCode
+            }; //standard api call to retrieve response
+            var paymentType = new AuthorizeNet.Api.Contracts.V1.paymentType { Item = creditCard }; var transactionRequest = new AuthorizeNet.Api.Contracts.V1.transactionRequestType
+            {
+                transactionType = AuthorizeNet.Api.Contracts.V1.transactionTypeEnum.authCaptureTransaction.ToString(), // charge the card
+                amount = addPaymentModel.Price,
+                payment = paymentType,
+                billTo = billingAddress
+            }; var request = new AuthorizeNet.Api.Contracts.V1.createTransactionRequest { transactionRequest = transactionRequest }; // instantiate the controller that will call the service
+            var controller = new createTransactionController(request);
+            controller.Execute(); // get the response from the service (errors contained if any)
+            var response =  controller.GetApiResponse(); // validate response
+            if (response != null)
+            {
+                if (response.messages.resultCode == AuthorizeNet.Api.Contracts.V1.messageTypeEnum.Ok)
                 {
-                    createTransactionRequest = new CreateTransactionRequest
+                    if (response.transactionResponse.messages != null)
                     {
-                        merchantAuthentication = new AuthPaymentModel.MerchantAuthentication
-                        {
-                            name = _config.GetSection("AppSettings:APIKey").Value,
-                            transactionKey = _config.GetSection("AppSettings:TransactionKey").Value,
-                        },
-                        refId = "123456",
-                        transactionRequest = new TransactionRequest
-                        {
-                            amount = model.PaymentAmount.ToString(),
-                            lineItems = new LineItems
-                            {
-                                lineItem = new LineItem
-                                {
-                                    itemId = model.OrderId.ToString(),
-                                    description = model.Description,
-                                    name = "Test",
-                                    quantity = model.quantity,   //"1",
-                                    unitPrice = model.PaymentAmount.ToString()
-                                }
-                            },
-                            transactionType = "authCaptureTransaction"
-                        }
-                    }
-
-                });
-
-                var stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                try
-                {
-                    HttpClient client = new HttpClient();
-                    client.BaseAddress = new Uri($"{_config.GetSection("AppSettings:AuthorizeNetTestBaseUrl").Value}createCustomerProfile");
-                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                    var response = await client.PostAsync("", stringContent).Result.Content.ReadAsStringAsync();
-                    var finalResult = JsonConvert.DeserializeObject<AddPaymentResponse>(response);
-                    finalResponse.Message = finalResult.messages.message.FirstOrDefault().text.ToString();
-                    finalResponse.ResultCode = finalResult.messages.resultCode;
-                    if (!string.IsNullOrEmpty(finalResult.transactionResponse.transId) && finalResult.messages.resultCode == "Ok")
-                    {
-                        model.Approved = true;
-                        model.Result = $"{finalResult.transactionResponse.messages.FirstOrDefault().description}. The transaction Id is: {finalResult.transactionResponse.transId}";
+                        Console.WriteLine("Successfully created transaction with Transaction ID: " + response.transactionResponse.transId);
+                        Console.WriteLine("Response Code: " + response.transactionResponse.responseCode);
+                        Console.WriteLine("Message Code: " + response.transactionResponse.messages[0].code);
+                        Console.WriteLine("Description: " + response.transactionResponse.messages[0].description);
+                        Console.WriteLine("Success, Auth Code : " + response.transactionResponse.authCode); finalResponse.Message = response.transactionResponse.messages[0].description;
+                        finalResponse.TransId = response.transactionResponse.transId;
+                        finalResponse.AuthCode = response.transactionResponse.authCode;
                     }
                     else
                     {
-                        model.Approved = false;
-                        model.Result = $"{finalResult.messages.message.FirstOrDefault().text}. This transaction is failed";
+                        Console.WriteLine("Failed Transaction.");
+                        if (response.transactionResponse.errors != null)
+                        {
+                            Console.WriteLine("Error Code: " + response.transactionResponse.errors[0].errorCode);
+                            Console.WriteLine("Error message: " + response.transactionResponse.errors[0].errorText); finalResponse.Message = response.transactionResponse.errors[0].errorText;
+                            finalResponse.TransId = response.transactionResponse.errors[0].errorCode;
+                            finalResponse.AuthCode = "";
+                        }
                     }
-
                 }
-                catch (Exception ex)
+                else
                 {
-
+                    Console.WriteLine("Failed Transaction.");
+                    if (response.transactionResponse != null && response.transactionResponse.errors != null)
+                    {
+                        Console.WriteLine("Error Code: " + response.transactionResponse.errors[0].errorCode);
+                        Console.WriteLine("Error message: " + response.transactionResponse.errors[0].errorText); finalResponse.Message = response.transactionResponse.errors[0].errorText;
+                        finalResponse.TransId = response.transactionResponse.errors[0].errorCode;
+                        finalResponse.AuthCode = "";
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error Code: " + response.messages.message[0].code);
+                        Console.WriteLine("Error message: " + response.messages.message[0].text); finalResponse.Message = response.transactionResponse.errors[0].errorText;
+                        finalResponse.TransId = response.transactionResponse.errors[0].errorCode;
+                        finalResponse.AuthCode = "";
+                    }
                 }
             }
             else
             {
-                model.Approved = true;
-                model.Result = $"This transaction is  approved  due to this is manual payment.";
+                Console.WriteLine("Null Response.");
             }
             return finalResponse;
         }
-
         //Propay payment method
         public ProcessPaymentMethodTransactionResponse ProcessPaymentMethod(GetPaymentRequest getPaymentProPayModel)
         {
@@ -233,5 +249,6 @@ namespace WinkNatural.Web.Services.Services
         {
             throw new NotImplementedException();
         }
+
     }
 }

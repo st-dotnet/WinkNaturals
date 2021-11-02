@@ -2,6 +2,7 @@
 using System;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Models.Shopping.Checkout.Coupon;
+using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
 using WinkNaturals.Models.Shopping.Interfaces;
 
 namespace WinkNaturals.Models.Shopping.Checkout
@@ -28,7 +29,7 @@ namespace WinkNaturals.Models.Shopping.Checkout
         public ShippingAddress ShippingAddress { get; set; }
         public int ShipMethodID { get; set; }
         public WN_Coupon Coupon { get; set; }
-       // public IPaymentMethod PaymentMethod { get; set; }
+        public IPaymentMethod PaymentMethod { get; set; }
         public bool IsSubmitting { get; set; }
         public int NewOrderID { get; set; }
         public string OrderException { get; set; }
@@ -48,7 +49,7 @@ namespace WinkNaturals.Models.Shopping.Checkout
         public DateTime AutoOrderStartDate { get; set; }
         public ShippingAddress AutoOrderShippingAddress { get; set; }
         public ShippingAddress AutoOrderBillingAddress { get; set; }
-      //  public IPaymentMethod AutoOrderPaymentMethod { get; set; }
+        public IPaymentMethod AutoOrderPaymentMethod { get; set; }
         public bool AutoOrderBillingSameAsShipping { get; set; }
         public int AutoOrderShipMethodID { get; set; }
         #endregion

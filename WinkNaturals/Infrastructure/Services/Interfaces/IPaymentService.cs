@@ -19,7 +19,7 @@ namespace WinkNatural.Web.Services.Interfaces
 
         ProcessPaymentMethodTransactionResponse ProcessPaymentMethod(GetPaymentRequest getPaymentProPayModel);
 
-        Task<AddCardResponse> AddPayment(AddPaymentModel model);
+        Task<AddCardResponse> PaymentUsingAuthorizeNet(AddPaymentModel model);
 
 
     }

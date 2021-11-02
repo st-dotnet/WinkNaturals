@@ -8,16 +8,26 @@ namespace WinkNatural.Web.Services.DTO
 {
     public class AddPaymentModel
     {
-        public decimal PaymentAmount { get; set; }
-        public int CustomerId { get; set; }
-        public int OrderId { get; set; }
-        public int PaymentMethod { get; set; }
-        public int CreditCardId { get; set; }
-        public string Description { get; set; }
-        public int PaymentType { get; set; }
-        public string Result { get; set; }
-        public bool Approved { get; set; }
 
-        public string quantity { get; set; }
+        public int CardType { get; set; }
+        public string CardNumber { get; set; }
+        public int ExpMonth { get; set; }
+        public int ExpYear { get; set; }
+        public int CustomerId { get; set; }
+        public bool Primary { get; set; }
+        public bool Active { get; set; }
+        public string FirstName { get; set; }
+        public string ZipCode { get; set; }
+        public string Address1 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Country { get; set; }
+        public decimal Price { get; set; }
+        public int CVV { get; set; }
+        public string EmailAddress { get; set; }
+        public string ExternalId1 { get; set; }
+        public string ExternalId2 { get; set; }
+        public string AccountNo { get; set; }
+
     }
 }

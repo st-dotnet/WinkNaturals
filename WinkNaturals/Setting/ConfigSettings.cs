@@ -42,8 +42,11 @@ namespace WinkNaturals.Setting
     }
     public class AppSettings
     {
-       public string billerAccountId { get; set; }
+        public string billerAccountId { get; set; }
         public string authToken { get; set; }
+        public string APIKey { get; set; }
+        public string TransactionKey { get; set; }
+
     } 
     public class JwtSettings
     {
