@@ -9,17 +9,17 @@ using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.DTO.Customer;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNatural.Web.Services.Utilities;
+using WinkNaturals.Setting.Interfaces;
 
 namespace WinkNatural.Web.Services.Services
 {
     public class HomeService : IHomeService
     {
         private readonly string emailSubject = "Contact Us Email";
-        private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
-
+        private readonly IExigoApiContext _exigoApiContext;
         private readonly IConfiguration _config;
 
-        public HomeService(IConfiguration config)
+        public HomeService(IConfiguration config, IExigoApiContext exigoApiContext)
         {
             _config = config;
         }
@@ -45,7 +45,7 @@ namespace WinkNatural.Web.Services.Services
                 };
 
                 //Send email from Exigo service
-                var sendEmailRequest = await exigoApiClient.SendEmailAsync(data);
+                var sendEmailRequest = await _exigoApiContext.GetContext().SendEmailAsync(data);
                 return new ContactResponse { Success = true, ErrorMessage = null };
             }
             catch (Exception)

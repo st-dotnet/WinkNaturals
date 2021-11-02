@@ -103,10 +103,11 @@ namespace WinkNaturals.Setting
     }
     public class YotPo
     {
-        public static string ApiBaseUrl { get; set; }
-        public static string ApiKey { get; set; }
-        public static string ApiSecrete { get; set; }
-        public static string Platform { get; set; }
+        public  string APIUrl { get; set; }
+        public  string ApiKey { get; set; }
+        public  string ApiSecrete { get; set; }
+        public  string Platform { get; set; }
+        public string HomePageEndpoints { get; set; }
     }
     public class BraintreeConfiguration
     {

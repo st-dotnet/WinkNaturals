@@ -36,7 +36,7 @@ namespace WinkNatural.Web.Services.Services
         /// <summary>
         /// Request information for a call to the "ProcessPaymentMethodTransaction" method.
         /// </summary>
-    
+
 
         public async Task<AddCardResponse> CreateCustomerProfile(GetPaymentRequest model)
         {
@@ -67,7 +67,7 @@ namespace WinkNatural.Web.Services.Services
                                 {
                                     cardNumber = model.CardNumber,
                                     expirationDate = $"20{model.ExpYear}-{model.ExpMonth}"
-                                    
+
                                 }
                             }
                         }
@@ -150,7 +150,7 @@ namespace WinkNatural.Web.Services.Services
                         model.Approved = false;
                         model.Result = $"{finalResult.messages.message.FirstOrDefault().text}. This transaction is failed";
                     }
-                    
+
                 }
                 catch (Exception ex)
                 {
@@ -192,18 +192,16 @@ namespace WinkNatural.Web.Services.Services
             var requestpayer = new RestRequest(Method.PUT);
             requestpayer.AddHeader("Authorization", credentials);
             requestpayer.AddHeader("Content-Type", "application/json");
-            var payerbody = @"{" + "\n" + @" ""PayerAccountId"":""2028688280138597""," + "\n" +
-            @" ""PaymentMethodType"":""Visa""," + "\n" + @" ""AccountNumber"":""4111111111111111""," +
-            "\n" +
-            @" ""ExpirationDate"":""0819""," + "\n" + @" ""AccountCountryCode"":""USA""," + "\n" +
-            @" ""AccountName"":""Janis Joplin""," + "\n" + @" ""BillingInformation"":" + "\n" +
-            @" {" + "\n" + @" ""Address1"":""123 ABC St""," + "\n" + @" ""Address2"":""Apt. A""," +
-            "\n" + @" ""Address3"":null," + "\n" + @" ""City"":""Some Place""," + "\n" +
-            @" ""Country"":""USA""," + "\n" + @" ""Email"":null," + "\n" + @" ""State"":""AK""," +
-            "\n" + @" ""TelephoneNumber"":null," + "\n" + @" ""ZipCode"":""12345""" + "\n" +
-            @" }," + "\n" + @" ""Description"":""MyVisaCard""," + "\n" + @" ""Priority"":0," + "\n" +
-            @" ""DuplicateAction"":null," + "\n" + @" ""Protected"":false" + "\n" +
-            @"}";
+            var payerbody = @"{" + "\n" + @" ""PayerAccountId"":""2028688280138597""," + "\n" + @" ""PaymentMethodType"":#" + getPaymentProPayModel.CardType + "#" + "," + "\n" + @" ""AccountNumber"":#" + getPaymentProPayModel.AccountNo + "#" + "," + "\n" +
+                            @" ""ExpirationDate"":#" + getPaymentProPayModel.ExpMonth + +getPaymentProPayModel.ExpYear + "#" + "," + @" ""AccountCountryCode"":""USA""," + "\n" +
+                            @" ""AccountName"":#" + getPaymentProPayModel.FirstName + "#" + "," + @" ""BillingInformation"":" + "\n" +
+                            @" {" + "\n" + @" ""Address1"":#" + getPaymentProPayModel.Address1 + "#" + "," +
+                            @" ""City"":#" + getPaymentProPayModel.City + "#" + "," + "\n" +
+                            @" ""Country"":#" + getPaymentProPayModel.Country + "#" + "," + "\n" + @" ""Email"":#" + getPaymentProPayModel.EmailAddress + "#" + "," + "\n" + @" ""State"":#" + getPaymentProPayModel.State + "#" + "," +
+                            "\n" + @" ""TelephoneNumber"":null" + "," + "\n" + @" ""ZipCode"":#" + getPaymentProPayModel.ZipCode + "#" + "," + "\n" +
+                            @" }," + "\n" + @" ""Description"":""MyVisaCard""," + "\n" + @" ""Priority"":0," + "\n" +
+                            @" ""DuplicateAction"":null," + "\n" + @" ""Protected"":false" + "\n" + @"}";
+            payerbody = payerbody.Replace('#', '"');
             requestpayer.AddParameter("application/json", payerbody, ParameterType.RequestBody);
             IRestResponse payerResponse = Payerclient.Execute(requestpayer);
             var payerdata = (JObject)JsonConvert.DeserializeObject(payerResponse.Content);
@@ -227,6 +225,7 @@ namespace WinkNatural.Web.Services.Services
             responseObj.EmailAddress = getPaymentProPayModel.EmailAddress;
             responseObj.ExternalId1 = getPaymentProPayModel.ExternalId1;
             responseObj.ExternalId2 = getPaymentProPayModel.ExternalId2;
+            responseObj.AccountNo = getPaymentProPayModel.AccountNo;
             return responseObj;
         }
 
