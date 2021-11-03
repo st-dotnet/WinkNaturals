@@ -5,19 +5,14 @@ using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Models;
 using Exigo.Api.Client;
 using AutoMapper;
-using WinkNatural.Web.Common.Utils;
 using WinkNaturals.Setting;
 using Microsoft.Extensions.Options;
 using WinkNaturals.Models.Shopping.Interfaces;
-using WinkNaturals.Utilities;
 using System.Linq;
 using WinkNaturals.WebDrip;
 using System.Collections.Generic;
 using WinkNaturals.Utilities.WebDrip;
-using WinkNaturals.Infrastructure.Services;
-using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Setting.Interfaces;
-using static WinkNaturals.Models.UnitedStatesMarket;
 using WinkNaturals.Models.Shopping.Checkout;
 
 namespace WinkNaturals.Controllers
@@ -130,7 +125,7 @@ namespace WinkNaturals.Controllers
         {
             var CountryCode = "US";
             OrderConfiguration = _getCurrentMarket.curretMarket(CountryCode).GetConfiguration().Orders;
-            //   var result = item.Weight.ToString();
+            
             bool checkQuantity = ShoppingCart.Items.CheckItemBackOffice(item);
             if (!checkQuantity)
             {

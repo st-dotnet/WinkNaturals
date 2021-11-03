@@ -1,8 +1,9 @@
 ﻿using Exigo.Api.Client;
 using System;
+using System.Collections.Generic;
 using WinkNatural.Web.Common.Utils.Enum;
 using WinkNatural.Web.Services.DTO;
-using WinkNatural.Web.Services.DTO.Customer;
+using WinkNatural.Web.Services.DTO.Customer; 
 using WinkNaturals.Models;
 using Profile = AutoMapper.Profile;
 
@@ -17,7 +18,7 @@ namespace WinkNaturals.Helpers
             CreateMap<ContactRequest, ContactModel>().ReverseMap();
             CreateMap<CustomerUpdateRequest, CustomerUpdateModel>().ReverseMap();
             CreateMap<CustomerValidationRequest, CustomerValidationModel>().ReverseMap();
-            CreateMap<EnrollmentResponse, EnrollmentModel>().ReverseMap();
+            CreateMap<EnrollmentResponse, EnrollmentModel>().ReverseMap(); 
 
             // Create customer
             CreateMap<CustomerCreateModel, CreateCustomerRequest>()
