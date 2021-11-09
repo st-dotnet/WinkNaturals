@@ -1,14 +1,13 @@
 ﻿using Exigo.Api.Client;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WinkNaturals.Infrastructure.Services.Interfaces;
+using WinkNaturals.Models;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
 
-namespace WinkNaturals.Models
+namespace WinkNatural.Web.Services.Services
 {
     public class EmailService : IEmailService
     {
@@ -33,17 +32,11 @@ namespace WinkNaturals.Models
                     Subject = request.Subject
                 });
 
-                return new EmailResponse
-                {
-                    Success = true
-                };
+                return new EmailResponse { Success = true };
             }
             catch (Exception ex)
             {
-                return new EmailResponse
-                {
-                    Success = false
-                };
+                return new EmailResponse { Success = false };
             }
         }
     }

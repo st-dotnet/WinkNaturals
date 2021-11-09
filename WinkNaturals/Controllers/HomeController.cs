@@ -12,8 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Customer;
 using WinkNatural.Web.Services.Interfaces;
-using WinkNaturals.Models;
-using WinkNaturals.Models.HomePageReviews;
+using WinkNaturals.Models; 
 using WinkNaturals.Setting;
 
 namespace WinkNaturals.Controllers
@@ -50,20 +49,24 @@ namespace WinkNaturals.Controllers
                 throw new Exception(ex.ToString());
             }
         }
+
+        /// <summary>
+        /// Get hpme page reviews from Yotpo
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("GetHomePageReviews")]
-        public List<HomePageReviews> GetHomePageReviews()
+        public List<HomePageReviewsModel> GetHomePageReviews()
         {
-            var url = $"{_config.Value.YotPo.APIUrl}{_config.Value.YotPo.ApiKey}/{_config.Value.YotPo.HomePageEndpoints}";
-            var client = new RestClient(url);
-            var request = new RestRequest(Method.GET);
-            request.AddHeader("Accept", "application/json");
-            request.AddHeader("Content-Type", "application/json");
-            IRestResponse response = client.Execute(request);
-            dynamic dynamicReviews = JObject.Parse(response.Content);
-            string jsonString = JsonConvert.SerializeObject(dynamicReviews.response.reviews);
-            var result = JsonConvert.DeserializeObject<List<HomePageReviews>>(jsonString);
-            return result;
+            try
+            {
+                return _homeService.GetReviews(); 
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+            
         }
     }
 }

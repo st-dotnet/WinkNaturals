@@ -22,10 +22,8 @@ namespace WinkNatural.Web.Services.Services
 {
     public class PaymentService : IPaymentService
     {
-        private readonly IConfiguration _config;
-        private readonly IPaymentService _paymentService;
-        private readonly ICustomerService _customerService;
-        private readonly IMapper _mapper;
+        private readonly IConfiguration _config; 
+        private readonly ICustomerService _customerService; 
         private readonly IOptions<ConfigSettings> _configsetting;
         public PaymentService(IConfiguration config, ICustomerService customerService, IOptions<ConfigSettings> configsetting)
         {
@@ -43,6 +41,7 @@ namespace WinkNatural.Web.Services.Services
         public async Task<AddCardResponse> CreateCustomerProfile(GetPaymentRequest model)
         {
             var finalResponse = new AddCardResponse();
+            //Where we need to use expMonth?
             var expMonth = model.ExpMonth < 10 ? $"0{model.ExpMonth}" : model.ExpMonth.ToString();
             string jsonData;
 
@@ -81,8 +80,10 @@ namespace WinkNatural.Web.Services.Services
 
             try
             {
-                HttpClient client = new HttpClient();
-                client.BaseAddress = new Uri($"{_config.GetSection("AppSettings:AuthorizeNetTestBaseUrl").Value}createCustomerProfile");
+                var client = new HttpClient
+                {
+                    BaseAddress = new Uri($"{_config.GetSection("AppSettings:AuthorizeNetTestBaseUrl").Value}createCustomerProfile")
+                };
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 var response = await client.PostAsync("", stringContent).Result.Content.ReadAsStringAsync();
                 var finalResult = JsonConvert.DeserializeObject<CreateCustomerProfileResponse>(response);
@@ -91,14 +92,14 @@ namespace WinkNatural.Web.Services.Services
             }
             catch (Exception ex)
             {
-
+                throw new Exception(ex.ToString());
             }
 
             return finalResponse;
         }
 
 
-        public async Task<AddCardResponse> PaymentUsingAuthorizeNet(AddPaymentModel addPaymentModel)
+        public AddCardResponse PaymentUsingAuthorizeNet(AddPaymentModel addPaymentModel)
         {
             var finalResponse = new AddCardResponse(); 
             ApiOperationBase<AuthorizeNet.Api.Contracts.V1.ANetApiRequest, AuthorizeNet.Api.Contracts.V1.ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.SANDBOX; // define the merchant information (authentication / transaction id)
@@ -126,7 +127,8 @@ namespace WinkNatural.Web.Services.Services
                 amount = addPaymentModel.Price,
                 payment = paymentType,
                 billTo = billingAddress
-            }; var request = new AuthorizeNet.Api.Contracts.V1.createTransactionRequest { transactionRequest = transactionRequest }; // instantiate the controller that will call the service
+            }; 
+            var request = new AuthorizeNet.Api.Contracts.V1.createTransactionRequest { transactionRequest = transactionRequest }; // instantiate the controller that will call the service
             var controller = new createTransactionController(request);
             controller.Execute(); // get the response from the service (errors contained if any)
             var response =  controller.GetApiResponse(); // validate response
@@ -136,40 +138,27 @@ namespace WinkNatural.Web.Services.Services
                 {
                     if (response.transactionResponse.messages != null)
                     {
-                        Console.WriteLine("Successfully created transaction with Transaction ID: " + response.transactionResponse.transId);
-                        Console.WriteLine("Response Code: " + response.transactionResponse.responseCode);
-                        Console.WriteLine("Message Code: " + response.transactionResponse.messages[0].code);
-                        Console.WriteLine("Description: " + response.transactionResponse.messages[0].description);
-                        Console.WriteLine("Success, Auth Code : " + response.transactionResponse.authCode); finalResponse.Message = response.transactionResponse.messages[0].description;
                         finalResponse.TransId = response.transactionResponse.transId;
                         finalResponse.AuthCode = response.transactionResponse.authCode;
                     }
                     else
-                    {
-                        Console.WriteLine("Failed Transaction.");
+                    { 
                         if (response.transactionResponse.errors != null)
                         {
-                            Console.WriteLine("Error Code: " + response.transactionResponse.errors[0].errorCode);
-                            Console.WriteLine("Error message: " + response.transactionResponse.errors[0].errorText); finalResponse.Message = response.transactionResponse.errors[0].errorText;
                             finalResponse.TransId = response.transactionResponse.errors[0].errorCode;
                             finalResponse.AuthCode = "";
                         }
                     }
                 }
                 else
-                {
-                    Console.WriteLine("Failed Transaction.");
+                { 
                     if (response.transactionResponse != null && response.transactionResponse.errors != null)
                     {
-                        Console.WriteLine("Error Code: " + response.transactionResponse.errors[0].errorCode);
-                        Console.WriteLine("Error message: " + response.transactionResponse.errors[0].errorText); finalResponse.Message = response.transactionResponse.errors[0].errorText;
                         finalResponse.TransId = response.transactionResponse.errors[0].errorCode;
                         finalResponse.AuthCode = "";
                     }
                     else
                     {
-                        Console.WriteLine("Error Code: " + response.messages.message[0].code);
-                        Console.WriteLine("Error message: " + response.messages.message[0].text); finalResponse.Message = response.transactionResponse.errors[0].errorText;
                         finalResponse.TransId = response.transactionResponse.errors[0].errorCode;
                         finalResponse.AuthCode = "";
                     }
@@ -177,7 +166,7 @@ namespace WinkNatural.Web.Services.Services
             }
             else
             {
-                Console.WriteLine("Null Response.");
+                return new AddCardResponse { Message = "Some error occurred during the transaction" }; 
             }
             return finalResponse;
         }
@@ -185,11 +174,13 @@ namespace WinkNatural.Web.Services.Services
         public ProcessPaymentMethodTransactionResponse ProcessPaymentMethod(GetPaymentRequest getPaymentProPayModel)
         {
             //This is to get Payerid
-            var client = new RestClient("https://xmltestapi.propay.com/ProtectPay/Payers/");
-            client.Timeout = -1;
+            var client = new RestClient("https://xmltestapi.propay.com/ProtectPay/Payers/")
+            {
+                Timeout = -1
+            };
             var request = new RestRequest(Method.PUT);
-            var billerAccountId = _configsetting.Value.AppSettings.billerAccountId; //_config.GetSection("AppSettings:billerAccountId").Value; // biller account id
-            var authToken = _configsetting.Value.AppSettings.authToken;//_config.GetSection("AppSettings:authToken").Value; // authentication token of bille
+            var billerAccountId = _configsetting.Value.AppSettings.billerAccountId;// biller account id
+            var authToken = _configsetting.Value.AppSettings.authToken;// authentication token of bille
             var encodedCredentials = Convert.ToBase64String(Encoding.Default.GetBytes(billerAccountId + ":" + authToken));
             var credentials = string.Format("Basic {0}", encodedCredentials);
             request.AddHeader("Authorization", credentials);
@@ -197,14 +188,15 @@ namespace WinkNatural.Web.Services.Services
             var body = @"{" + "\n" + @" ""Name"":#" + getPaymentProPayModel.FirstName + "#" + @"}";
             body = body.Replace('#', '"');
             request.AddParameter("application/json", body, ParameterType.RequestBody);
-            IRestResponse response = client.Execute(request);
-            //Console.WriteLine(response.Content);
+            IRestResponse response = client.Execute(request); 
             var data = (JObject)JsonConvert.DeserializeObject(response.Content);
             string payerId = data["ExternalAccountID"].Value<string>();
 
             //This below is get PaymentMethodID
-            var Payerclient = new RestClient("https://xmltestapi.propay.com/ProtectPay" + string.Format("/Payers/{0}/PaymentMethods/", payerId));
-            Payerclient.Timeout = -1;
+            var Payerclient = new RestClient("https://xmltestapi.propay.com/ProtectPay" + string.Format("/Payers/{0}/PaymentMethods/", payerId))
+            {
+                Timeout = -1
+            };
             var requestpayer = new RestRequest(Method.PUT);
             requestpayer.AddHeader("Authorization", credentials);
             requestpayer.AddHeader("Content-Type", "application/json");
@@ -223,26 +215,27 @@ namespace WinkNatural.Web.Services.Services
             var payerdata = (JObject)JsonConvert.DeserializeObject(payerResponse.Content);
             string PaymentMethodId = payerdata["PaymentMethodId"].Value<string>();
 
-            ProcessPaymentMethodTransactionResponse responseObj = new ProcessPaymentMethodTransactionResponse();
-            responseObj.Amount = getPaymentProPayModel.Price;
-            responseObj.CurrencyCode = "USD";
-            responseObj.CustomerId = getPaymentProPayModel.CustomerId;
-            responseObj.CardNumber = getPaymentProPayModel.CardNumber;
-            responseObj.PaymentMethodId = PaymentMethodId;
-            responseObj.ExpMonth = getPaymentProPayModel.ExpMonth;
-            responseObj.ExpYear = getPaymentProPayModel.ExpYear;
-            responseObj.CVV = getPaymentProPayModel.CVV;
-            responseObj.FullName = getPaymentProPayModel.FirstName;
-            responseObj.ZipCode = getPaymentProPayModel.ZipCode;
-            responseObj.Address1 = getPaymentProPayModel.Address1;
-            responseObj.City = getPaymentProPayModel.City;
-            responseObj.State = getPaymentProPayModel.State;
-            responseObj.Country = getPaymentProPayModel.Country;
-            responseObj.EmailAddress = getPaymentProPayModel.EmailAddress;
-            responseObj.ExternalId1 = getPaymentProPayModel.ExternalId1;
-            responseObj.ExternalId2 = getPaymentProPayModel.ExternalId2;
-            responseObj.AccountNo = getPaymentProPayModel.AccountNo;
-            return responseObj;
+            return new ProcessPaymentMethodTransactionResponse
+            {
+                Amount = getPaymentProPayModel.Price,
+                CurrencyCode = "USD",
+                CustomerId = getPaymentProPayModel.CustomerId,
+                CardNumber = getPaymentProPayModel.CardNumber,
+                PaymentMethodId = PaymentMethodId,
+                ExpMonth = getPaymentProPayModel.ExpMonth,
+                ExpYear = getPaymentProPayModel.ExpYear,
+                CVV = getPaymentProPayModel.CVV,
+                FullName = getPaymentProPayModel.FirstName,
+                ZipCode = getPaymentProPayModel.ZipCode,
+                Address1 = getPaymentProPayModel.Address1,
+                City = getPaymentProPayModel.City,
+                State = getPaymentProPayModel.State,
+                Country = getPaymentProPayModel.Country,
+                EmailAddress = getPaymentProPayModel.EmailAddress,
+                ExternalId1 = getPaymentProPayModel.ExternalId1,
+                ExternalId2 = getPaymentProPayModel.ExternalId2,
+                AccountNo = getPaymentProPayModel.AccountNo
+            };
         }
 
         public BankCardTransaction ProcessPayment(WinkPaymentRequest winkPaymentRequest)

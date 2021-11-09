@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WinkNatural.Web.Services.DTO.Customer;
+using WinkNatural.Web.Services.DTO.Customer; 
+using WinkNaturals.Models;
 
 namespace WinkNatural.Web.Services.Interfaces
 {
@@ -13,5 +14,9 @@ namespace WinkNatural.Web.Services.Interfaces
     {
         //Send email from Exigo service
         Task<ContactResponse> SendEmail(ContactRequest request);
+
+        //Get home page reviews
+        List<HomePageReviewsModel> GetReviews();
+
     }
 }

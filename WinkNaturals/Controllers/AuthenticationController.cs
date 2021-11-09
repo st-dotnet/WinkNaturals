@@ -56,56 +56,31 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
         {
             try
             {
-                //var captchaResponse = ReCaptchaValidator.IsValid(model.CaptchaResponse);
-                //if (string.IsNullOrEmpty(model.CaptchaResponse))
-                //{
-                //    return BadRequest(new
-                //    {
-                //        ErrorMessage = "Please verify you are human"
-                //    });
-                //}
-                //else if (!captchaResponse.Success)
-                //{
-                //    var errors = string.Empty;
-                //    foreach (string err in captchaResponse.ErrorCodes)
-                //    {
-                //        errors += $"{err},";
-                //    }
-                //    return BadRequest(new
-                //    {
-                //        ErrorMessage = errors
-                //    });
-                //}
-                //start
-
-                var cookieValueFromContext = _httpContextAccessor.HttpContext.Request.Cookies[_configSettings.Value.Globalization.CookieKey];
-
-                // string country = "US";
-                var CountryCode = "US";// GetCookieValue(country, cookieValueFromContext);
-
+                var cookieValueFromContext = _httpContextAccessor.HttpContext.Request.Cookies[_configSettings.Value.Globalization.CookieKey]; 
+                var CountryCode = "US"; 
                 var configuration = _getCurrentMarket.curretMarket(CountryCode).GetConfiguration().Orders;
-                // var configuration = GlobalMarket.GetCurrentMarket(CountryCode).GetConfiguration().Orders;  //.GetCurrentMarket().GetConfiguration().Orders;)
-
 
                 // // Create the request
-                var request = new CreateCustomerRequest();
-                request.InsertEnrollerTree = true;
-                request.FirstName = model.FirstName;
-                request.LastName = model.LastName;
-                request.Phone = model.Phone;
-                request.MobilePhone = model.MobilePhone;
-                request.Email = model.Email;
-                request.CanLogin = true;
-                request.LoginName = model.LoginName;
-                request.LoginPassword = model.LoginPassword;
-                request.CustomerType = CustomerTypes.RetailCustomer;
-                request.CustomerStatus = (int?)CustomerStatuses.Active;
-                request.EntryDate = DateTime.Now; //DateTime.Now.ToCST();
-                request.DefaultWarehouseID = configuration.WarehouseID;
-                request.CurrencyCode = configuration.CurrencyCode;
-                request.LanguageID = configuration.LanguageID;
-                request.EnrollerID = 1; //model.EnrollerID1 == 0 ? 2 : model.EnrollerID1;
-                request.MainCountry = CountryCode; //GlobalUtilities.GetSelectedCountryCode();
+                var request = new CreateCustomerRequest
+                {
+                    InsertEnrollerTree = true,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Phone = model.Phone,
+                    MobilePhone = model.MobilePhone,
+                    Email = model.Email,
+                    CanLogin = true,
+                    LoginName = model.LoginName,
+                    LoginPassword = model.LoginPassword,
+                    CustomerType = CustomerTypes.RetailCustomer,
+                    CustomerStatus = (int?)CustomerStatuses.Active,
+                    EntryDate = DateTime.Now, //DateTime.Now.ToCST();
+                    DefaultWarehouseID = configuration.WarehouseID,
+                    CurrencyCode = configuration.CurrencyCode,
+                    LanguageID = configuration.LanguageID,
+                    EnrollerID = 1, //model.EnrollerID1 == 0 ? 2 : model.EnrollerID1;
+                    MainCountry = CountryCode //GlobalUtilities.GetSelectedCountryCode();
+                };
                 // Create the customer
                 var response = await _exigoApiContext.GetContext().CreateCustomerAsync(request); //createCustomerRequest(request);
 
