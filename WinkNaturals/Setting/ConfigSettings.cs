@@ -47,6 +47,8 @@ namespace WinkNaturals.Setting
         public string APIKey { get; set; }
         public string TransactionKey { get; set; }
 
+        public string Secret { get; set; }
+
     } 
     public class JwtSettings
     {
@@ -83,6 +85,7 @@ namespace WinkNaturals.Setting
     public class Company
     {
         public string BaseReplicatedUrl { get; set; }
+        public string Phone { get; set; }
       
        
     }
@@ -111,6 +114,8 @@ namespace WinkNaturals.Setting
         public  string ApiSecrete { get; set; }
         public  string Platform { get; set; }
         public string HomePageEndpoints { get; set; }
+
+        public string ApiBaseUrl { get; set; }
     }
     public class BraintreeConfiguration
     {
@@ -132,8 +137,11 @@ namespace WinkNaturals.Setting
         public  string SiteCultureCookieName { get; set; }
         public  string LanguageCookieName { get; set; }
         public  string LogInAlertCookieName { get; set; }
-        public static string BaseImageURL { get; set; }
+        public  string BaseImageURL { get; set; }
+        public string ReplicatedSites { get; set; }
     }
+
+   
     public class GlobalMarketSetting
     {
         //JS, 09/11/2015

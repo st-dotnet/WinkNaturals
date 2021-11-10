@@ -8,10 +8,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNatural.Web.Services.Utilities;
+using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
 
@@ -361,7 +361,7 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 //if (request.Items.Count() == 0 || request.Address == null || string.IsNullOrEmpty(request.Address.Country) || string.IsNullOrEmpty(request.Address.State)) return new CalculateOrderResponse();
-                //if (request.ShipMethodID == 0) request.ShipMethodID = request.Configuration.DefaultShipMethodID;
+              //if (request.ShipMethodID == 0) request.ShipMethodID = request.Configuration.DefaultShipMethodID;
                 //if (request.OrderTypeID == 0) request.OrderTypeID = OrderTypes.ShoppingCart;
                 //CalculateOrderRequest calculateOrder = new CalculateOrderRequest();
                 var req = new CalculateOrderRequest
@@ -379,7 +379,7 @@ namespace WinkNatural.Web.Services.Services
                     Address1 = request.Address1,
                     Address2 = request.Address2,
                     Address3 = " ",
-
+                   
                     // CustomerID = request.CustomerID.Value,
                     OrderType = request.OrderType,
                     //County=calculateOrder.
@@ -1716,9 +1716,10 @@ namespace WinkNatural.Web.Services.Services
             catch (Exception e)
             {
 
-                return new Address { Error = e.Message.ToString() };
+                e.Message.ToString();
+                throw;
             }
-
+           
          
         }
 
@@ -2459,5 +2460,7 @@ namespace WinkNatural.Web.Services.Services
             }
             return res;
         }
+
+       
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Exigo.Api.Client;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -7,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
@@ -14,6 +16,7 @@ using System.Threading.Tasks;
 using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.DTO.Customer;
 using WinkNatural.Web.Services.Interfaces;
+using WinkNaturals.Models;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
 
@@ -27,7 +30,7 @@ namespace WinkNatural.Web.Services.Services
         private readonly IExigoApiContext _exigoApiContext;
         private readonly IOptions<ConfigSettings> _configSettings;
         #region constructor
-
+        private List<CustomerCreateModel> _users;
         public AuthenticateService(IConfiguration config, ICustomerService customerService, IExigoApiContext exigoApiContext, IOptions<ConfigSettings> configSettings)
         {
             _config = config;
@@ -68,17 +71,15 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 //Exigo service login request
-
-                
                 var result = await _exigoApiContext.GetContext().AuthenticateCustomerAsync(request);
                 if (result.CustomerID == 0)
                 {
                     return new CustomerCreateResponse { ErrorMessage = "User is not authenticated." };
                 }
-
                 // Get customer
                 var customer = await _customerService.GetCustomer(result.CustomerID);
-                var token = GenerateJwtToken(result);
+               // var token = GenerateJwtToken(result, customer.Customers[0].Email);
+                var token = GenerateJwtToken(result, customer.Customers[0].Email);
                 return new CustomerCreateResponse
                 {
                     CustomerId=customer.Customers[0].CustomerID,
@@ -208,7 +209,7 @@ namespace WinkNatural.Web.Services.Services
         }
 
         //Generate JWT token
-        private string GenerateJwtToken(AuthenticateCustomerResponse customer)
+        private string GenerateJwtToken(AuthenticateCustomerResponse customer,string email)
         {
             try
             {
@@ -220,13 +221,24 @@ namespace WinkNatural.Web.Services.Services
                     Subject = new ClaimsIdentity(new[]
                     {
                     new Claim("customerId", customer.CustomerID.ToString()),
-                    new Claim("firstName", customer.FirstName.ToString()),
-                    new Claim("lastName", customer.LastName.ToString())
+                    new Claim("firstName", customer.FirstName),
+                    new Claim("lastName", customer.LastName),
+                    new Claim("email", email)
+
                 }),
                     Expires = DateTime.UtcNow.AddDays(30),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
+
+
+
                 var token = tokenHandler.CreateToken(tokenDescriptor);
+
+                //var userId = int.Parse(token.Claims.First(x => x.Type == "id").Value);
+
+                //// attach user to context on successful jwt validation
+                //context.Items["User"] = userService.GetById(userId);
+
                 return tokenHandler.WriteToken(token);
             }
             catch (Exception ex)
@@ -235,6 +247,42 @@ namespace WinkNatural.Web.Services.Services
             }
         }
 
-        #endregion 
+        public CustomerCreateResponse Authenticate(AuthenticateCustomerRequest model)
+        {
+            var user = _users.SingleOrDefault(x => x.LoginName == model.LoginName && x.LoginPassword == model.Password);
+
+            // return null if user not found
+            if (user == null) return null;
+
+            // authentication successful so generate jwt token
+            var token = generateJwtToken(user);
+
+            return new CustomerCreateResponse(user, token);
+        }
+
+        public IEnumerable<CustomerCreateModel> GetAll()
+        {
+            return _users;
+        }
+
+        public CustomerCreateModel GetById(int id)
+        {
+            return _users.FirstOrDefault(x => x.CustomerID==id);
+        }
+        private string generateJwtToken(CustomerCreateModel user)
+        {
+            // generate token that is valid for 7 days
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configSettings.Value.AppSettings.Secret); //_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim("id", user.CustomerID.ToString()) }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+        #endregion
     }
 }

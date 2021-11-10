@@ -16,7 +16,7 @@ namespace WinkNaturals.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class PaymentController : ControllerBase
+    public class PaymentController : BaseController
     {
         private readonly IConfiguration _config;
         private readonly IPaymentService _paymentService;

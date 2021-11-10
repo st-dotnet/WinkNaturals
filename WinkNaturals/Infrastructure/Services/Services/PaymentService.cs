@@ -17,6 +17,7 @@ using AuthorizeNet.Api.Controllers.Bases;
 using AuthorizeNet.APICore;
 using AuthorizeNet.Api.Controllers;
 using AuthorizeNet.Api.Contracts.V1;
+using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 
 namespace WinkNatural.Web.Services.Services
 {
@@ -64,7 +65,7 @@ namespace WinkNatural.Web.Services.Services
                             customerType = "individual",
                             payment = new Payment
                             {
-                                creditCard = new CreditCard
+                                creditCard = new DTO.CreditCard
                                 {
                                     cardNumber = model.CardNumber,
                                     expirationDate = $"20{model.ExpYear}-{model.ExpMonth}"

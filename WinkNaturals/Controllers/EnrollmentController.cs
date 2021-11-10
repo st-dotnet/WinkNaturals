@@ -14,7 +14,7 @@ namespace WinkNaturals.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EnrollmentController : ControllerBase
+    public class EnrollmentController : BaseController
     {
         private readonly IEnrollmentService _enrollmentService;
 

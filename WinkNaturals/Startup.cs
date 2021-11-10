@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 using System.Text;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNatural.Web.Services.Services;
@@ -16,15 +15,16 @@ using ExigoResourceSet;
 using System.IO;
 using WinkNatural.Web.Common.Extensions;
 using Microsoft.Extensions.FileProviders;
-using System.Text.Json.Serialization;
-using WinkNatural.Web.Common.Utils;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
 using System;
-using Microsoft.Extensions.Options;
 using WinkNaturals.Models.Shopping.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Infrastructure.Services.Interfaces;
+using WinkNaturals.Models.Shopping.PointAccount;
+using WinkNaturals.Models.Shopping.PointAccount.Interfaces;
+using WinkNaturals.Models.Shopping;
+using WinkNaturals.AuthantictionMiddleware;
 
 namespace WinkNatural.Web.WinkNaturals
 {
@@ -61,9 +61,11 @@ namespace WinkNatural.Web.WinkNaturals
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IPropertyBags, PropertyBags>();
             services.AddScoped<IPropertyBagItem, PropertyBagItemDetail>();
-
             services.AddScoped<IOrderConfiguration, OrderItemConfiguration>();
             services.AddScoped<IMarketConfigurationSetting, MarketConfigurationSetting>();
+            services.AddScoped<ICustomerPointAccount, PointAccountRepo>();
+            services.AddScoped<IAutoOrders, AutoOrders>();
+            services.AddScoped<ICustomerAutoOreder, CustomerAutoOreder>();
            
             services.AddDistributedSqlServerCache(options =>
             {
@@ -178,6 +180,7 @@ namespace WinkNatural.Web.WinkNaturals
             app.UseAuthorization();
 
             app.UseMiddleware<ErrorHandlerMiddleware>();
+            app.UseMiddleware<AuthMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

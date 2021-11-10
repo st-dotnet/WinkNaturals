@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.DTO.Shopping;
+using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Models;
-
+using WinkNaturals.Models.Shopping.Orders;
 
 namespace WinkNatural.Web.Services.Interfaces
 {
@@ -69,6 +70,6 @@ namespace WinkNatural.Web.Services.Interfaces
         Task<AdjustInventoryResponse> AdjustInventory(AdjustInventoryRequest adjustInventoryRequest);
         Task<SetItemSubscriptionResponse> SetItemSubscription(SetItemSubscriptionRequest setItemSubscriptionRequest);
         Task<SetItemPointAccountResponse> SetItemPointAccount(SetItemPointAccountRequest setItemPointAccountRequest);
-
+       
     }
 }
