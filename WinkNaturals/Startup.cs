@@ -64,7 +64,7 @@ namespace WinkNatural.Web.WinkNaturals
             services.AddScoped<IOrderConfiguration, OrderItemConfiguration>();
             services.AddScoped<IMarketConfigurationSetting, MarketConfigurationSetting>();
             services.AddScoped<ICustomerPointAccount, PointAccountRepo>();
-            services.AddScoped<IAutoOrders, AutoOrders>();
+           services.AddScoped<IAutoOrders, AutoOrders>();
             services.AddScoped<ICustomerAutoOreder, CustomerAutoOreder>();
            
             services.AddDistributedSqlServerCache(options =>

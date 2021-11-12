@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Exigo.Api.Client;
 using WinkNaturals.Models;
 using WinkNaturals.Models.Shopping.Interfaces;
 
@@ -141,7 +142,22 @@ namespace WinkNaturals.Setting
         public string ReplicatedSites { get; set; }
     }
 
-   
+    public class Autoorder
+    {
+        public static List<int> AvailableFrequencyTypeIDs
+        {
+            get
+            {
+                return new List<int>
+                {
+                    FrequencyTypes.Monthly
+                };
+            }
+        }
+        public static List<FrequencyType> AvailableFrequencyTypes = AvailableFrequencyTypeIDs.Select(c => Models.AvailableFrequencyType.GetFrequencyType(c)).ToList();
+        public static int DefaultAutoOrderShipMethodID = 8;
+    }
+
     public class GlobalMarketSetting
     {
         //JS, 09/11/2015
@@ -164,6 +180,10 @@ namespace WinkNaturals.Setting
         public string Username { get; set; }
         public string Password { get; set; }
     }
+
+    
+
+
 
 }
 

@@ -26,6 +26,6 @@ namespace WinkNaturals.Setting.Interfaces
 
        // void GetCacheData<ItemType>(string description) where ItemType : IPropertyBag2;
 
-
+       T Delete<T>(T propertyBag) where T : IPropertyBag2;
     }
 }

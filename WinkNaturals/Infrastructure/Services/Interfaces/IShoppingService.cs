@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Infrastructure.Services.ExigoService;
+using WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder;
 using WinkNaturals.Models;
 using WinkNaturals.Models.Shopping.Orders;
 
@@ -70,6 +71,6 @@ namespace WinkNatural.Web.Services.Interfaces
         Task<AdjustInventoryResponse> AdjustInventory(AdjustInventoryRequest adjustInventoryRequest);
         Task<SetItemSubscriptionResponse> SetItemSubscription(SetItemSubscriptionRequest setItemSubscriptionRequest);
         Task<SetItemPointAccountResponse> SetItemPointAccount(SetItemPointAccountRequest setItemPointAccountRequest);
-       
+        object CalculateOrder(OrderCalculationRequest orderCalcRequest);
     }
 }

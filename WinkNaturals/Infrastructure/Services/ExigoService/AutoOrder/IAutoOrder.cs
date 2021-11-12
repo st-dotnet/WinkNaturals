@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Exigo.Api.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,5 +55,7 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder
 
         DateTime CreatedDate { get; set; }
         string CreatedBy { get; set; }
+
+       AutoOrderPaymentType GetAutoOrderPaymentType(CreditCard.CreditCard card);
     }
 }
