@@ -7,6 +7,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using Exigo.Api.Client;
+
 namespace ExigoAPIRef
 {
     
@@ -1146,7 +1148,6 @@ namespace ExigoAPIRef
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(SqlReportInputParameter[]))]
         System.Threading.Tasks.Task<ExigoAPIRef.CheckUserPermissionsResponse1> CheckUserPermissionsAsync(ExigoAPIRef.CheckUserPermissionsRequest1 request);
     }
-    
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3-preview3.21351.2")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -2508,8 +2509,9 @@ namespace ExigoAPIRef
             }
         }
     }
-    
-    /// <remarks/>
+  
+
+        /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3-preview3.21351.2")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://api.exigo.com/")]
@@ -6604,7 +6606,7 @@ namespace ExigoAPIRef
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3-preview3.21351.2")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://api.exigo.com/")]
-    public partial class Warehouse
+    public class Warehouse
     {
         
         private int warehouseIDField;

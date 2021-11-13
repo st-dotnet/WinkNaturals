@@ -13,7 +13,7 @@ namespace WinkNaturals.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomersController : ControllerBase
+    public class CustomersController : BaseController
     {
       
         private readonly IWebHostEnvironment _env;

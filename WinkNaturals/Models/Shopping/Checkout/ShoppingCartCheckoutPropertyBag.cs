@@ -1,9 +1,11 @@
 ﻿using Exigo.Api.Client;
 using System;
 using WinkNatural.Web.Services.DTO.Shopping;
+using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Models.Shopping.Checkout.Coupon;
 using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
 using WinkNaturals.Models.Shopping.Interfaces;
+
 
 namespace WinkNaturals.Models.Shopping.Checkout
 {

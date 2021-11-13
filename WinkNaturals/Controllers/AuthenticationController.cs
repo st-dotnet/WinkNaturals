@@ -97,13 +97,7 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
                 //Authenticate customer
                 var result = await _authenticateService.SignInCustomer(new AuthenticateCustomerRequest { LoginName = model.LoginName, Password = model.LoginPassword });
 
-                return Ok(new CustomerCreateResponse
-                {
-                    Email = model.Email,
-                    LoginName = model.LoginName,
-                    Phone = model.Phone,
-                    Token = result.Token.ToString()
-                });
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -158,6 +152,7 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("UpdateCustomer")]
         public async Task<IActionResult> UpdateCustomer(CustomerUpdateModel model)
         {

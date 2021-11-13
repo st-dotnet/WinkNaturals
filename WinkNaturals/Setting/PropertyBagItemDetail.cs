@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,13 @@ namespace WinkNaturals.Setting
 {
     public class PropertyBagItemDetail : IPropertyBagItem
     {
+        private readonly IOptions<ConfigSettings> _config;
+
+        public PropertyBagItemDetail(IOptions<ConfigSettings> config)
+        {
+            _config = config;
+        }
+
         public List<Item> GetItems(IEnumerable<ShoppingCartItem> shoppingCartItems, IOrderConfiguration configuration, int languageID, int _priceTypeID = 0)
         {
             var results = new List<Item>();
@@ -949,6 +957,222 @@ namespace WinkNaturals.Setting
                 throw;
             }
            
+        }
+
+        public IEnumerable<Item> GetShoppingCartItem(GetItemsRequest request, bool includeItemDescriptions = true)
+        {
+            {
+                // If we don't have what we need to make this call, stop here.
+                if (request.Configuration == null)
+                    throw new InvalidRequestException("ExigoService.GetItems() requires an OrderConfiguration.");
+
+                if (request.Configuration.CategoryID == 0 && request.CategoryID == null && request.ItemCodes.Length == 0)
+                    throw new InvalidRequestException("ExigoService.GetItems() requires either a CategoryID or a collection of item codes."); ;
+
+
+                // Set some defaults
+                if (request.CategoryID == null && request.ItemCodes.Length == 0)
+                {
+                    request.CategoryID = request.Configuration.CategoryID;
+                }
+
+
+                var tempCategoryIDs = new List<int>();
+                var categoryIDs = new List<int>();
+                if (request.CategoryID != null)
+                {
+                    // Get all category ids underneath the request's category id
+                    if (request.IncludeChildCategories)
+                    {
+                        using (var context = WinkNatural.Web.Common.Utils.DbConnection.Sql())
+                        {
+                            categoryIDs.AddRange(context.Query<int>(@"
+                            WITH webcat (WebCategoryID, WebCategoryDescription, ParentID, NestedLevel) 
+                                 AS (SELECT WebCategoryID, 
+                                            WebCategoryDescription, 
+                                            ParentID, 
+                                            NestedLevel 
+                                     FROM   WebCategories 
+                                     WHERE  WebCategoryID = @masterCategoryID
+                                            AND WebID = @webid
+                                     UNION ALL 
+                                     SELECT w.WebCategoryID, 
+                                            w.WebCategoryDescription, 
+                                            w.ParentID, 
+                                            w.NestedLevel 
+                                     FROM   WebCategories w 
+                                            INNER JOIN webcat c 
+                                                    ON c.WebCategoryID = w.ParentID) 
+                            SELECT WebCategoryID
+                            FROM   webcat
+                        ", new
+                            {
+                                webid = _config.Value.GlobalItems.WebID,
+                                masterCategoryID = request.CategoryID
+                            }).ToList());
+                        }
+                    }
+                    else
+                    {
+                        categoryIDs.Add(Convert.ToInt32(request.CategoryID));
+                    }
+                }
+
+                // If we requested specific categories, get the item codes in the categories
+                if (categoryIDs.Count > 0)
+                {
+                    var categoryItemCodes = new List<string>();
+
+                    using (var context = WinkNatural.Web.Common.Utils.DbConnection.Sql())
+                    {
+                        categoryItemCodes = context.Query<string>(@"
+                        SELECT DISTINCT
+	                        i.ItemCode
+                            ,c.SortOrder
+                        FROM 
+                            WebCategoryItems c
+	                        INNER JOIN Items i
+		                        on c.ItemID = i.ItemID
+	                        INNER JOIN WebCategories w
+		                        on w.WebID = c.WebID
+		                        and w.WebCategoryID = c.WebCategoryID
+                        WHERE 
+	                        c.WebID = @webid
+	                        and c.WebCategoryID in @webcategoryids
+                        ORDER By c.SortOrder
+                    ", new
+                        {
+                            webid = _config.Value.GlobalItems.WebID,
+                            webcategoryids = categoryIDs
+                        }).ToList();
+                    }
+
+                    var existingItemCodes = request.ItemCodes.ToList();
+                    existingItemCodes.AddRange(categoryItemCodes);
+                    request.ItemCodes = existingItemCodes.ToArray();
+                }
+
+                // Do a final check to ensure if the category we are looking at does not contain a item directly nested within it, we pull back the first child category
+                if (request.ItemCodes.Length == 0 && request.CategoryID != null)
+                {
+                    var tempItemCodeList = new List<string>();
+                    using (var context = WinkNatural.Web.Common.Utils.DbConnection.Sql())
+                    {
+                        tempItemCodeList = context.Query<string>(@"                
+                    ;WITH 
+                        webcat 
+                     (
+                        WebCategoryID
+                        ,WebCategoryDescription
+                        ,ParentID
+                        ,NestedLevel
+                        ,SortOrder
+                     ) 
+				     AS 
+                     (
+                        SELECT 
+                            WebCategoryID 
+						    ,WebCategoryDescription
+						    ,ParentID 
+						    ,NestedLevel
+                            ,SortOrder 
+					    FROM   
+                            WebCategories 
+					    WHERE  
+                            WebCategoryID = @masterCategoryID
+						    AND WebID = @webid
+					    
+                        UNION ALL
+                         
+					    SELECT 
+                            w.WebCategoryID 
+						    ,w.WebCategoryDescription 
+						    ,w.ParentID
+						    ,w.NestedLevel
+                            ,w.SortOrder
+					    FROM   
+                            WebCategories w 
+					        INNER JOIN webcat c 
+						        ON c.WebCategoryID = w.ParentID
+                    ) 
+                    SELECT 
+                        i.ItemCode
+                    FROM 
+                        WebCategoryItems c
+	                    INNER JOIN Items i
+		                    ON c.ItemID = i.ItemID
+                    WHERE 
+                        c.WebCategoryID = (
+                                            SELECT TOP 1 
+                                                WebCategoryID 
+					                        FROM 
+                                                webcat 
+                                            WHERE 
+                                                ParentID = @masterCategoryID 
+					                        ORDER BY 
+                                                SortOrder
+                                          )
+                    ORDER BY
+                        c.SortOrder
+                    ", new
+                        {
+                            webid = _config.Value.GlobalItems.WebID,
+                            masterCategoryID = request.CategoryID
+                        }).ToList();
+                    }
+
+                    request.ItemCodes = tempItemCodeList.ToArray();
+                }
+
+
+                // If we don't have any items, stop here.
+                if (request.ItemCodes.Length == 0) yield break;
+
+                // Ensure our language ID is pulled from the Language Cookie
+                request.LanguageID = Language.GetSelectedLanguageID();
+
+                // get the item information             
+                var priceTypeID = (request.PriceTypeID > 0) ? request.PriceTypeID : request.Configuration.PriceTypeID;
+
+                var items = includeItemDescriptions ? GetItemInformation(request, priceTypeID) : GetItemList(request, priceTypeID);
+
+                // Populate the group members and dynamic kits
+                if (items.Any())
+                {
+                    PopulateAdditionalItemData(items, request);
+                }
+
+                if (request.SortBy == 1)
+                {
+                    // Newest Arrivals
+                    items = items.OrderByDescending(x => x.ItemID).ToList();
+                }
+                if (request.SortBy == 2)
+                {
+                    // Price: $ - $$
+                    items = items.OrderBy(x => x.Price).ToList();
+                }
+                else if (request.SortBy == 3)
+                {
+                    // Price: $$ - $
+                    items = items.OrderByDescending(x => x.Price).ToList();
+                }
+                else if (request.SortBy == 4)
+                {
+                    // Name: A - Z
+                    items = items.OrderBy(x => x.ItemDescription).ToList();
+                }
+                else
+                {
+                    // Featured          
+                }
+
+                // Return the data
+                foreach (var item in items)
+                {
+                    yield return item;
+                }
+            }
         }
     }
 }
