@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 using WinkNaturals.Helpers;
 using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Models.Shopping.Orders;
-using IPropertyBags = WinkNaturals.Setting.Interfaces.IPropertyBags;
+
 
 namespace WinkNaturals.Controllers
 {
@@ -1016,7 +1016,7 @@ namespace WinkNaturals.Controllers
                 item.PriceEachOverride = decimal.Parse(item.Field5);
                 // ShoppingCart.Items.Add(item);
                 PropertyBag.ContainsSpecial = true;
-                // _propertyBagService.UpdateCacheData(ShoppingCart);
+                 _propertyBagService.UpdateCacheData(ShoppingCart);
             }
             return Ok();
         }
@@ -1029,7 +1029,7 @@ namespace WinkNaturals.Controllers
             if (!string.IsNullOrEmpty(item.Field5))
             {
                 PropertyBag.ContainsSpecial = false;
-                //  _propertyBagService.UpdateCacheData(PropertyBag);
+                  _propertyBagService.UpdateCacheData(PropertyBag);
                 // PropertyBags.Update(PropertyBag);
             }
             ShoppingCart.Items.Remove(id);
@@ -1224,8 +1224,8 @@ namespace WinkNaturals.Controllers
         [HttpGet("thank-you")]
         public IActionResult OrderComplete(int orderId = 0, decimal orderTotal = 0)
         {
-           // _propertyBagService.Delete(ShoppingCart);
-          //  _propertyBagService.Delete(PropertyBag);
+            _propertyBagService.Delete(ShoppingCart);
+            _propertyBagService.Delete(PropertyBag);
             return Ok();
         }
 
@@ -1302,7 +1302,7 @@ namespace WinkNaturals.Controllers
                 {
                     PropertyBag.ShipMethodID = OrderConfiguration.DefaultShipMethodID;
                     beginningShipMethodID = PropertyBag.ShipMethodID;
-                  //  _propertyBagService.UpdateCacheData(PropertyBag);
+                    _propertyBagService.UpdateCacheData(PropertyBag);
                 }
                 var request = new OrderCalculationRequest()
                 {
@@ -1354,7 +1354,7 @@ namespace WinkNaturals.Controllers
 
                         // If for some reason the property bag is outdated and the ship method stored in it is not in the list, set the first result as selected and re-set the property bag's value
                         PropertyBag.ShipMethodID = model.ShipMethods.FirstOrDefault().ShipMethodID;
-                      //  _propertyBagService.UpdateCacheData(PropertyBag);
+                        _propertyBagService.UpdateCacheData(PropertyBag);
                     }
                 }
 
@@ -1444,7 +1444,7 @@ namespace WinkNaturals.Controllers
 
                         // If for some reason the property bag is outdated and the ship method stored in it is not in the list, set the first result as selected and re-set the property bag's value
                         PropertyBag.AutoOrderShipMethodID = model.AutoOrderShipMethods.FirstOrDefault().ShipMethodID;
-                       // _propertyBagService.UpdateCacheData(PropertyBag);
+                        _propertyBagService.UpdateCacheData(PropertyBag);
                     }
                 }
 
@@ -1473,7 +1473,7 @@ namespace WinkNaturals.Controllers
                     if (PropertyBag.ShipMethodID != PropertyBag.AutoOrderShipMethodID)
                     {
                         PropertyBag.ShipMethodID = PropertyBag.AutoOrderShipMethodID;
-                      //  _propertyBagService.UpdateCacheData(PropertyBag);
+                        _propertyBagService.UpdateCacheData(PropertyBag);
                     }
                 }
                 #endregion
