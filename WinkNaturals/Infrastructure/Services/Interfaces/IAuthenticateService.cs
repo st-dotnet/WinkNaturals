@@ -1,6 +1,8 @@
 ﻿using Exigo.Api.Client;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Customer;
+using WinkNaturals.Models;
 
 namespace WinkNatural.Web.Services.Interfaces
 {
@@ -19,5 +21,9 @@ namespace WinkNatural.Web.Services.Interfaces
 
         //Check if email/username is exists or not
         Task<bool> IsEmailOrUsernameExists(CustomerValidationRequest request);
+
+        CustomerCreateResponse Authenticate(AuthenticateCustomerRequest model);
+        IEnumerable<CustomerCreateModel> GetAll();
+        CustomerCreateModel GetById(int id);
     }
 }

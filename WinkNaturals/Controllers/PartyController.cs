@@ -18,7 +18,7 @@ namespace WinkNaturals.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class PartyController : ControllerBase
+    public class PartyController : BaseController
     {
       //  private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
 

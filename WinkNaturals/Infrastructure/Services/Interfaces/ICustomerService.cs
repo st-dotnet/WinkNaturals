@@ -17,5 +17,7 @@ namespace WinkNatural.Web.Services.Interfaces
 
         Task<bool> SendEmailVerification(int customerId, string email);
 
+       
+
     }
 }

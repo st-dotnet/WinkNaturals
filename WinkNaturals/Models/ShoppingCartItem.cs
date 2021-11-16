@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Exigo.Api.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -78,6 +79,11 @@ namespace WinkNaturals.Models
             {
                 return (!string.IsNullOrEmpty(this.ParentItemCode));
             }
+        }
+
+        public static explicit operator OrderDetailRequest(ShoppingCartItem v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace WinkNaturals.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class PaymentController : ControllerBase
+    public class PaymentController : BaseController
     {
         private readonly IConfiguration _config;
         private readonly IPaymentService _paymentService;
@@ -53,10 +53,10 @@ namespace WinkNaturals.Controllers
             return Ok(_paymentService.ProcessPaymentMethod(getPaymentProPayModel));
         }
 
-        [HttpPost("add-payment")]
-        public IActionResult AddPayment(AddPaymentModel model)
+        [HttpPost("CreatePaymentUsingAuthorizeNet")]
+        public IActionResult CreatePaymentUsingAuthorizeNet(AddPaymentModel model)
         {
-            return Ok(_paymentService.AddPayment(model));
+            return Ok(_paymentService.PaymentUsingAuthorizeNet(model));
         }
 
     }

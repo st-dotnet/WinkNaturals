@@ -83,7 +83,7 @@ namespace WinkNaturals.Utilities.Common
                 public static string IV = "kjJ6F6sf84vfV432"; // Must be 16 characters long
             }
         }
-
+       
         public static string Encrypt(object value)
         {
             return Encrypt(value, Settings.EncryptionKeys.General);
@@ -125,5 +125,6 @@ namespace WinkNaturals.Utilities.Common
             {"/", "-"},
             {"=", "!"}
         };
+        
     }
 }

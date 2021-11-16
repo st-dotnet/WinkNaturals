@@ -26,5 +26,6 @@ namespace WinkNatural.Web.Services.DTO
         public string EmailAddress { get; set; }
         public string ExternalId1 { get; set; }
         public string ExternalId2 { get; set; }
+        public string AccountNo { get; set; }
     }
 }

@@ -15,6 +15,8 @@ namespace WinkNatural.Web.Services.Services
     {
         public string Message { get; set; }
         public string ResultCode { get; set; }
+        public string TransId { get; set; }
+        public string AuthCode { get; set; }
     }
 
     public class AddCardRequest

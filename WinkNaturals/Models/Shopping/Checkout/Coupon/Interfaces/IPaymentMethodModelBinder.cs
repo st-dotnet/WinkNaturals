@@ -1,63 +1,82 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces
 {
-   // public class IPaymentMethodModelBinder : IModelBinder
-   // {
-        //public Task BindModelAsync(ModelBindingContext bindingContext)
-        //{
-        //    if (modelType.Name != "IPaymentMethod") return base.CreateModel(controllerContext, bindingContext, modelType);
+    public interface IPaymentMethod
+    {
+        bool IsComplete { get; }
+        bool IsValid { get; }
+    }
 
-        //    var paymentMethodType = bindingContext.ModelName + ".PaymentMethodType";
+    public class DeviceModelBinderProvider : IModelBinderProvider
+    {
+        public IModelBinder GetBinder(ModelBinderProviderContext context)
+        {
+            if (context.Metadata.ModelType != typeof(IPaymentMethod))
+            {
+                return null;
+            }
 
-        //    var rawClassName = bindingContext.ValueProvider.GetValue(paymentMethodType);
-        //    if (rawClassName == null || string.IsNullOrEmpty(rawClassName.ToString())) throw new Exception("You cannot model-bind to a property of type {0} without passing the desired model class name through a form field named '{1}'.".FormatWith(modelType.ToString(), paymentMethodType));
+            var subclasses = new[] { typeof(IPaymentMethod), };
 
-        //    var className = rawClassName.AttemptedValue.ToString();
-        //    modelType = Type.GetType(className);
+            var binders = new Dictionary<Type, (ModelMetadata, IModelBinder)>();
+            foreach (var type in subclasses)
+            {
+                var modelMetadata = context.MetadataProvider.GetMetadataForType(type);
+                binders[type] = (modelMetadata, context.CreateBinder(modelMetadata));
+            }
 
-        //    if (modelType.Name == "String[]") throw new Exception("You cannot pass more than one form field named '{0}' when model-binding to IPaymentMethod.".FormatWith(paymentMethodType));
+            return new DeviceModelBinder(binders);
+        }
+    }
+    public class DeviceModelBinder : IModelBinder
+    {
+        private Dictionary<Type, (ModelMetadata, IModelBinder)> binders;
 
-        //    if (modelType != null)
-        //    {
-        //        var instance = Activator.CreateInstance(modelType);
-        //        bindingContext.ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => instance, modelType);
+        public DeviceModelBinder(Dictionary<Type, (ModelMetadata, IModelBinder)> binders)
+        {
+            this.binders = binders;
+        }
 
-        //        return instance;
-        //    }
-        //    else
-        //    {
-        //        return null;
-        //    }
-        //}
+        public async Task BindModelAsync(ModelBindingContext bindingContext)
+        {
+            var modelKindName = ModelNames.CreatePropertyModelName(bindingContext.ModelName, nameof(IPaymentMethod));
+            var modelTypeValue = bindingContext.ValueProvider.GetValue(modelKindName).FirstValue;
 
-        //protected override object CreateModel(System.Web.Mvc.ControllerContext controllerContext, System.Web.Mvc.ModelBindingContext bindingContext, Type modelType)
-        //{
-        //    if (modelType.Name != "IPaymentMethod") return base.CreateModel(controllerContext, bindingContext, modelType);
+            IModelBinder modelBinder;
+            ModelMetadata modelMetadata;
+            if (modelTypeValue == "IPaymentMethod")
+            {
+                (modelMetadata, modelBinder) = binders[typeof(IPaymentMethod)];
+            }
+            else
+            {
+                bindingContext.Result = ModelBindingResult.Failed();
+                return;
+            }
 
-        //    var paymentMethodType = bindingContext.ModelName + ".PaymentMethodType";
+            var newBindingContext = DefaultModelBindingContext.CreateBindingContext(
+                bindingContext.ActionContext,
+                bindingContext.ValueProvider,
+                modelMetadata,
+                bindingInfo: null,
+                bindingContext.ModelName);
 
-        //    var rawClassName = bindingContext.ValueProvider.GetValue(paymentMethodType);
-        //    if (rawClassName == null || string.IsNullOrEmpty(rawClassName.ToString())) throw new Exception("You cannot model-bind to a property of type {0} without passing the desired model class name through a form field named '{1}'.".FormatWith(modelType.ToString(), paymentMethodType));
+            await modelBinder.BindModelAsync(newBindingContext);
+            bindingContext.Result = newBindingContext.Result;
 
-        //    var className = rawClassName.AttemptedValue.ToString();
-        //    modelType = Type.GetType(className);
-
-        //    if (modelType.Name == "String[]") throw new Exception("You cannot pass more than one form field named '{0}' when model-binding to IPaymentMethod.".FormatWith(paymentMethodType));
-
-        //    if (modelType != null)
-        //    {
-        //        var instance = Activator.CreateInstance(modelType);
-        //        bindingContext.ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => instance, modelType);
-
-        //        return instance;
-        //    }
-        //    else
-        //    {
-        //        return null;
-        //    }
-        //}
-    
+            if (newBindingContext.Result.IsModelSet)
+            {
+                // Setting the ValidationState ensures properties on derived types are correctly 
+                bindingContext.ValidationState[newBindingContext.Result.Model] = new ValidationStateEntry
+                {
+                    Metadata = modelMetadata,
+                };
+            }
+        }
+    }
 }

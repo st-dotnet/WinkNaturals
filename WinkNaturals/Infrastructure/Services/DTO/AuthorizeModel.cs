@@ -11,7 +11,7 @@ namespace WinkNatural.Web.Services.DTO
     {
         public CreateCustomerProfileRequest createCustomerProfileRequest { get; set; }
     }
-    
+
     public class MerchantAuthentication
     {
         public string name { get; set; }
@@ -29,13 +29,13 @@ namespace WinkNatural.Web.Services.DTO
         public CreditCard creditCard { get; set; }
     }
 
+
     public class CreditCard
     {
         public string cardNumber { get; set; }
         public string expirationDate { get; set; }
 
     }
-
     public class Profile
     {
         public string description { get; set; }

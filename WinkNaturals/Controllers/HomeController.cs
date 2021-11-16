@@ -1,13 +1,19 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Customer;
 using WinkNatural.Web.Services.Interfaces;
-using WinkNaturals.Models;
+using WinkNaturals.Models; 
+using WinkNaturals.Setting;
 
 namespace WinkNaturals.Controllers
 {
@@ -17,11 +23,12 @@ namespace WinkNaturals.Controllers
     {
         private readonly IHomeService _homeService;
         private readonly IMapper _mapper;
-
-        public HomeController(IHomeService homeService, IMapper mapper)
+        private readonly IOptions<ConfigSettings> _config;
+        public HomeController(IHomeService homeService, IMapper mapper, IOptions<ConfigSettings> config)
         {
             _homeService = homeService;
             _mapper = mapper;
+            _config = config;
         }
         /// <summary>
         /// About
@@ -41,6 +48,25 @@ namespace WinkNaturals.Controllers
             {
                 throw new Exception(ex.ToString());
             }
+        }
+
+        /// <summary>
+        /// Get hpme page reviews from Yotpo
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetHomePageReviews")]
+        public List<HomePageReviewsModel> GetHomePageReviews()
+        {
+            try
+            {
+                return _homeService.GetReviews(); 
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+            
         }
     }
 }
