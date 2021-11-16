@@ -1,8 +1,5 @@
 ﻿using Exigo.Api.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WinkNaturals.Models.Shopping.Orders.Interfaces;
 
 namespace WinkNaturals.Models.Shopping.Orders

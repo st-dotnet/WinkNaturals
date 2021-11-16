@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace WinkNaturals.Setting.Interfaces
+﻿namespace WinkNaturals.Setting.Interfaces
 {
 
 

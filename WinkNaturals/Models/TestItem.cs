@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WinkNatural.Web.Common.Utils.Enum;
-using WinkNatural.Web.Services.DTO.Shopping;
 
 namespace WinkNaturals.Models
 {
@@ -34,12 +30,12 @@ namespace WinkNaturals.Models
         public bool IsGroupMaster { get; set; }
         public string GroupMasterItemDescription { get; set; }
         public string GroupMembersDescription { get; set; }
-       // public List<int> GroupMembers { get; set; }
+        // public List<int> GroupMembers { get; set; }
 
 
         public bool IsDynamicKitMaster { get; set; }
-       // public List<int> DynamicKitCategories { get; set; }
-       // public Item StaticKitChildren { get; set; }
+        // public List<int> DynamicKitCategories { get; set; }
+        // public Item StaticKitChildren { get; set; }
 
         public int PriceTypeID { get; set; }
         public string CurrencyCode { get; set; }
@@ -72,7 +68,7 @@ namespace WinkNaturals.Models
         public string Field9 { get; set; }
         public string Field10 { get; set; }
 
-    
+
 
         public bool OtherCheck1 { get; set; }
         public bool OtherCheck2 { get; set; }

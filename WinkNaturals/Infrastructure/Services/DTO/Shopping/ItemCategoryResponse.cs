@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace WinkNatural.Web.Services.DTO.Shopping
 {
@@ -17,7 +16,7 @@ namespace WinkNatural.Web.Services.DTO.Shopping
         public List<ItemCategoryResponse> Subcategories { get; set; }
     }
 
-   
+
 
 
 }

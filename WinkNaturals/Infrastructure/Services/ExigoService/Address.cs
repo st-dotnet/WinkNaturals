@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using WinkNaturals.Helpers;
 
 namespace WinkNaturals.Infrastructure.Services.ExigoService

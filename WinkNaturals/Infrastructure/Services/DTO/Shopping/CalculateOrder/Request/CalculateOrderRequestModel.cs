@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using WinkNaturals.Models;
-
-namespace WinkNatural.Web.Services.DTO.Shopping
+﻿namespace WinkNatural.Web.Services.DTO.Shopping
 {
     //public class CalculateOrderRequestModel
     //{
@@ -153,7 +146,7 @@ namespace WinkNatural.Web.Services.DTO.Shopping
     //    string Country { get; set; }
     //}
 
-    
+
     //public enum AddressType
     //{
     //    New = 0,
@@ -161,7 +154,7 @@ namespace WinkNatural.Web.Services.DTO.Shopping
     //    Mailing = 2,
     //    Other = 3
     //}
-  
+
     public static class OrderTypes
     {
         /// <summary>

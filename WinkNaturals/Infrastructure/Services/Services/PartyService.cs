@@ -1,8 +1,5 @@
 ﻿using Exigo.Api.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.Interfaces;
@@ -113,7 +110,7 @@ namespace WinkNatural.Web.Services.Services
                 req.Field3 = getPartiesRequest.Field3;               //Field3
                 req.Field4 = getPartiesRequest.Field4;               //Field4
                 req.Field5 = getPartiesRequest.Field5;               //Field5
-                
+
                 //Send Request to Server and Get Response
                 res = await exigoApiClient.GetPartiesAsync(req);
             }

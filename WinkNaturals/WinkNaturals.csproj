@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\Shopping\Interfaces\IPropertyBags.cs" />
+    <Compile Remove="Setting\PropertyBags.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
@@ -12,6 +17,7 @@
     <PackageReference Include="AuthorizeNet" Version="2.0.2" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Braintree" Version="5.9.0" />
     <PackageReference Include="Dapper" Version="2.0.90" />
     <PackageReference Include="Exigo.Api.Client" Version="1.0.3" />
     <PackageReference Include="HttpRequestExtensions" Version="1.0.0" />

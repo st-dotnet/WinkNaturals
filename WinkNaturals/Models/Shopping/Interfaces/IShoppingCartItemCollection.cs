@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WinkNaturals.Models.Shopping.Interfaces
 {
-   public interface IShoppingCartItemCollection
+    public interface IShoppingCartItemCollection
     {
-       void  Add(IShoppingCartItem item);
+        void Add(IShoppingCartItem item);
 
         void Update(Guid id, decimal quantity);
         void Update(IShoppingCartItem item);

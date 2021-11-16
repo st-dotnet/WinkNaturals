@@ -1,17 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Resources;
-using System;
-using WinkNatural.Web.Services.Interfaces;
-using WinkNatural.Web.Services.Utilities;
-using WinkNatural.Web.Services.DTO.Shopping;
-using WinkNaturals.Models;
+﻿using AutoMapper;
 using Exigo.Api.Client;
-using AutoMapper;
-using System.Collections.Generic;
-using System.Linq;
-using WinkNatural.Web.Common;
-using WinkNatural.Web.Services.DTO;
-using WinkNatural.Web.Common.Utils;
+using Microsoft.AspNetCore.Mvc;
+using WinkNatural.Web.Services.Interfaces;
 
 namespace WinkNaturals.Controllers
 {
@@ -20,7 +10,7 @@ namespace WinkNaturals.Controllers
     [ApiController]
     public class PartyController : BaseController
     {
-      //  private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
+        //  private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
 
         private readonly IPartyService _partyService;
         private readonly IMapper _mapper;

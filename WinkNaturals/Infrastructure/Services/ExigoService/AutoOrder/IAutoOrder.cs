@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
 
 namespace WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder
 {
-  public   interface IAutoOrder
+    public interface IAutoOrder
     {
         int AutoOrderID { get; set; }
         int CustomerID { get; set; }

@@ -1,11 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WinkNaturals.Models.Shopping.Interfaces;
 using WinkNaturals.Setting;
-using WinkNaturals.Setting.Interfaces;
 
 namespace WinkNaturals.Models
 {
@@ -17,7 +12,7 @@ namespace WinkNaturals.Models
         public DateTime CreatedDate { get; set; }
         public int Expires { get; set; }
 
-       
+
 
         public virtual bool IsValid()
         {

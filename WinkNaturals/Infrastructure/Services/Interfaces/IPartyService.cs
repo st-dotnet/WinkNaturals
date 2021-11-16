@@ -1,9 +1,5 @@
 ﻿using Exigo.Api.Client;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using WinkNatural.Web.Services.DTO;
-using WinkNatural.Web.Services.DTO.Shopping;
-using WinkNaturals.Models;
 
 
 namespace WinkNatural.Web.Services.Interfaces

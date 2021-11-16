@@ -11,14 +11,14 @@ namespace WinkNatural.Web.Services.DTO.Customer
         public string Token { get; set; }
         public string ErrorMessage { get; set; }
         public CustomerCreateResponse() { }
-           
+
         public CustomerCreateResponse(CustomerCreateModel user, string token)
         {
             CustomerId = user.CustomerID;
             LoginName = user.LoginName;
-            Token =  token;
+            Token = token;
             Email = user.Email;
-            
+
         }
     }
 }

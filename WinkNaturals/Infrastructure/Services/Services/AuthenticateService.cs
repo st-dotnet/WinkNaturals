@@ -1,19 +1,14 @@
 ﻿using Exigo.Api.Client;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.DTO.Customer;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Models;
@@ -24,7 +19,7 @@ namespace WinkNatural.Web.Services.Services
 {
     public class AuthenticateService : IAuthenticateService
     {
-       // private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
+        // private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
         private readonly IConfiguration _config;
         private readonly ICustomerService _customerService;
         private readonly IExigoApiContext _exigoApiContext;
@@ -78,11 +73,11 @@ namespace WinkNatural.Web.Services.Services
                 }
                 // Get customer
                 var customer = await _customerService.GetCustomer(result.CustomerID);
-               // var token = GenerateJwtToken(result, customer.Customers[0].Email);
+                // var token = GenerateJwtToken(result, customer.Customers[0].Email);
                 var token = GenerateJwtToken(result, customer.Customers[0].Email);
                 return new CustomerCreateResponse
                 {
-                    CustomerId=customer.Customers[0].CustomerID,
+                    CustomerId = customer.Customers[0].CustomerID,
                     Email = customer.Customers[0].Email,
                     LoginName = customer.Customers[0].LoginName,
                     Phone = customer.Customers[0].Phone,
@@ -105,7 +100,7 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 var customerResult = true;
-                if(request.CustomerId==0) return new CustomerUpdateResponse { Success = false, ErrorMessage = "Some issues occurred during updating the customer!" };
+                if (request.CustomerId == 0) return new CustomerUpdateResponse { Success = false, ErrorMessage = "Some issues occurred during updating the customer!" };
                 var customer = new CustomerResponse();
                 try
                 {
@@ -119,8 +114,13 @@ namespace WinkNatural.Web.Services.Services
 
                 if (!customerResult) return new CustomerUpdateResponse { Success = false, ErrorMessage = "Unable to find the customer!" };
                 //Customer update password request
-                var customerUpdateRequest = new UpdateCustomerRequest { CustomerID = request.CustomerId, LoginPassword = request.NewPassword
-                ,LoginName=customer.LoginName };
+                var customerUpdateRequest = new UpdateCustomerRequest
+                {
+                    CustomerID = request.CustomerId,
+                    LoginPassword = request.NewPassword
+                ,
+                    LoginName = customer.LoginName
+                };
                 var result = await _exigoApiContext.GetContext().UpdateCustomerAsync(customerUpdateRequest);
                 return new CustomerUpdateResponse { Success = true };
             }
@@ -209,7 +209,7 @@ namespace WinkNatural.Web.Services.Services
         }
 
         //Generate JWT token
-        private string GenerateJwtToken(AuthenticateCustomerResponse customer,string email)
+        private string GenerateJwtToken(AuthenticateCustomerResponse customer, string email)
         {
             try
             {
@@ -267,7 +267,7 @@ namespace WinkNatural.Web.Services.Services
 
         public CustomerCreateModel GetById(int id)
         {
-            return _users.FirstOrDefault(x => x.CustomerID==id);
+            return _users.FirstOrDefault(x => x.CustomerID == id);
         }
         private string generateJwtToken(CustomerCreateModel user)
         {

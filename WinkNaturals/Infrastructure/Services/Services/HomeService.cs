@@ -6,13 +6,10 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.DTO.Customer;
 using WinkNatural.Web.Services.Interfaces;
-using WinkNatural.Web.Services.Utilities; 
+using WinkNatural.Web.Services.Utilities;
 using WinkNaturals.Models;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
@@ -64,10 +61,10 @@ namespace WinkNatural.Web.Services.Services
 
             }
             catch (Exception ex)
-            { 
+            {
                 throw new Exception(ex.Message);
             }
-            
+
         }
 
         /// <summary>

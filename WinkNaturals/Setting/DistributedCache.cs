@@ -1,11 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using WinkNaturals.Setting.Interfaces;
 
 namespace WinkNaturals.Setting
@@ -41,7 +37,7 @@ namespace WinkNaturals.Setting
             return decodedStr;
         }
 
-        public void SetCacheData(string key,  object value, int expiry)
+        public void SetCacheData(string key, object value, int expiry)
         {
             if (key == null) throw new Exception($"Unable to define key={key}.");
 
@@ -51,6 +47,6 @@ namespace WinkNaturals.Setting
             });
         }
 
-        
+
     }
 }

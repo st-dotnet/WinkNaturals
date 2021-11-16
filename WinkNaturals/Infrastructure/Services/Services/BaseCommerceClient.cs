@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WinkNatural.Web.Services.DTO;
-
-namespace WinkNatural.Web.Services.Services
+﻿namespace WinkNatural.Web.Services.Services
 {
     public class BaseCommerceClient
     {
-       public BaseCommerceClient(string user,string password,string key)
+        public BaseCommerceClient(string user, string password, string key)
         { }
 
-       public BankCardTransaction processBankCardTransaction(BankCardTransaction bankCardTransaction)
+        public BankCardTransaction processBankCardTransaction(BankCardTransaction bankCardTransaction)
         {
             //BankCardTransaction bcx = new BankCardTransaction();
             //bcx.status = "success";

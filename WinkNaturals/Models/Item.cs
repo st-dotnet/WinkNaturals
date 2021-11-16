@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WinkNatural.Web.Common.Utils.Enum;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Models.Shopping.Interfaces;
@@ -39,7 +37,7 @@ namespace WinkNaturals.Models
 
         public bool IsDynamicKitMaster { get; set; }
         public IEnumerable<DynamicKitCategory> DynamicKitCategories { get; set; }
-       public List<Item> StaticKitChildren { get; set; }
+        public List<Item> StaticKitChildren { get; set; }
 
         public int PriceTypeID { get; set; }
         public string CurrencyCode { get; set; }
@@ -136,8 +134,8 @@ namespace WinkNaturals.Models
         }
     }
 }
-      
-       
+
+
 
 
 

@@ -6,7 +6,7 @@ using static WinkNaturals.Helpers.Constant;
 
 namespace WinkNaturals.Infrastructure.Services.ExigoService.CreditCard
 {
-    public class CreditCard: ICreditCard
+    public class CreditCard : ICreditCard
     {
         public CreditCard()
         {
@@ -44,7 +44,7 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.CreditCard
 
         public string GetToken()
         {
-            
+
             if (!IsComplete) return string.Empty;
 
             // Credit Card Tokens should be retrieved via javascript using the exigopayments.js method, not on the server side.
@@ -127,7 +127,7 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.CreditCard
             }
         }
 
-        
+
     }
 
 }

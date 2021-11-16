@@ -1,9 +1,7 @@
 ﻿using Dapper;
 using Exigo.Api.Client;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder;
 using WinkNaturals.Infrastructure.Services.ExigoService.BankAccount;
@@ -30,40 +28,40 @@ namespace WinkNaturals.Models.Shopping
         }
         public IEnumerable<AutoOrder> GetCustomerAutoOrders(int customerid, int? autoOrderID = null, bool includePaymentMethods = true)
         {
-                var autoOrders = new List<AutoOrder>();
-                var detailItemCodes = new List<string>();
+            var autoOrders = new List<AutoOrder>();
+            var detailItemCodes = new List<string>();
 
-                var request = new GetAutoOrdersRequest
-                {
-                    CustomerID = customerid,
-                    AutoOrderStatus = AutoOrderStatusType.Active
-                };
+            var request = new GetAutoOrdersRequest
+            {
+                CustomerID = customerid,
+                AutoOrderStatus = AutoOrderStatusType.Active
+            };
 
-                if (autoOrderID != null)
-                {
-                    request.AutoOrderID = (int)autoOrderID;
-                }
+            if (autoOrderID != null)
+            {
+                request.AutoOrderID = (int)autoOrderID;
+            }
 
-                var aoResponse = _exigoApiContext.GetContext().GetAutoOrdersAsync(request);//WebService().GetAutoOrders(request);
+            var aoResponse = _exigoApiContext.GetContext().GetAutoOrdersAsync(request);//WebService().GetAutoOrders(request);
 
-                if (aoResponse.Result.AutoOrders != null) return autoOrders;
+            if (aoResponse.Result.AutoOrders != null) return autoOrders;
 
-                foreach (var aor in aoResponse.Result.AutoOrders)
-                {
-                    autoOrders.Add((AutoOrder)aor);
-                }
+            foreach (var aor in aoResponse.Result.AutoOrders)
+            {
+                autoOrders.Add((AutoOrder)aor);
+            }
 
-                // was getting all item  .Where(x => x.ParentItemCode == null)  maybe this is not needed?
-                detailItemCodes = autoOrders.SelectMany(a => a.Details.Select(d => d.ItemCode)).Distinct().ToList();
+            // was getting all item  .Where(x => x.ParentItemCode == null)  maybe this is not needed?
+            detailItemCodes = autoOrders.SelectMany(a => a.Details.Select(d => d.ItemCode)).Distinct().ToList();
 
 
-                var autoOrderIds = autoOrders.Select(a => a.AutoOrderID).ToList();
-                var createdDateNodes = new List<AutoOrderCreatedDate>();
-                var aoDetailInfo = new List<AutoOrderDetailInfo>();
+            var autoOrderIds = autoOrders.Select(a => a.AutoOrderID).ToList();
+            var createdDateNodes = new List<AutoOrderCreatedDate>();
+            var aoDetailInfo = new List<AutoOrderDetailInfo>();
 
-                using (var context = WinkNatural.Web.Common.Utils.DbConnection.Sql())
-                {
-                    var nodeResults = context.QueryMultiple(@"
+            using (var context = WinkNatural.Web.Common.Utils.DbConnection.Sql())
+            {
+                var nodeResults = context.QueryMultiple(@"
                     SELECT
                         AutoOrderID,
                         CreatedDate
@@ -79,52 +77,52 @@ namespace WinkNaturals.Models.Shopping
                     FROM Items
                     WHERE ItemCode in @itemcodes
                     ",
-                        new
-                        {
-                            ids = autoOrderIds,
-                            itemcodes = detailItemCodes
-                        });
-
-                    createdDateNodes = nodeResults.Read<AutoOrderCreatedDate>().ToList();
-                    aoDetailInfo = nodeResults.Read<AutoOrderDetailInfo>().ToList();
-                }
-
-                foreach (var ao in autoOrders)
-                {
-                    ao.CreatedDate = createdDateNodes.Where(n => n.AutoOrderID == ao.AutoOrderID).Select(n => n.CreatedDate).FirstOrDefault();
-
-                    foreach (var detail in ao.Details)
+                    new
                     {
-                        var detailInfo = aoDetailInfo.Where(i => i.ItemCode == detail.ItemCode).FirstOrDefault();
-                        detail.ImageUrl = GlobalUtilities.GetProductImagePath(detailInfo.ImageUrl);
-                        detail.IsVirtual = detailInfo.IsVirtual;
-                    }
-                }
-
-                if (includePaymentMethods)
-                {
-                    // Add payment methods
-                    var paymentMethods = GetCustomerPaymentMethods(new GetCustomerPaymentMethodsRequest
-                    {
-                        CustomerID = customerid
+                        ids = autoOrderIds,
+                        itemcodes = detailItemCodes
                     });
 
-                    foreach (var autoOrder in autoOrders)
-                    {
-                        IPaymentMethod paymentMethod;
-                        switch (autoOrder.AutoOrderPaymentTypeID)
-                        {
-                            case 1: paymentMethod = paymentMethods.Where(c => c is CreditCard && ((CreditCard)c).Type == CreditCardType.Primary).FirstOrDefault(); break;
-                            case 2: paymentMethod = paymentMethods.Where(c => c is CreditCard && ((CreditCard)c).Type == CreditCardType.Secondary).FirstOrDefault(); break;
-                            case 3: paymentMethod = paymentMethods.Where(c => c is BankAccount && ((BankAccount)c).Type == BankAccountType.Primary).FirstOrDefault(); break;
-                            default: paymentMethod = null; break;
-                        }
-                        autoOrder.PaymentMethod = paymentMethod;
-                    }
-                }
-
-                return autoOrders;
+                createdDateNodes = nodeResults.Read<AutoOrderCreatedDate>().ToList();
+                aoDetailInfo = nodeResults.Read<AutoOrderDetailInfo>().ToList();
             }
+
+            foreach (var ao in autoOrders)
+            {
+                ao.CreatedDate = createdDateNodes.Where(n => n.AutoOrderID == ao.AutoOrderID).Select(n => n.CreatedDate).FirstOrDefault();
+
+                foreach (var detail in ao.Details)
+                {
+                    var detailInfo = aoDetailInfo.Where(i => i.ItemCode == detail.ItemCode).FirstOrDefault();
+                    detail.ImageUrl = GlobalUtilities.GetProductImagePath(detailInfo.ImageUrl);
+                    detail.IsVirtual = detailInfo.IsVirtual;
+                }
+            }
+
+            if (includePaymentMethods)
+            {
+                // Add payment methods
+                var paymentMethods = GetCustomerPaymentMethods(new GetCustomerPaymentMethodsRequest
+                {
+                    CustomerID = customerid
+                });
+
+                foreach (var autoOrder in autoOrders)
+                {
+                    IPaymentMethod paymentMethod;
+                    switch (autoOrder.AutoOrderPaymentTypeID)
+                    {
+                        case 1: paymentMethod = paymentMethods.Where(c => c is CreditCard && ((CreditCard)c).Type == CreditCardType.Primary).FirstOrDefault(); break;
+                        case 2: paymentMethod = paymentMethods.Where(c => c is CreditCard && ((CreditCard)c).Type == CreditCardType.Secondary).FirstOrDefault(); break;
+                        case 3: paymentMethod = paymentMethods.Where(c => c is BankAccount && ((BankAccount)c).Type == BankAccountType.Primary).FirstOrDefault(); break;
+                        default: paymentMethod = null; break;
+                    }
+                    autoOrder.PaymentMethod = paymentMethod;
+                }
+            }
+
+            return autoOrders;
+        }
         public IEnumerable<IPaymentMethod> GetCustomerPaymentMethods(GetCustomerPaymentMethodsRequest request, IEnumerable<AutoOrder> autoOrders = null)
         {
             var methods = new List<IPaymentMethod>();
@@ -222,5 +220,5 @@ namespace WinkNaturals.Models.Shopping
             return methods.AsEnumerable();
         }
     }
-    }
+}
 

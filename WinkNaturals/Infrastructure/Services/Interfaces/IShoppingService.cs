@@ -1,11 +1,8 @@
 ﻿using Exigo.Api.Client;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Infrastructure.Services.ExigoService;
-using WinkNaturals.Models;
-using WinkNaturals.Models.Shopping.Orders;
 
 namespace WinkNatural.Web.Services.Interfaces
 {
@@ -23,7 +20,7 @@ namespace WinkNatural.Web.Services.Interfaces
 
         ShopProductsResponse AddToCart(ShopProductsResponse shopProducts);
         byte[] GetProductImage(string imageName);
-       Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest,int customerId);
+        Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId);
         Task<CalculateOrderResponse> CalculateOrder(CalculateOrderRequest calculateOrder);
         Task<CreateOrderResponse> CreateOrder(CreateOrderRequest createOrderRequest);
         Task<CreateOrderImportResponse> CreateOrderImport(CreateOrderImportRequest createOrderImportRequest);
@@ -50,7 +47,7 @@ namespace WinkNatural.Web.Services.Interfaces
         // static IEnumerable<ShopProductsResponse> GetItems(GetItemListRequest request, bool includeItemDescriptions = true);
 
         ShopProductsResponse GetSpecialItem();
-        PromoCode GetPromoDetail(string promoCode,int customerId);
+        PromoCode GetPromoDetail(string promoCode, int customerId);
 
         //To Get customer detail for editing.
         Task<GetCustomersResponse> GetCustomerRealTime(int customerID);
@@ -70,6 +67,6 @@ namespace WinkNatural.Web.Services.Interfaces
         Task<AdjustInventoryResponse> AdjustInventory(AdjustInventoryRequest adjustInventoryRequest);
         Task<SetItemSubscriptionResponse> SetItemSubscription(SetItemSubscriptionRequest setItemSubscriptionRequest);
         Task<SetItemPointAccountResponse> SetItemPointAccount(SetItemPointAccountRequest setItemPointAccountRequest);
-       
+
     }
 }

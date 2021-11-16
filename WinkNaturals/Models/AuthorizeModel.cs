@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
-
-namespace WinkNaturals.Models
+﻿namespace WinkNaturals.Models
 {
     //public class AuthorizeModel
     //{
@@ -36,7 +30,7 @@ namespace WinkNaturals.Models
     //    public string expirationDate { get; set; }
     //    public decimal Price { get; set; }
 
-      
+
     //}
 
     //public class Profile

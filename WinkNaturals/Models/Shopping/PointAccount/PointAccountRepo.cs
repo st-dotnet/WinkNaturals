@@ -1,11 +1,8 @@
 ﻿using Dapper;
 using Exigo.Api.Client;
-using Microsoft.AspNetCore.Http;
-using Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder;
 using WinkNaturals.Infrastructure.Services.ExigoService.BankAccount;
@@ -142,7 +139,7 @@ namespace WinkNaturals.Models.Shopping.PointAccount
         public IEnumerable<IPaymentMethod> GetCustomerPaymentMethods(GetCustomerPaymentMethodsRequest request, IEnumerable<AutoOrder> autoOrders = null)
         {
             var methods = new List<IPaymentMethod>();
-          //  if (!HttpContext.Request.IsAuthenticated) return methods.AsEnumerable();
+            //  if (!HttpContext.Request.IsAuthenticated) return methods.AsEnumerable();
 
 
             // Get the customer's billing info

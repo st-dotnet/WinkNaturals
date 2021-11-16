@@ -1,8 +1,4 @@
 ﻿using Exigo.Api.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace WinkNatural.Web.Services.Interfaces
@@ -17,7 +13,7 @@ namespace WinkNatural.Web.Services.Interfaces
 
         Task<bool> SendEmailVerification(int customerId, string email);
 
-       
+
 
     }
 }

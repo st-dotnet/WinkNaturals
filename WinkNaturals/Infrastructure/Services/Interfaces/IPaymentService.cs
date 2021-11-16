@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Services;
-using WinkNaturals.Models;
 
 
 namespace WinkNatural.Web.Services.Interfaces

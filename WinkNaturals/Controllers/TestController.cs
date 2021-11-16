@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace WinkNaturals.Controllers
@@ -11,12 +9,12 @@ namespace WinkNaturals.Controllers
     [Route("[controller]")]
     public class TestController : ControllerBase
     {
-      
-            private readonly IDistributedCache _distributedCache;
-            public TestController(IDistributedCache distributedCache)
-            {
-                _distributedCache = distributedCache;
-            }
+
+        private readonly IDistributedCache _distributedCache;
+        public TestController(IDistributedCache distributedCache)
+        {
+            _distributedCache = distributedCache;
+        }
 
         [Route("add-cache-no-time-options")]
         [HttpGet]

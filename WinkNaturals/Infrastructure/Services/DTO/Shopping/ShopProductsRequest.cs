@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WinkNatural.Web.Common.Utils.Enum;
 using WinkNaturals.Models;
 
 namespace WinkNatural.Web.Services.DTO.Shopping
 {
-  public class ShopProductsRequest
+    public class ShopProductsRequest
     {
         public int ItemID { get; set; }
         public string ItemCode { get; set; }
@@ -136,6 +133,6 @@ namespace WinkNatural.Web.Services.DTO.Shopping
         public int selectDelivery { get; set; }
         public string subscriptionModel { get; set; }
         public int quantityModel { get; set; }
- 
+
     }
 }

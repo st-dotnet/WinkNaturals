@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO;
-using RestSharp;
 namespace WinkNatural.Web.Services.Services
 {
-   public class BankCardTransaction
+    public class BankCardTransaction
     {
         public void setType(BankCardTransactionEnum type)
         {
@@ -38,5 +33,5 @@ namespace WinkNatural.Web.Services.Services
         public int paymentId { get; set; }
     }
 
-   
+
 }

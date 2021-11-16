@@ -1,30 +1,26 @@
-﻿using System;
+﻿using AuthorizeNet.Api.Controllers;
+using AuthorizeNet.Api.Controllers.Bases;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
+using System;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO;
-using WinkNatural.Web.Services.Interfaces;
-using RestSharp;
 using WinkNatural.Web.Services.DTO.Shopping;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using System.Net.Http;
-using AutoMapper;
-using Newtonsoft.Json.Linq;
-using Microsoft.Extensions.Options;
+using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Setting;
-using AuthorizeNet.Api.Controllers.Bases;
-using AuthorizeNet.APICore;
-using AuthorizeNet.Api.Controllers;
-using AuthorizeNet.Api.Contracts.V1;
-using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 
 namespace WinkNatural.Web.Services.Services
 {
     public class PaymentService : IPaymentService
     {
-        private readonly IConfiguration _config; 
-        private readonly ICustomerService _customerService; 
+        private readonly IConfiguration _config;
+        private readonly ICustomerService _customerService;
         private readonly IOptions<ConfigSettings> _configsetting;
         public PaymentService(IConfiguration config, ICustomerService customerService, IOptions<ConfigSettings> configsetting)
         {
@@ -102,14 +98,14 @@ namespace WinkNatural.Web.Services.Services
 
         public AddCardResponse PaymentUsingAuthorizeNet(AddPaymentModel addPaymentModel)
         {
-            var finalResponse = new AddCardResponse(); 
+            var finalResponse = new AddCardResponse();
             ApiOperationBase<AuthorizeNet.Api.Contracts.V1.ANetApiRequest, AuthorizeNet.Api.Contracts.V1.ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.SANDBOX; // define the merchant information (authentication / transaction id)
             ApiOperationBase<AuthorizeNet.Api.Contracts.V1.ANetApiRequest, AuthorizeNet.Api.Contracts.V1.ANetApiResponse>.MerchantAuthentication = new AuthorizeNet.Api.Contracts.V1.merchantAuthenticationType()
             {
-                name =  _configsetting.Value.AppSettings.APIKey,
+                name = _configsetting.Value.AppSettings.APIKey,
                 ItemElementName = AuthorizeNet.Api.Contracts.V1.ItemChoiceType.transactionKey,
                 Item = _configsetting.Value.AppSettings.TransactionKey,
-            }; 
+            };
             var creditCard = new AuthorizeNet.Api.Contracts.V1.creditCardType
             {
                 cardNumber = addPaymentModel.CardNumber,
@@ -128,11 +124,11 @@ namespace WinkNatural.Web.Services.Services
                 amount = addPaymentModel.Price,
                 payment = paymentType,
                 billTo = billingAddress
-            }; 
+            };
             var request = new AuthorizeNet.Api.Contracts.V1.createTransactionRequest { transactionRequest = transactionRequest }; // instantiate the controller that will call the service
             var controller = new createTransactionController(request);
             controller.Execute(); // get the response from the service (errors contained if any)
-            var response =  controller.GetApiResponse(); // validate response
+            var response = controller.GetApiResponse(); // validate response
             if (response != null)
             {
                 if (response.messages.resultCode == AuthorizeNet.Api.Contracts.V1.messageTypeEnum.Ok)
@@ -143,7 +139,7 @@ namespace WinkNatural.Web.Services.Services
                         finalResponse.AuthCode = response.transactionResponse.authCode;
                     }
                     else
-                    { 
+                    {
                         if (response.transactionResponse.errors != null)
                         {
                             finalResponse.TransId = response.transactionResponse.errors[0].errorCode;
@@ -152,7 +148,7 @@ namespace WinkNatural.Web.Services.Services
                     }
                 }
                 else
-                { 
+                {
                     if (response.transactionResponse != null && response.transactionResponse.errors != null)
                     {
                         finalResponse.TransId = response.transactionResponse.errors[0].errorCode;
@@ -167,7 +163,7 @@ namespace WinkNatural.Web.Services.Services
             }
             else
             {
-                return new AddCardResponse { Message = "Some error occurred during the transaction" }; 
+                return new AddCardResponse { Message = "Some error occurred during the transaction" };
             }
             return finalResponse;
         }
@@ -189,7 +185,7 @@ namespace WinkNatural.Web.Services.Services
             var body = @"{" + "\n" + @" ""Name"":#" + getPaymentProPayModel.FirstName + "#" + @"}";
             body = body.Replace('#', '"');
             request.AddParameter("application/json", body, ParameterType.RequestBody);
-            IRestResponse response = client.Execute(request); 
+            IRestResponse response = client.Execute(request);
             var data = (JObject)JsonConvert.DeserializeObject(response.Content);
             string payerId = data["ExternalAccountID"].Value<string>();
 

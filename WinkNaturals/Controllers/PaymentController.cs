@@ -1,17 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.Interfaces;
-using System.Net.Http;
-using WinkNaturals.Models;
-using Newtonsoft.Json;
-using static WinkNaturals.Models.GetPaymentModel;
-using WinkNatural.Web.Services.Services;
-using Microsoft.Extensions.Configuration;
 using WinkNaturals.Setting;
-using Microsoft.Extensions.Options;
 
 namespace WinkNaturals.Controllers
 {

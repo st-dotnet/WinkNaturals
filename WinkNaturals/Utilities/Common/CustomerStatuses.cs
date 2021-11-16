@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WinkNaturals.Utilities.Common
+﻿namespace WinkNaturals.Utilities.Common
 {
-    public  class CustomerStatuses
+    public class CustomerStatuses
     {
         /// <summary>
         ///	Customer Status 0

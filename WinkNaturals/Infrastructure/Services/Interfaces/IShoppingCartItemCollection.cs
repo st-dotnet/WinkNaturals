@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WinkNatural.Web.Common.Utils.Enum;
-using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Models;
 using WinkNaturals.Models.Shopping.Interfaces;
 

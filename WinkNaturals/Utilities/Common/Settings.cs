@@ -1,14 +1,10 @@
-﻿using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web;
-using WinkNaturals.Setting;
-using System.Configuration;
 namespace WinkNaturals.Utilities.Common
 {
     public static class Settings
@@ -83,7 +79,7 @@ namespace WinkNaturals.Utilities.Common
                 public static string IV = "kjJ6F6sf84vfV432"; // Must be 16 characters long
             }
         }
-       
+
         public static string Encrypt(object value)
         {
             return Encrypt(value, Settings.EncryptionKeys.General);
@@ -125,6 +121,6 @@ namespace WinkNaturals.Utilities.Common
             {"/", "-"},
             {"=", "!"}
         };
-        
+
     }
 }

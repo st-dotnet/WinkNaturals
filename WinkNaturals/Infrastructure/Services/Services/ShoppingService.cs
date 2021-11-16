@@ -14,15 +14,9 @@ using WinkNatural.Web.Services.Interfaces;
 using WinkNatural.Web.Services.Utilities;
 using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Models;
-using WinkNaturals.Models.BraintreeService;
-using WinkNaturals.Models.Shopping;
 using WinkNaturals.Models.Shopping.Interfaces;
-using WinkNaturals.Models.Shopping.Interfaces.PointAccount;
-using WinkNaturals.Models.Shopping.PointAccount;
-using WinkNaturals.Models.Shopping.PointAccount.Request;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
-using static WinkNaturals.Helpers.Constant;
 
 namespace WinkNatural.Web.Services.Services
 {
@@ -337,7 +331,7 @@ namespace WinkNatural.Web.Services.Services
                 {
                     CreateOrderRequest customerOrderRequest = new()
                     {
-                       
+
                         CustomerID = customerId,
                         OrderStatus = OrderStatusType.Incomplete,
                         OrderDate = DateTime.Now,
@@ -347,41 +341,41 @@ namespace WinkNatural.Web.Services.Services
                         PriceType = 1,
                         FirstName = transactionRequest.CreateOrderRequest.FirstName,
                         LastName = transactionRequest.CreateOrderRequest.LastName,
-                        Company=transactionRequest.CreateOrderRequest.Company,
+                        Company = transactionRequest.CreateOrderRequest.Company,
                         Address1 = transactionRequest.CreateOrderRequest.Address1,
                         Address2 = transactionRequest.CreateOrderRequest.Address2,
-                        Address3=transactionRequest.CreateOrderRequest.Address3,
+                        Address3 = transactionRequest.CreateOrderRequest.Address3,
                         City = transactionRequest.CreateOrderRequest.City,
                         Zip = transactionRequest.CreateOrderRequest.Zip,
                         Country = transactionRequest.CreateOrderRequest.Country,
                         Email = transactionRequest.CreateOrderRequest.Email,
                         Phone = transactionRequest.CreateOrderRequest.Phone,
-                        Notes=transactionRequest.CreateOrderRequest.Notes,
-                        Other11=transactionRequest.CreateOrderRequest.Other11,
-                        Other12=transactionRequest.CreateOrderRequest.Other12,
-                        Other13=transactionRequest.CreateOrderRequest.Other13,
-                        Other14=transactionRequest.CreateOrderRequest.Other14,
-                        Other15=transactionRequest.CreateOrderRequest.Other15,
-                        Other16=transactionRequest.CreateOrderRequest.Other16,
-                        Other17=transactionRequest.CreateOrderRequest.Other17,
-                        Other18=transactionRequest.CreateOrderRequest.Other18,
-                        Other19=transactionRequest.CreateOrderRequest.Other19,
-                        Other20=transactionRequest.CreateOrderRequest.Other20,
+                        Notes = transactionRequest.CreateOrderRequest.Notes,
+                        Other11 = transactionRequest.CreateOrderRequest.Other11,
+                        Other12 = transactionRequest.CreateOrderRequest.Other12,
+                        Other13 = transactionRequest.CreateOrderRequest.Other13,
+                        Other14 = transactionRequest.CreateOrderRequest.Other14,
+                        Other15 = transactionRequest.CreateOrderRequest.Other15,
+                        Other16 = transactionRequest.CreateOrderRequest.Other16,
+                        Other17 = transactionRequest.CreateOrderRequest.Other17,
+                        Other18 = transactionRequest.CreateOrderRequest.Other18,
+                        Other19 = transactionRequest.CreateOrderRequest.Other19,
+                        Other20 = transactionRequest.CreateOrderRequest.Other20,
                         OrderType = transactionRequest.CreateOrderRequest.OrderType,
-                        TransferVolumeToID=transactionRequest.CreateOrderRequest.TransferVolumeToID,
+                        TransferVolumeToID = transactionRequest.CreateOrderRequest.TransferVolumeToID,
 
-                        ReturnOrderID=transactionRequest.CreateOrderRequest.ReturnOrderID,
-                        
-                        OverwriteExistingOrder=transactionRequest.CreateOrderRequest.OverwriteExistingOrder,
-                        ExistingOrderID=transactionRequest.CreateOrderRequest.ExistingOrderID,
-                        PartyID=transactionRequest.CreateOrderRequest.PartyID,
+                        ReturnOrderID = transactionRequest.CreateOrderRequest.ReturnOrderID,
+
+                        OverwriteExistingOrder = transactionRequest.CreateOrderRequest.OverwriteExistingOrder,
+                        ExistingOrderID = transactionRequest.CreateOrderRequest.ExistingOrderID,
+                        PartyID = transactionRequest.CreateOrderRequest.PartyID,
 
                         Details = transactionRequest.CreateOrderRequest.Details.ToArray(),
-                        SuppressPackSlipPrice=transactionRequest.CreateOrderRequest.SuppressPackSlipPrice,
-                        TransferVolumeToKey=transactionRequest.CreateOrderRequest.TransferVolumeToKey,
-                        ReturnOrderKey=transactionRequest.CreateOrderRequest.ReturnOrderKey,
-                        ExistingOrderKey=transactionRequest.CreateOrderRequest.ExistingOrderKey,
-                        CustomerKey=transactionRequest.CreateOrderRequest.CustomerKey,
+                        SuppressPackSlipPrice = transactionRequest.CreateOrderRequest.SuppressPackSlipPrice,
+                        TransferVolumeToKey = transactionRequest.CreateOrderRequest.TransferVolumeToKey,
+                        ReturnOrderKey = transactionRequest.CreateOrderRequest.ReturnOrderKey,
+                        ExistingOrderKey = transactionRequest.CreateOrderRequest.ExistingOrderKey,
+                        CustomerKey = transactionRequest.CreateOrderRequest.CustomerKey,
                     };
 
                     request.TransactionRequests[1] = customerOrderRequest;
@@ -410,11 +404,11 @@ namespace WinkNatural.Web.Services.Services
                     CreateAutoOrderRequest createAutoOrderRequest = new()
                     {
 
-                        Frequency= FrequencyType.Weekly,
-                        StartDate= DateTime.Today,
-                        StopDate= DateTime.Today,
-                        SpecificDayInterval=transactionRequest.CreateAutoOrderRequest.SpecificDayInterval,
-                        CurrencyCode="usd",
+                        Frequency = FrequencyType.Weekly,
+                        StartDate = DateTime.Today,
+                        StopDate = DateTime.Today,
+                        SpecificDayInterval = transactionRequest.CreateAutoOrderRequest.SpecificDayInterval,
+                        CurrencyCode = "usd",
                         WarehouseID = 1,
                         ShipMethodID = transactionRequest.CreateAutoOrderRequest.ShipMethodID,
                         PriceType = 1,
@@ -435,7 +429,7 @@ namespace WinkNatural.Web.Services.Services
                         OverwriteExistingAutoOrder = true,
                         ExistingAutoOrderID = transactionRequest.CreateOrderRequest.ExistingOrderID,
                         Details = transactionRequest.CreateAutoOrderRequest.Details.ToArray(),
-                        CustomerKey= "1",
+                        CustomerKey = "1",
                     };
                     request.TransactionRequests[3] = createAutoOrderRequest;
                 }
@@ -443,14 +437,14 @@ namespace WinkNatural.Web.Services.Services
                 request.TransactionRequests[3] = new CreateAutoOrderRequest();
                 SetAccountCreditCardTokenRequest setAccountCreditCardTokenRequest = new()
                 {
-                         CustomerID = customerId, 
-                         CreditCardAccountType = AccountCreditCardType.Primary, 
-                         CreditCardToken = "5AE56HJ42OPZ5487",
-                         ExpirationMonth = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationMonth,  
-                         ExpirationYear = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationYear, 
-                         CreditCardType = transactionRequest.SetAccountCreditCardTokenRequest.CreditCardType,       
-                         UseMainAddress = true,      
-                         CustomerKey = "1",
+                    CustomerID = customerId,
+                    CreditCardAccountType = AccountCreditCardType.Primary,
+                    CreditCardToken = "5AE56HJ42OPZ5487",
+                    ExpirationMonth = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationMonth,
+                    ExpirationYear = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationYear,
+                    CreditCardType = transactionRequest.SetAccountCreditCardTokenRequest.CreditCardType,
+                    UseMainAddress = true,
+                    CustomerKey = "1",
                 };
                 request.TransactionRequests[4] = setAccountCreditCardTokenRequest;
 

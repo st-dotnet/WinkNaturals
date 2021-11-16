@@ -14,7 +14,7 @@ namespace WinkNaturals.Helpers
         {
             if (string.IsNullOrWhiteSpace(captchaResponse))
             {
-                return new ReCaptchaValidationResult{ Success = false };
+                return new ReCaptchaValidationResult { Success = false };
             }
 
             var client = new HttpClient
@@ -26,12 +26,12 @@ namespace WinkNaturals.Helpers
             {
                 new KeyValuePair<string, string>("secret", secretKey),
                 new KeyValuePair<string, string>("response", captchaResponse)
-            }; 
+            };
             var content = new FormUrlEncodedContent(values);
 
-            HttpResponseMessage response = client.PostAsync("/recaptcha/api/siteverify", content).Result; 
-            string verificationResponse = response.Content.ReadAsStringAsync().Result; 
-            var verificationResult = JsonConvert.DeserializeObject<ReCaptchaValidationResult>(verificationResponse); 
+            HttpResponseMessage response = client.PostAsync("/recaptcha/api/siteverify", content).Result;
+            string verificationResponse = response.Content.ReadAsStringAsync().Result;
+            var verificationResult = JsonConvert.DeserializeObject<ReCaptchaValidationResult>(verificationResponse);
             return verificationResult;
         }
     }

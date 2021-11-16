@@ -2,11 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;

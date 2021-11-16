@@ -1,8 +1,5 @@
 ﻿using Exigo.Api.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WinkNaturals.Utilities.Common;
 
 namespace WinkNaturals.Utilities.Shipping
@@ -56,6 +53,6 @@ namespace WinkNaturals.Utilities.Shipping
                 return OrderStatusType.Canceled;
             }
         }
-       
+
     }
 }

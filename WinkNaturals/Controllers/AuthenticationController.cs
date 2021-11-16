@@ -13,7 +13,6 @@ using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
-using static WinkNatural.Web.Services.Services.AuthenticateService;
 
 namespace WinkNatural.Web.WinkNaturals.Controllers
 {
@@ -31,7 +30,7 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
         private readonly ICustomerService _customerService;
 
         public AuthenticationController(IAuthenticateService authenticate,
-            IMapper mapper, IHttpContextAccessor httpContextAccessor, 
+            IMapper mapper, IHttpContextAccessor httpContextAccessor,
             IOptions<ConfigSettings> configSettings,
             IExigoApiContext exigoApiContext, IGetCurrentMarket getCurrentMarket, ICustomerService customerService)
         {
@@ -43,7 +42,7 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
             _getCurrentMarket = getCurrentMarket;
             _customerService = customerService;
         }
-      
+
         #region Customer
 
         /// <summary>
@@ -56,8 +55,8 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
         {
             try
             {
-                var cookieValueFromContext = _httpContextAccessor.HttpContext.Request.Cookies[_configSettings.Value.Globalization.CookieKey]; 
-                var CountryCode = "US"; 
+                var cookieValueFromContext = _httpContextAccessor.HttpContext.Request.Cookies[_configSettings.Value.Globalization.CookieKey];
+                var CountryCode = "US";
                 var configuration = _getCurrentMarket.curretMarket(CountryCode).GetConfiguration().Orders;
 
                 // // Create the request
