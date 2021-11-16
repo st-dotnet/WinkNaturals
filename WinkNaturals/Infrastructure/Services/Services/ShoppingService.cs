@@ -25,14 +25,15 @@ namespace WinkNatural.Web.Services.Services
         // private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
         private readonly IExigoApiContext _exigoApiContext;
         private IMemoryCache _cache;
-
+        private readonly IShoppingService _shoppingService;
         private readonly IOptions<ConfigSettings> _config;
         private readonly ICustomerAutoOreder _customerAuto;
-        public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext, ICustomerAutoOreder customerAuto)
+        public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext, ICustomerAutoOreder customerAuto, IShoppingService shoppingService)
         {
             _config = config;
             _exigoApiContext = exigoApiContext;
             _customerAuto = customerAuto;
+            _shoppingService = shoppingService;
         }
 
         #region constructor
@@ -361,7 +362,7 @@ namespace WinkNatural.Web.Services.Services
                         Other18 = transactionRequest.CreateOrderRequest.Other18,
                         Other19 = transactionRequest.CreateOrderRequest.Other19,
                         Other20 = transactionRequest.CreateOrderRequest.Other20,
-                        OrderType = transactionRequest.CreateOrderRequest.OrderType,
+                        OrderType = OrderType.Default,
                         TransferVolumeToID = transactionRequest.CreateOrderRequest.TransferVolumeToID,
 
                         ReturnOrderID = transactionRequest.CreateOrderRequest.ReturnOrderID,
@@ -382,6 +383,7 @@ namespace WinkNatural.Web.Services.Services
 
                     // todo
                     // coupon code is not implement here
+                
                 }
                 ChargeCreditCardTokenRequest chargeCreditCardTokenRequest = new()
                 {
@@ -394,46 +396,46 @@ namespace WinkNatural.Web.Services.Services
                     ExpirationMonth = transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth,
                     ExpirationYear = transactionRequest.ChargeCreditCardTokenRequest.ExpirationYear,
                     OrderKey = "1",
+                  
                 };
                 request.TransactionRequests[2] = chargeCreditCardTokenRequest;
 
                 if (hasAutoOrder)
                 {
-
+                   
                     // Supply data for auto order record
-                    CreateAutoOrderRequest createAutoOrderRequest = new()
-                    {
+                    //CreateAutoOrderRequest createAutoOrderRequest = new()
+                    //{
 
-                        Frequency = FrequencyType.Weekly,
-                        StartDate = DateTime.Today,
-                        StopDate = DateTime.Today,
-                        SpecificDayInterval = transactionRequest.CreateAutoOrderRequest.SpecificDayInterval,
-                        CurrencyCode = "usd",
-                        WarehouseID = 1,
-                        ShipMethodID = transactionRequest.CreateAutoOrderRequest.ShipMethodID,
-                        PriceType = 1,
-                        PaymentType = AutoOrderPaymentType.PrimaryCreditCard,
-                        ProcessType = AutoOrderProcessType.AlwaysProcess,
-                        FirstName = transactionRequest.CreateAutoOrderRequest.FirstName,
-                        LastName = transactionRequest.CreateAutoOrderRequest.LastName,
-                        Company = transactionRequest.CreateAutoOrderRequest.Company,
-                        Address1 = transactionRequest.CreateAutoOrderRequest.Address1,
-                        Address2 = transactionRequest.CreateAutoOrderRequest.Address2,
-                        Address3 = transactionRequest.CreateAutoOrderRequest.Address3,
-                        City = transactionRequest.CreateAutoOrderRequest.City,
-                        Zip = transactionRequest.CreateAutoOrderRequest.Zip,
-                        Country = transactionRequest.CreateAutoOrderRequest.Country,
-                        Email = transactionRequest.CreateAutoOrderRequest.Email,
-                        Phone = transactionRequest.CreateAutoOrderRequest.Phone,
-                        Notes = transactionRequest.CreateOrderRequest.Notes,
-                        OverwriteExistingAutoOrder = true,
-                        ExistingAutoOrderID = transactionRequest.CreateOrderRequest.ExistingOrderID,
-                        Details = transactionRequest.CreateAutoOrderRequest.Details.ToArray(),
-                        CustomerKey = "1",
-                    };
-                    request.TransactionRequests[3] = createAutoOrderRequest;
+                    //    Frequency = FrequencyType.Weekly,
+                    //    StartDate = DateTime.Today,
+                    //    StopDate = DateTime.Today,
+                    //    SpecificDayInterval = transactionRequest.CreateAutoOrderRequest.SpecificDayInterval,
+                    //    CurrencyCode = "usd",
+                    //    WarehouseID = 1,
+                    //    ShipMethodID = transactionRequest.CreateAutoOrderRequest.ShipMethodID,
+                    //    PriceType = 1,
+                    //    PaymentType = AutoOrderPaymentType.PrimaryCreditCard,
+                    //    ProcessType = AutoOrderProcessType.AlwaysProcess,
+                    //    FirstName = transactionRequest.CreateAutoOrderRequest.FirstName,
+                    //    LastName = transactionRequest.CreateAutoOrderRequest.LastName,
+                    //    Company = transactionRequest.CreateAutoOrderRequest.Company,
+                    //    Address1 = transactionRequest.CreateAutoOrderRequest.Address1,
+                    //    Address2 = transactionRequest.CreateAutoOrderRequest.Address2,
+                    //    Address3 = transactionRequest.CreateAutoOrderRequest.Address3,
+                    //    City = transactionRequest.CreateAutoOrderRequest.City,
+                    //    Zip = transactionRequest.CreateAutoOrderRequest.Zip,
+                    //    Country = transactionRequest.CreateAutoOrderRequest.Country,
+                    //    Email = transactionRequest.CreateAutoOrderRequest.Email,
+                    //    Phone = transactionRequest.CreateAutoOrderRequest.Phone,
+                    //    Notes = transactionRequest.CreateOrderRequest.Notes,
+                    //    OverwriteExistingAutoOrder = true,
+                    //    ExistingAutoOrderID = transactionRequest.CreateOrderRequest.ExistingOrderID,
+                    //    Details = transactionRequest.CreateAutoOrderRequest.Details.ToArray(),
+                    //    CustomerKey = "1",
+                    //};
+                    //request.TransactionRequests[3] = createAutoOrderRequest;
                 }
-
                 request.TransactionRequests[3] = new CreateAutoOrderRequest();
                 SetAccountCreditCardTokenRequest setAccountCreditCardTokenRequest = new()
                 {

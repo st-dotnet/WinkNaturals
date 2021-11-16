@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.Interfaces;
+using WinkNaturals.Models.BraintreeService;
 using WinkNaturals.Setting;
 
 namespace WinkNaturals.Controllers
@@ -49,6 +50,17 @@ namespace WinkNaturals.Controllers
         public IActionResult CreatePaymentUsingAuthorizeNet(AddPaymentModel model)
         {
             return Ok(_paymentService.PaymentUsingAuthorizeNet(model));
+        }
+
+        [HttpGet("GetClientToken")]
+        public IActionResult GetClientToken()
+        {
+            var braintreeService = new BraintreeService(_config);
+            var paypalClientToken = braintreeService.GetClientToken();
+            return Ok(new
+            {
+                token = paypalClientToken
+            });
         }
 
     }
