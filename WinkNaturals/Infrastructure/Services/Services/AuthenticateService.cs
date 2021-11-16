@@ -82,11 +82,13 @@ namespace WinkNatural.Web.Services.Services
                 var token = GenerateJwtToken(result, customer.Customers[0].Email);
                 return new CustomerCreateResponse
                 {
+
                     CustomerId=customer.Customers[0].CustomerID,
                     Email = customer.Customers[0].Email,
                     LoginName = customer.Customers[0].LoginName,
                     Phone = customer.Customers[0].Phone,
-                    Token = token.ToString()
+                    Token = token,
+                    TypeOfCustomer=customer.Customers[0].CustomerType.ToString()
                 };
             }
             catch (Exception ex)
