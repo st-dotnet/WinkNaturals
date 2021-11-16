@@ -7,10 +7,11 @@ using WinkNaturals.Utilities.Common.Exception;
 
 namespace WinkNaturals.Models
 {
-    public class ShoppingCartItemCollection : List<ShoppingCartItem>, IShoppingCartItemCollection
+    public class ShoppingCartItemCollection : List<ShoppingCartItem>,  IShoppingCartItemCollection
     {
         public void Add(IShoppingCartItem item)
         {
+
             var newItem = new ShoppingCartItem(item);
 
             // Don't process items with no quantities
@@ -19,9 +20,9 @@ namespace WinkNaturals.Models
             // Get a list of all items that have the same item code and type.
             var preExistingItems = this.FindAll(i =>
                   i.ItemCode == newItem.ItemCode
-               && i.Type.Equals(newItem.Type)
-               && i.DynamicKitCategory == newItem.DynamicKitCategory
-               && i.ParentItemCode == newItem.ParentItemCode);
+            && i.Type.Equals(newItem.Type)
+              && i.DynamicKitCategory == newItem.DynamicKitCategory
+             && i.ParentItemCode == newItem.ParentItemCode);
 
             // If we returned any existing items that match the item code and type, we need to add to those existing items.
             if (preExistingItems.Count() > 0)
@@ -41,7 +42,6 @@ namespace WinkNaturals.Models
                 base.Add(newItem);
             }
         }
-
         public void Update(Guid id, decimal quantity)
         {
             var item = this.Where(c => c.ID == id).FirstOrDefault();

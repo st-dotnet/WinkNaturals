@@ -10,7 +10,8 @@ using Newtonsoft.Json;
 using static WinkNaturals.Models.GetPaymentModel;
 using WinkNatural.Web.Services.Services;
 using Microsoft.Extensions.Configuration;
-
+using WinkNaturals.Setting;
+using Microsoft.Extensions.Options;
 
 namespace WinkNaturals.Controllers
 {
@@ -18,11 +19,11 @@ namespace WinkNaturals.Controllers
     [ApiController]
     public class PaymentController : BaseController
     {
-        private readonly IConfiguration _config;
+        private readonly IOptions<ConfigSettings> _config;
         private readonly IPaymentService _paymentService;
         private readonly ICustomerService _customerService;
 
-        public PaymentController(IConfiguration config,
+        public PaymentController(IOptions<ConfigSettings> config,
             IPaymentService paymentService,
             ICustomerService customerService)
         {

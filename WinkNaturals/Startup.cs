@@ -25,6 +25,8 @@ using WinkNaturals.Models.Shopping.PointAccount;
 using WinkNaturals.Models.Shopping.PointAccount.Interfaces;
 using WinkNaturals.Models.Shopping;
 using WinkNaturals.AuthantictionMiddleware;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace WinkNatural.Web.WinkNaturals
 {
@@ -43,6 +45,8 @@ namespace WinkNatural.Web.WinkNaturals
         {
             services.AddCors();
             services.AddMemoryCache();
+            services.AddHttpContextAccessor();
+            services.TryAddSingleton<Microsoft.AspNetCore.Mvc.Infrastructure.IActionContextAccessor, Microsoft.AspNetCore.Mvc.Infrastructure.ActionContextAccessor>();
             services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IHomeService, HomeService>();
@@ -66,7 +70,7 @@ namespace WinkNatural.Web.WinkNaturals
             services.AddScoped<ICustomerPointAccount, PointAccountRepo>();
             services.AddScoped<IAutoOrders, AutoOrders>();
             services.AddScoped<ICustomerAutoOreder, CustomerAutoOreder>();
-           
+          
             services.AddDistributedSqlServerCache(options =>
             {
                 options.ConnectionString =
@@ -152,13 +156,14 @@ namespace WinkNatural.Web.WinkNaturals
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WinkNaturals v1"));
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();

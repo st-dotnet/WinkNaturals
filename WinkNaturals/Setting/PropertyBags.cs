@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,37 +11,33 @@ using WinkNaturals.Setting.Interfaces;
 
 namespace WinkNaturals.Setting
 {
-    public class PropertyBags : IPropertyBags
+    public class PropertyBags
     {
         private static readonly int DbExpire = 1800000;
         private readonly IOptions<ConfigSettings> _config;
-        private readonly ISqlCacheService _distributedCache;
+        // private readonly ISqlCacheService _distributedCache;
+        private readonly IDistributedCache _distributedCache;
         private readonly ICache _cache;
         private static IHttpContextAccessor _httpContextAccessor;
 
-        public PropertyBags(IHttpContextAccessor httpContextAccessor, IOptions<ConfigSettings> config, ISqlCacheService distributedCache, ICache cache)
+        public PropertyBags(IHttpContextAccessor httpContextAccessor, IOptions<ConfigSettings> config, IDistributedCache distributedCache, ICache cache)
         {
             _httpContextAccessor = httpContextAccessor;
             _config = config;
             _distributedCache = distributedCache;
             _cache = cache;
         }
-        public void SetCacheSessionData(string sessionID, string data)
-        {
-            _cache.Set(sessionID, TimeSpan.FromMilliseconds(DbExpire), data);
-        }
+        public string Version { get; set; }
+        public string Description { get; set; }
+        public string SessionID { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public int Expires { get; set; }
 
-        public string GetCacheSessionData(string sessionID)
-        {
-            var sessionData = _cache.Get<string>(sessionID);
-            return sessionData;
-        }
-        public T GetCacheData<T>(string description) where T : IPropertyBag2
+        public T Get<T>(string description) where T : IPropertyBag
         {
             // Attempt to load the bag from the cookie
-            // var cookie = description;
-            //var cookie= _httpContextAccessor.HttpContext.Session[;
-            string cookie = _httpContextAccessor.HttpContext.Request.Cookies[description];
+
+            var cookie = HttpContext.Current.Request.Cookies[description];
             if (cookie == null)
             {
                 return Create<T>(description);
@@ -50,7 +45,7 @@ namespace WinkNaturals.Setting
 
             string sessionData = "";
 
-            sessionData = GetCacheSessionData(cookie);
+            sessionData = GetSessionData(cookie.Value);
 
             if (string.IsNullOrEmpty(sessionData))
             {
@@ -76,65 +71,81 @@ namespace WinkNaturals.Setting
                 return Create<T>(description);
             }
         }
-        public T Create<T>(string description) where T : IPropertyBag2
-        {
-            dynamic bag = Activator.CreateInstance(typeof(T));
-            bag.SessionID = HttpUtility.UrlEncode(Guid.NewGuid().ToString());
-          //  bag.SessionID = _httpContextAccessor.HttpContext.Request.Cookies.(Guid.NewGuid().ToString());
-          // bag.SessionID= Microsoft.AspNetCore.Http.Extensions.UriHelper.Encode(Guid.NewGuid());
-          //bag.SessionID = HttpContext.Current.Server.UrlEncode(Guid.NewGuid().ToString());
-            bag.Description = description;
-            bag.CreatedDate = DateTime.Now;
-            bag = bag.OnBeforeUpdate(bag);
 
-            UpdateCacheData<T>(bag);
+        //public string GetCacheSessionData(string sessionID)
+        //{
+        //    var sessionData = _cache.Get<string>(sessionID);
+        //    // string sessionData = _distributedCache.GetAsync(sessionID);
+        //    return sessionData;
+        //}
+        //public void SetCacheSessionData(string sessionID, string data)
+        //{
+        //    // _distributedCache.SetStringAsync(sessionID, data);
+        //    _cache.Set(sessionID, TimeSpan.FromMilliseconds(DbExpire), data);
+        //}
 
-            return bag;
-        }
+        //public T GetCacheData<T>(string description) where T : IPropertyBag
+        //{
+        //    string cookie = _httpContextAccessor.HttpContext.Request.Cookies[description];
+        //    if (cookie == null)
+        //    {
+        //        return Create<T>(description);
+        //    }
+        //    string sessionData = "";
+        //    sessionData = GetCacheSessionData(cookie);
 
-        public T UpdateCacheData<T>(T propertyBag) where T : IPropertyBag2
-        {
-            // Set the session
-            SetCacheSessionData(propertyBag.SessionID, Serialize<T>(propertyBag));
+        //    if (string.IsNullOrEmpty(sessionData))
+        //    {
+        //        return Create<T>(description);
+        //    }
 
-            // Set the cookie
+        //    try
+        //    {
+        //        // Deserialize the session data and get our bag.
+        //        dynamic bag = Deserialize<T>(sessionData);
 
-            //var value = propertyBag.Description + propertyBag.SessionID;
+        //        // If the customer ID in the bag doesn't match the current customer ID, stop here.
+        //        if (!bag.IsValid())
+        //        {
+        //            return Create<T>(description);
+        //        }
 
-            //var cookie = new HttpCookie(propertyBag.Description, propertyBag.SessionID);
-            //if (propertyBag.Expires > 0)
-            //{
-            //    cookie.Expires = DateTime.Now.AddMinutes(propertyBag.Expires);
-            //}
-            //_httpContextAccessor.HttpContext.Response.Cookies.Append(cookie);
+        //        // If we got here, we have a valid property bag. Populate it into the current object.
+        //        return bag;
+        //    }
+        //    catch
+        //    {
+        //        return Create<T>(description);
+        //    }
+        //    public T Create<T>(string description) where T : IPropertyBag
+        //    {
+        //        dynamic bag = Activator.CreateInstance(typeof(T));
 
+        //        bag.SessionID = HttpUtility.UrlEncode(Guid.NewGuid().ToString());
+        //        bag.Description = description;
+        //        bag.CreatedDate = DateTime.Now;
+        //        bag = bag.OnBeforeUpdate(bag);
 
-            return propertyBag;
-        }
-        public T Delete<T>(T propertyBag) where T : IPropertyBag2
-        {
-            var bag = Create<T>(propertyBag.Description);
-            return bag;
-        }
-        public string Serialize<T>(T propertyBag) where T : IPropertyBag2
-        {
-            var settings = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Objects
-            };
+        //        UpdateCacheData<T>(bag);
 
-            return JsonConvert.SerializeObject(propertyBag, settings);
-        }
-        public  T Deserialize<T>(string sessionData) where T : IPropertyBag2
-        {
-            var settings = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Objects
-            };
+        //        return bag;
+        //    }
+        //    public T UpdateCacheData<T>(T propertyBag) where T : IPropertyBag
+        //    {
 
-            return (T)JsonConvert.DeserializeObject(sessionData, typeof(T), settings);
-        }
+        //        // Set the session
+        //        SetCacheSessionData(propertyBag.SessionID, Serialize<T>(propertyBag));
 
-        
+        //        // Set the cookie
+        //        //var cookie = new HttpCookie(propertyBag.Description, propertyBag.SessionID);
+        //        //if (propertyBag.Expires > 0)
+        //        //{
+        //        //    cookie.Expires = DateTime.Now.AddMinutes(propertyBag.Expires);
+        //        //}
+        //        //_httpContextAccessor.HttpContext.Response.Cookies.Append(cookie);
+
+        //        return propertyBag;
+        //    }
     }
 }
+
