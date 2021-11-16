@@ -469,6 +469,10 @@ namespace WinkNatural.Web.Services.Services
             {
                 //if (request.Items.Count() == 0 || request.Address == null || string.IsNullOrEmpty(request.Address.Country) || string.IsNullOrEmpty(request.Address.State)) return new CalculateOrderResponse();
                 //if (request.ShipMethodID == 0) request.ShipMethodID = request.Configuration.DefaultShipMethodID;
+                //if (request.Items.Count() == 0 || request.Address == null || string.IsNullOrEmpty(request.Address.Country) || string.IsNullOrEmpty(request.Address.State)) return new
+                //Response();
+              //if (request.ShipMethodID == 0) request.ShipMethodID = request.Configuration.DefaultShipMethodID;
+
                 //if (request.OrderTypeID == 0) request.OrderTypeID = OrderTypes.ShoppingCart;
                 //CalculateOrderRequest calculateOrder = new CalculateOrderRequest();
                 var req = new CalculateOrderRequest
@@ -2568,6 +2572,9 @@ namespace WinkNatural.Web.Services.Services
             return res;
         }
 
-
+        public object CalculateOrder(OrderCalculationRequest orderCalcRequest)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -84,6 +84,12 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder
                 else return FrequencyTypeDescription + " Auto-ship";
             }
         }
+
+        public AutoOrderPaymentType GetAutoOrderPaymentType(CreditCard.CreditCard card)
+        {
+            throw new NotImplementedException();
+        }
+
         public string FrequencyTypeDescription
         {
             get

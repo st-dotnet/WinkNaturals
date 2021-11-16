@@ -81,7 +81,8 @@ namespace WinkNatural.Web.Services.Services
                     Email = customer.Customers[0].Email,
                     LoginName = customer.Customers[0].LoginName,
                     Phone = customer.Customers[0].Phone,
-                    Token = token.ToString()
+                    Token = token,
+                    TypeOfCustomer=customer.Customers[0].CustomerType.ToString()
                 };
             }
             catch (Exception ex)

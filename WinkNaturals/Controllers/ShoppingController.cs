@@ -20,6 +20,11 @@ using WinkNaturals.Setting.Interfaces;
 using WinkNaturals.Utilities.Common;
 using WinkNaturals.Utilities.WebDrip;
 using WinkNaturals.WebDrip;
+using System.Threading.Tasks;
+using WinkNaturals.Helpers;
+using WinkNaturals.Infrastructure.Services.ExigoService;
+using WinkNaturals.Models.Shopping.Orders;
+using IPropertyBags = WinkNaturals.Setting.Interfaces.IPropertyBags;
 
 namespace WinkNaturals.Controllers
 {
@@ -43,8 +48,8 @@ namespace WinkNaturals.Controllers
 
         public IOrderConfiguration OrderConfiguration { get; set; }
         public IOrderConfiguration AutoOrderConfiguration { get; set; }
-        public ShoppingController(IConfiguration configuration, IShoppingService shoppingService, IMapper mapper, IOptions<ConfigSettings> config, ISqlCacheService sqlCacheService, IPropertyBags propertyBagService, IPropertyBagItem propertyBagItem, IOrderConfiguration orderConfiguration,
-            IGetCurrentMarket getCurrentMarket, ICustomerPointAccount customerPointAccount, IAutoOrders autoOrders, IDistributedCache distributedCache, IExigoApiContext exigoApiContext)
+        public ShoppingController(IShoppingService shoppingService, IMapper mapper, IOptions<ConfigSettings> config, ISqlCacheService sqlCacheService, IPropertyBags propertyBagService, IPropertyBagItem propertyBagItem, IOrderConfiguration orderConfiguration, 
+            IGetCurrentMarket getCurrentMarket, IConfiguration configuration, ICustomerPointAccount customerPointAccount,IAutoOrders autoOrders, IDistributedCache distributedCache, IExigoApiContext exigoApiContext)
         {
             _shoppingService = shoppingService;
             _mapper = mapper;
@@ -59,15 +64,17 @@ namespace WinkNaturals.Controllers
             _exigoApiContext = exigoApiContext;
             _distributedCache = distributedCache;
             _configuration = configuration;
+
         }
 
+        
         public ShoppingCartItemsPropertyBag ShoppingCart
         {
             get
             {
                 if (_shoppingCart == null)
                 {
-                    _shoppingCart = _propertyBagService.GetCacheData<ShoppingCartItemsPropertyBag>(_config.Value.Globalization.CookieKey + "ReplicatedSiteShopping" + "Cart");
+              //      _shoppingCart = _propertyBagService.GetCacheData<ShoppingCartItemsPropertyBag>(_config.Value.Globalization.CookieKey + "ReplicatedSiteShopping" + "Cart");
                 }
                 return _shoppingCart;
             }
@@ -79,13 +86,14 @@ namespace WinkNaturals.Controllers
             {
                 if (_propertyBag == null)
                 {
-                    _propertyBag = _propertyBagService.GetCacheData<ShoppingCartCheckoutPropertyBag>(_config.Value.Globalization.CookieKey + "ReplicatedSiteShopping" + "PropertyBag");
+                 //   _propertyBag = _propertyBagService.GetCacheData<ShoppingCartCheckoutPropertyBag>(_config.Value.Globalization.CookieKey + "ReplicatedSiteShopping" + "PropertyBag");
                 }
                 return _propertyBag;
             }
         }
         private ShoppingCartCheckoutPropertyBag _propertyBag;
         private ShoppingCartItemsPropertyBag _shoppingCart;
+
         public Exception PointPaymentError = new Exception(Resources.CommonResource.PointPaymentError);
         /// <summary>
         /// Get item category
@@ -1211,5 +1219,304 @@ namespace WinkNaturals.Controllers
         {
             return Ok(Identity);
         }
+
+       // [Route("thank-you")]
+        [HttpGet("thank-you")]
+        public IActionResult OrderComplete(int orderId = 0, decimal orderTotal = 0)
+        {
+           // _propertyBagService.Delete(ShoppingCart);
+          //  _propertyBagService.Delete(PropertyBag);
+            return Ok();
+        }
+
+        [HttpPost("AutoOrder")]
+        public ActionResult AutoOrder()
+        {
+            var model = Models.ShoppingViewModelFactory.Create<AutoOrderSettingsViewModel>(PropertyBag);
+            // Ensure we have a valid frequency type
+            if (!Autoorder.AvailableFrequencyTypes.Contains(PropertyBag.AutoOrderFrequencyType))
+            {
+                PropertyBag.AutoOrderFrequencyType = Autoorder.AvailableFrequencyTypes.FirstOrDefault();
+            }
+
+            // Ensure we have a valid start date based on the frequency
+            if (PropertyBag.AutoOrderStartDate == DateTime.MinValue.ToCST())
+            {
+                PropertyBag.AutoOrderStartDate = DateTime.Now.ToCST();
+            }
+
+            // Set our model
+            model.AutoOrderStartDate = PropertyBag.AutoOrderStartDate;
+            model.AutoOrderFrequencyType = PropertyBag.AutoOrderFrequencyType;
+            return Ok(model);
+        }
+
+        [HttpGet("Review")]
+        public  async  Task<IActionResult> Review()
+        {
+            var model = ShoppingViewModelFactory.Create<OrderReviewViewModel>(PropertyBag);
+            model.Coupon = PropertyBag.Coupon;
+
+            var languageID = Language.GetSelectedLanguageID();
+            var cartItems = new List<Item>();
+            // Get the cart items
+
+            var cartOrderItems = ShoppingCart.Items.Where(c => c.Type == ShoppingCartItemType.Order);
+            var hasOrder = cartOrderItems.Count() > 0;
+            var cartAutoOrderItems = ShoppingCart.Items.Where(c => c.Type == ShoppingCartItemType.AutoOrder);
+            var hasAutoOrder = cartAutoOrderItems.Count() > 0;
+
+            if (hasOrder)
+            {
+                cartItems = _propertyBagItem.GetItems(cartOrderItems, OrderConfiguration, languageID).ToList();
+            }
+
+            if (hasAutoOrder)
+            {
+                cartItems.AddRange(_propertyBagItem.GetItems(cartAutoOrderItems, OrderConfiguration,languageID).ToList());
+            }
+            model.Items = cartItems;
+            var specialItem = ShoppingCart.Items.FirstOrDefault(x => x.Field5 != null && x.Field5 != string.Empty);
+            if (specialItem != null && !string.IsNullOrEmpty(specialItem.Field5))
+            {
+                var itm = cartItems.FirstOrDefault(x => x.ID == specialItem.ID);
+                if (itm != null)
+                {
+                    itm.PriceEachOverride = Decimal.Parse(specialItem.Field5);
+                    itm.Price = Decimal.Parse(specialItem.Field5);
+                    itm.BusinessVolumeEachOverride = Decimal.Parse(specialItem.Field5);
+                    itm.CommissionableVolumeEachOverride = Decimal.Parse(specialItem.Field5);
+                    itm.TaxableEachOverride = Decimal.Parse(specialItem.Field5);
+                    itm.ShippingPriceEachOverride = itm.OtherCheck1 == true ? 0M : Decimal.Parse(specialItem.Field5);
+                }
+            }
+
+            // Calculate the order if applicable
+            var orderItems = cartItems.Where(c => c.Type == ShoppingCartItemType.Order).ToList();
+            if (orderItems.Count > 0)
+            {
+                #region Order Totals
+                var beginningShipMethodID = PropertyBag.ShipMethodID;
+                // If this is the first time coming to the page, and the property bag's ship method has not been set, then set it to the default for the configuration
+                if (PropertyBag.ShipMethodID == 0)
+                {
+                    PropertyBag.ShipMethodID = OrderConfiguration.DefaultShipMethodID;
+                    beginningShipMethodID = PropertyBag.ShipMethodID;
+                  //  _propertyBagService.UpdateCacheData(PropertyBag);
+                }
+                var request = new OrderCalculationRequest()
+                {
+                    Configuration = OrderConfiguration,
+                     Items = orderItems,
+                    Address = (IAddress)PropertyBag.ShippingAddress,
+                    ShipMethodID = PropertyBag.ShipMethodID,
+                    CustomerID = Identity.CustomerID,
+                    Other17 = PropertyBag.QuantityOfPointsToUse.ToString() // Points
+                };
+                if (PropertyBag.Coupon != null && String.IsNullOrEmpty(PropertyBag.Coupon.Code))
+                {
+                    request.Other16 = PropertyBag.Coupon.Code;
+                }
+                if (PropertyBag.ContainsSpecial)
+                {
+                    request.Other18 = "true";
+                }
+                model.OrderTotals = (OrderCalculationResponse)_shoppingService.CalculateOrder(request);
+
+                if (model.OrderTotals.Details.Any(d => d.ItemCode.ToUpper() == "COUPON"))
+                {
+                    var couponItem = model.OrderTotals.Details.FirstOrDefault(i => i.ItemCode.ToUpper() == "COUPON");
+
+                    model.Coupon.CouponCode = couponItem.ItemCode;
+                    model.Coupon.CouponQuantity = couponItem.Quantity;
+                    model.Coupon.CouponPriceEach = couponItem.PriceEach;
+                    model.Coupon.CouponItemDescription = couponItem.ItemDescription;
+                }
+
+                model.ShipMethods = (IEnumerable<WinkNatural.Web.Services.DTO.Shopping.CalculateOrder.IShipMethod>)model.OrderTotals.ShipMethods;
+                if (PropertyBag.ShippingAddress.State != "UT")
+                {
+                    model.ShipMethods = model.ShipMethods.Where(v => v.ShipMethodID != 9);
+                }
+
+                // Set the default ship method
+                if (model.ShipMethods.Count() > 0)
+                {
+                    if (model.ShipMethods.Any(c => c.ShipMethodID == PropertyBag.ShipMethodID))
+                    {
+                        // If the property bag ship method ID exists in the results from order calc, set the correct result as selected                
+                        model.ShipMethods.First(c => c.ShipMethodID == PropertyBag.ShipMethodID).Selected = true;
+                    }
+                    else
+                    {
+                        // If we don't have the ship method we're supposed to select, check the first one, save the selection and recalculate
+                        model.ShipMethods.First().Selected = true;
+
+                        // If for some reason the property bag is outdated and the ship method stored in it is not in the list, set the first result as selected and re-set the property bag's value
+                        PropertyBag.ShipMethodID = model.ShipMethods.FirstOrDefault().ShipMethodID;
+                      //  _propertyBagService.UpdateCacheData(PropertyBag);
+                    }
+                }
+
+                // If the original property bag value has changed from the beginning of the call, re-calculate the values
+                if (beginningShipMethodID != PropertyBag.ShipMethodID)
+                {
+                    request = new OrderCalculationRequest()
+                    {
+                        Configuration = OrderConfiguration,
+                        Items = orderItems,
+                        Address = PropertyBag.ShippingAddress,
+                        ShipMethodID = PropertyBag.ShipMethodID,
+                        ReturnShipMethods = false,
+                        CustomerID = Identity.CustomerID,
+                        Other17 = PropertyBag.QuantityOfPointsToUse.ToString() // Points
+                    };
+
+                    if (PropertyBag.Coupon != null && String.IsNullOrEmpty(PropertyBag.Coupon.Code))
+                    {
+                        request.Other16 = PropertyBag.Coupon.Code;
+                    }
+                    if (PropertyBag.ContainsSpecial)
+                    {
+                        request.Other18 = "true";
+                    }
+
+                    var newCalculationResult =  _shoppingService.CalculateOrder(request); 
+
+                    if (model.OrderTotals.Details.Any(d => d.ItemCode == "Coupon"))
+                    {
+                        var couponItem = model.OrderTotals.Details.FirstOrDefault(i => i.ItemCode == "Coupon");
+
+                        model.Coupon.CouponCode = couponItem.ItemCode;
+                        model.Coupon.CouponQuantity = couponItem.Quantity;
+                        model.Coupon.CouponPriceEach = couponItem.PriceEach;
+                        model.Coupon.CouponItemDescription = couponItem.ItemDescription;
+                    }
+
+                    model.OrderTotals = (OrderCalculationResponse)newCalculationResult;
+                }
+                #endregion
+            }
+
+            // Calculate the autoorder if applicable
+            var autoOrderItems = cartItems.Where(c => c.Type == ShoppingCartItemType.AutoOrder).ToList();
+
+            // Keep prices as they were when creating autoorder
+            foreach (var itm in autoOrderItems)
+            {
+                itm.PriceEachOverride = itm.Price;
+                itm.BusinessVolumeEachOverride = itm.Price;
+                itm.CommissionableVolumeEachOverride = itm.Price;
+                itm.TaxableEachOverride = itm.Price;
+                itm.ShippingPriceEachOverride = itm.OtherCheck1 == true ? 0 : itm.Price;
+            }
+
+            if (autoOrderItems.Count > 0)
+            {
+                #region Auto Order Totals
+
+                var defaultAutoOrderShipMethodID = 8; //Autoorder.DefaultAutoOrderShipMethodID;
+
+                model.AutoOrderTotals = (OrderCalculationResponse)_shoppingService.CalculateOrder(new OrderCalculationRequest
+                {
+                    Configuration = AutoOrderConfiguration,
+                    Items = autoOrderItems,
+                    Address = PropertyBag.ShippingAddress,
+                    ShipMethodID = defaultAutoOrderShipMethodID,
+                    ReturnShipMethods = true,
+                    OrderTypeID = OrderTypes.RecurringOrder
+                    // Other17 = PropertyBag.QuantityOfPointsToUse.ToString() // Points
+                });
+                model.AutoOrderShipMethods = (IEnumerable<WinkNatural.Web.Services.DTO.Shopping.CalculateOrder.IShipMethod>)model.AutoOrderTotals.ShipMethods;
+
+                // Set the default ship method
+                if (model.AutoOrderShipMethods.Count() > 0)
+                {
+                    if (model.AutoOrderShipMethods.Any(c => c.ShipMethodID == PropertyBag.AutoOrderShipMethodID))
+                    {
+                        // If the property bag ship method ID exists in the results from order calc, set the correct result as selected                
+                        model.AutoOrderShipMethods.First(c => c.ShipMethodID == PropertyBag.AutoOrderShipMethodID).Selected = true;
+                    }
+                    else
+                    {
+                        // If we don't have the ship method we're supposed to select, check the first one, save the selection and recalculate
+                        model.AutoOrderShipMethods.First().Selected = true;
+
+                        // If for some reason the property bag is outdated and the ship method stored in it is not in the list, set the first result as selected and re-set the property bag's value
+                        PropertyBag.AutoOrderShipMethodID = model.AutoOrderShipMethods.FirstOrDefault().ShipMethodID;
+                       // _propertyBagService.UpdateCacheData(PropertyBag);
+                    }
+                }
+
+                // If the original property bag value has changed from the beginning of the call, re-calculate the values
+                if (defaultAutoOrderShipMethodID != 0 && defaultAutoOrderShipMethodID != PropertyBag.AutoOrderShipMethodID)
+                {
+                    var newCalculationResult = _shoppingService.CalculateOrder(new OrderCalculationRequest
+                    {
+                        Configuration = AutoOrderConfiguration,
+                        Items = autoOrderItems,
+                        Address = PropertyBag.ShippingAddress,
+                        ShipMethodID = PropertyBag.AutoOrderShipMethodID,
+                        ReturnShipMethods = true,
+                        CustomerID = Identity.CustomerID,
+                        Other17 = PropertyBag.QuantityOfPointsToUse.ToString() // Points
+                    });
+
+                    model.AutoOrderTotals = (OrderCalculationResponse)newCalculationResult;
+                    model.AutoOrderShipMethods = (IEnumerable<WinkNatural.Web.Services.DTO.Shopping.CalculateOrder.IShipMethod>)newCalculationResult;
+                }
+
+                if (orderItems.Count == 0)
+                {
+                    model.ShipMethods = (IEnumerable<WinkNatural.Web.Services.DTO.Shopping.CalculateOrder.IShipMethod>)model.AutoOrderTotals.ShipMethods;
+
+                    if (PropertyBag.ShipMethodID != PropertyBag.AutoOrderShipMethodID)
+                    {
+                        PropertyBag.ShipMethodID = PropertyBag.AutoOrderShipMethodID;
+                      //  _propertyBagService.UpdateCacheData(PropertyBag);
+                    }
+                }
+                #endregion
+            }
+
+            if (PropertyBag.UsePointsAsPayment)
+            {
+                model.LoyaltyPointAccount = (CustomerPointAccount)_customerPointAccount.GetCustomerPointAccounts(Identity.CustomerID, 1);
+
+                if (model.LoyaltyPointAccount != null && model.LoyaltyPointAccount.Balance > 0)
+                {
+                    model.HasValidPointAccount = true;
+                    // Now we want to do a final check to ensure that the customer can actually has enough points, and if not we need to make sure they have previously entered a Payment Method. 
+                    // If the user has not entered a payment method and their point balance is not enough to cover the Total of the Order, we need to inform the user they must go back to the Payment page to add one.
+                    if (model.LoyaltyPointAccount.Balance < model.OrderTotals.Subtotal && PropertyBag.PaymentMethod == null)
+                    {
+                        //ViewBag.ErrorMessage = Resources.Common.PointPaymentError2;
+                    }
+                }
+                
+                decimal nonPointableSubTotal = 0;
+                foreach (var item in model.Items)
+                {
+                    if (item.OtherCheck2 || item.Field5 != "")
+                    {
+                        nonPointableSubTotal += item.Price * item.Quantity;
+                    }
+                }
+                var pointableTotal = model.OrderTotals.Subtotal - nonPointableSubTotal;
+                if (nonPointableSubTotal == model.OrderTotals.Subtotal)
+                {
+                    PropertyBag.QuantityOfPointsToUse = 0;
+                }
+                else if (PropertyBag.QuantityOfPointsToUse > pointableTotal / 2)
+                {
+                    PropertyBag.QuantityOfPointsToUse = pointableTotal / 2;
+                }
+                model.QuantityOfPointsToUse = PropertyBag.QuantityOfPointsToUse;
+            }
+
+            return Ok(model);
+
+        }
+
     }
 }

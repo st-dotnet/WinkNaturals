@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+
+using Exigo.Api.Client;
+using System.Collections.Generic;
+using System.Linq;
 using WinkNaturals.Models;
 
 namespace WinkNaturals.Setting
@@ -136,7 +139,21 @@ namespace WinkNaturals.Setting
         public string BaseImageURL { get; set; }
         public string ReplicatedSites { get; set; }
     }
-
+    public class Autoorder
+    {
+        public static List<int> AvailableFrequencyTypeIDs
+        {
+            get
+            {
+                return new List<int>
+                {
+                    FrequencyTypes.Monthly
+                };
+            }
+        }
+        public static List<FrequencyType> AvailableFrequencyTypes = AvailableFrequencyTypeIDs.Select(c => Models.AvailableFrequencyType.GetFrequencyType(c)).ToList();
+        public static int DefaultAutoOrderShipMethodID = 8;
+    }
 
     public class GlobalMarketSetting
     {
@@ -160,6 +177,10 @@ namespace WinkNaturals.Setting
         public string Username { get; set; }
         public string Password { get; set; }
     }
+
+    
+
+
 
 }
 
