@@ -11,8 +11,6 @@ namespace WinkNatural.Web.Services.Interfaces
         //Get shop products list
         //Get shop products list
         List<ShopProductsResponse> GetShopProducts(int categoryID, int sortBy, int pageSize = 18, int pageIndex = 0, string[] sizes = null);
-
-
         //Get item category
         List<ItemCategoryResponse> GetItemCategory(int webCategoryID);
 
@@ -67,6 +65,7 @@ namespace WinkNatural.Web.Services.Interfaces
         Task<AdjustInventoryResponse> AdjustInventory(AdjustInventoryRequest adjustInventoryRequest);
         Task<SetItemSubscriptionResponse> SetItemSubscription(SetItemSubscriptionRequest setItemSubscriptionRequest);
         Task<SetItemPointAccountResponse> SetItemPointAccount(SetItemPointAccountRequest setItemPointAccountRequest);
-        object CalculateOrder(OrderCalculationRequest orderCalcRequest);
+        Task<CreatePartyResponse> CreateParty(CreatePartyRequest createPartyRequest);
+        Task<GetPartiesResponse> GetParty(int partyId);
     }
 }

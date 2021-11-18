@@ -24,16 +24,12 @@ namespace WinkNatural.Web.Services.Services
     {
         // private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
         private readonly IExigoApiContext _exigoApiContext;
-        private IMemoryCache _cache;
-        private readonly IShoppingService _shoppingService;
         private readonly IOptions<ConfigSettings> _config;
-        private readonly ICustomerAutoOreder _customerAuto;
-        public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext, ICustomerAutoOreder customerAuto, IShoppingService shoppingService)
+      
+        public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext)
         {
             _config = config;
             _exigoApiContext = exigoApiContext;
-            _customerAuto = customerAuto;
-            _shoppingService = shoppingService;
         }
 
         #region constructor
@@ -349,6 +345,7 @@ namespace WinkNatural.Web.Services.Services
                         City = transactionRequest.CreateOrderRequest.City,
                         Zip = transactionRequest.CreateOrderRequest.Zip,
                         Country = transactionRequest.CreateOrderRequest.Country,
+                        State=transactionRequest.CreateOrderRequest.State,
                         Email = transactionRequest.CreateOrderRequest.Email,
                         Phone = transactionRequest.CreateOrderRequest.Phone,
                         Notes = transactionRequest.CreateOrderRequest.Notes,
@@ -363,12 +360,13 @@ namespace WinkNatural.Web.Services.Services
                         Other19 = transactionRequest.CreateOrderRequest.Other19,
                         Other20 = transactionRequest.CreateOrderRequest.Other20,
                         OrderType = OrderType.Default,
+                       
                         TransferVolumeToID = transactionRequest.CreateOrderRequest.TransferVolumeToID,
 
-                        ReturnOrderID = transactionRequest.CreateOrderRequest.ReturnOrderID,
+                       // ReturnOrderID =1, //transactionRequest.CreateOrderRequest.ReturnOrderID,
 
-                        OverwriteExistingOrder = transactionRequest.CreateOrderRequest.OverwriteExistingOrder,
-                        ExistingOrderID = transactionRequest.CreateOrderRequest.ExistingOrderID,
+                   //     OverwriteExistingOrder = transactionRequest.CreateOrderRequest.OverwriteExistingOrder,
+                     //   ExistingOrderID =transactionRequest.CreateOrderRequest.ExistingOrderID,
                         PartyID = transactionRequest.CreateOrderRequest.PartyID,
 
                         Details = transactionRequest.CreateOrderRequest.Details.ToArray(),
@@ -376,14 +374,21 @@ namespace WinkNatural.Web.Services.Services
                         TransferVolumeToKey = transactionRequest.CreateOrderRequest.TransferVolumeToKey,
                         ReturnOrderKey = transactionRequest.CreateOrderRequest.ReturnOrderKey,
                         ExistingOrderKey = transactionRequest.CreateOrderRequest.ExistingOrderKey,
-                        CustomerKey = transactionRequest.CreateOrderRequest.CustomerKey,
+                       CustomerKey = transactionRequest.CreateOrderRequest.CustomerKey,
                     };
 
                     request.TransactionRequests[1] = customerOrderRequest;
 
                     // todo
                     // coupon code is not implement here
-                
+
+                    //var orderCalcRequest = new CalculateOrderRequest()
+                    //{
+                    //    ShipMethodID = 9,
+                    //    CustomerID =customerId,
+                    //};
+                    //var orderTotals = await _shoppingService.CalculateOrder(orderCalcRequest);
+
                 }
                 ChargeCreditCardTokenRequest chargeCreditCardTokenRequest = new()
                 {
@@ -396,7 +401,6 @@ namespace WinkNatural.Web.Services.Services
                     ExpirationMonth = transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth,
                     ExpirationYear = transactionRequest.ChargeCreditCardTokenRequest.ExpirationYear,
                     OrderKey = "1",
-                  
                 };
                 request.TransactionRequests[2] = chargeCreditCardTokenRequest;
 
@@ -2573,10 +2577,46 @@ namespace WinkNatural.Web.Services.Services
             }
             return res;
         }
-
-        public object CalculateOrder(OrderCalculationRequest orderCalcRequest)
+        public async Task<GetPartiesResponse> GetParty(int partyId)
         {
-            throw new NotImplementedException();
+            var req = new GetPartiesRequest();
+            req.PartyID = partyId;
+            var response = await _exigoApiContext.GetContext().GetPartiesAsync(req);
+            return response;
         }
+        public async Task<CreatePartyResponse> CreateParty(CreatePartyRequest createPartyRequest)
+        {
+            var res = new CreatePartyResponse();
+            try
+            {
+                var req = new CreatePartyRequest();
+                req.PartyType = 1;              
+                req.PartyStatusType = 1;        
+                req.HostID = 1;
+                req.DistributorID = 1;
+                req.StartDate = DateTime.Today;
+                req.CloseDate = DateTime.Today;    
+                req.Description = "1";          
+                req.EventStart = DateTime.Today;            
+                req.EventEnd = DateTime.Today;              
+                req.LanguageID = 1;           
+                req.Information = "1";         
+                req.BookingPartyID = 1;         
+                req.Field1 = "1";
+                req.Field2 = "1";
+                req.Field3 = "1"; 
+                req.Field4 = "1";
+                req.Field5 = "1"; 
+                // Send Request to Server and Get Response
+
+                res = await _exigoApiContext.GetContext().CreatePartyAsync(req);
+            }
+            catch (Exception e)
+            {
+                e.Message.ToString();
+            }
+            return res;
+        }
+
     }
 }
