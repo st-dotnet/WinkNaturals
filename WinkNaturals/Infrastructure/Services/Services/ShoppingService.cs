@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Exigo.Api.Client;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -25,11 +24,19 @@ namespace WinkNatural.Web.Services.Services
         // private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
         private readonly IExigoApiContext _exigoApiContext;
         private readonly IOptions<ConfigSettings> _config;
-      
+
         public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext)
         {
             _config = config;
             _exigoApiContext = exigoApiContext;
+        }
+        private readonly ICustomerAutoOreder _customerAuto;
+
+        public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext, ICustomerAutoOreder customerAuto)
+        {
+            _config = config;
+            _exigoApiContext = exigoApiContext;
+            _customerAuto = customerAuto;
         }
 
         #region constructor
@@ -303,38 +310,37 @@ namespace WinkNatural.Web.Services.Services
                 {
                     TransactionRequests = new ITransactionMember[5]
                 };
-
                 var hasOrder = transactionRequest.SetListItemRequest.Where(x => x.OrderType == ShoppingCartItemType.Order).ToList().Count > 0;
-
                 var hasAutoOrder = transactionRequest.SetListItemRequest.Where(x => x.OrderType == ShoppingCartItemType.AutoOrder).ToList().Count > 0;
-
                 // Create the new customer Request
                 // var custReq1 = new CreateCustomerRequest();
                 var customertype = _exigoApiContext.GetContext().GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId }).Result.Customers[0].CustomerType;
-
                 if (customertype == CustomerTypes.RetailCustomer)
                 {
                     UpdateCustomerRequest updateCustomerRequest = new()
                     {
                         CustomerID = customerId,
                         CustomerType = CustomerTypes.PreferredCustomer,
-                        Field1 = hasAutoOrder ? "1" : string.Empty
+                        Field1 = hasAutoOrder ? "1" : string.Empty,
+                        MainCountry = transactionRequest.CreateOrderRequest.Country,
+                        MainState = transactionRequest.CreateOrderRequest.State,
+                        OtherCountry = transactionRequest.CreateOrderRequest.Country,
+                        OtherState = transactionRequest.CreateOrderRequest.State,
+                        MailCountry = transactionRequest.CreateOrderRequest.Country,
+                        MailState = transactionRequest.CreateOrderRequest.State,
                     };
-
                     request.TransactionRequests[0] = updateCustomerRequest;
                 }
-
                 if (hasOrder)
                 {
                     CreateOrderRequest customerOrderRequest = new()
                     {
-
                         CustomerID = customerId,
                         OrderStatus = OrderStatusType.Incomplete,
                         OrderDate = DateTime.Now,
                         CurrencyCode = "usd",
                         WarehouseID = 1, // WarehouseID,
-                        ShipMethodID = transactionRequest.CreateOrderRequest.ShipMethodID,
+                        ShipMethodID = 9, //ToDo
                         PriceType = 1,
                         FirstName = transactionRequest.CreateOrderRequest.FirstName,
                         LastName = transactionRequest.CreateOrderRequest.LastName,
@@ -367,8 +373,11 @@ namespace WinkNatural.Web.Services.Services
 
                    //     OverwriteExistingOrder = transactionRequest.CreateOrderRequest.OverwriteExistingOrder,
                      //   ExistingOrderID =transactionRequest.CreateOrderRequest.ExistingOrderID,
-                        PartyID = transactionRequest.CreateOrderRequest.PartyID,
-
+                      //  PartyID = transactionRequest.CreateOrderRequest.PartyID,
+                        ReturnOrderID = transactionRequest.CreateOrderRequest.ReturnOrderID,
+                        OverwriteExistingOrder = transactionRequest.CreateOrderRequest.OverwriteExistingOrder,
+                        ExistingOrderID = transactionRequest.CreateOrderRequest.ExistingOrderID,
+                        PartyID = 2, // ToDo
                         Details = transactionRequest.CreateOrderRequest.Details.ToArray(),
                         SuppressPackSlipPrice = transactionRequest.CreateOrderRequest.SuppressPackSlipPrice,
                         TransferVolumeToKey = transactionRequest.CreateOrderRequest.TransferVolumeToKey,
@@ -376,23 +385,12 @@ namespace WinkNatural.Web.Services.Services
                         ExistingOrderKey = transactionRequest.CreateOrderRequest.ExistingOrderKey,
                        CustomerKey = transactionRequest.CreateOrderRequest.CustomerKey,
                     };
-
                     request.TransactionRequests[1] = customerOrderRequest;
-
-                    // todo
-                    // coupon code is not implement here
-
-                    //var orderCalcRequest = new CalculateOrderRequest()
-                    //{
-                    //    ShipMethodID = 9,
-                    //    CustomerID =customerId,
-                    //};
-                    //var orderTotals = await _shoppingService.CalculateOrder(orderCalcRequest);
 
                 }
                 ChargeCreditCardTokenRequest chargeCreditCardTokenRequest = new()
                 {
-                    CreditCardToken = "5AE56HJ42OPZ5487",
+                    CreditCardToken = transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
                     BillingName = transactionRequest.ChargeCreditCardTokenRequest.BillingName,
                     BillingAddress = transactionRequest.ChargeCreditCardTokenRequest.BillingAddress,
                     BillingAddress2 = transactionRequest.ChargeCreditCardTokenRequest.BillingAddress2,
@@ -401,16 +399,19 @@ namespace WinkNatural.Web.Services.Services
                     ExpirationMonth = transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth,
                     ExpirationYear = transactionRequest.ChargeCreditCardTokenRequest.ExpirationYear,
                     OrderKey = "1",
+                    BillingCountry = transactionRequest.ChargeCreditCardTokenRequest.BillingCountry,
+                    BillingState = transactionRequest.ChargeCreditCardTokenRequest.BillingState,
+                    MaxAmount = 10
+                    //OrderKey = "1",
+
                 };
                 request.TransactionRequests[2] = chargeCreditCardTokenRequest;
 
                 if (hasAutoOrder)
                 {
-                   
                     // Supply data for auto order record
                     //CreateAutoOrderRequest createAutoOrderRequest = new()
                     //{
-
                     //    Frequency = FrequencyType.Weekly,
                     //    StartDate = DateTime.Today,
                     //    StopDate = DateTime.Today,
@@ -440,29 +441,27 @@ namespace WinkNatural.Web.Services.Services
                     //};
                     //request.TransactionRequests[3] = createAutoOrderRequest;
                 }
+
                 request.TransactionRequests[3] = new CreateAutoOrderRequest();
+
                 SetAccountCreditCardTokenRequest setAccountCreditCardTokenRequest = new()
                 {
                     CustomerID = customerId,
                     CreditCardAccountType = AccountCreditCardType.Primary,
-                    CreditCardToken = "5AE56HJ42OPZ5487",
-                    ExpirationMonth = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationMonth,
-                    ExpirationYear = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationYear,
-                    CreditCardType = transactionRequest.SetAccountCreditCardTokenRequest.CreditCardType,
-                    UseMainAddress = true,
-                    CustomerKey = "1",
+                    CreditCardToken = transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
+                    BillingCountry = transactionRequest.ChargeCreditCardTokenRequest.BillingCountry,
+                    BillingState = transactionRequest.ChargeCreditCardTokenRequest.BillingState,
                 };
                 request.TransactionRequests[4] = setAccountCreditCardTokenRequest;
-
                 response = await _exigoApiContext.GetContext().ProcessTransactionAsync(request);
             }
             catch (Exception ex)
             {
                 ex.Message.ToString();
             }
-
             return response;
         }
+
         /// <summary>
         /// CalculateOrder
         /// </summary>
