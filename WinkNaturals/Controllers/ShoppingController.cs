@@ -66,8 +66,7 @@ namespace WinkNaturals.Controllers
             _configuration = configuration;
 
         }
-
-        
+                
         public ShoppingCartItemsPropertyBag ShoppingCart
         {
             get
@@ -79,7 +78,6 @@ namespace WinkNaturals.Controllers
                 return _shoppingCart;
             }
         }
-        // working....
         public ShoppingCartCheckoutPropertyBag PropertyBag
         {
             get
@@ -95,6 +93,7 @@ namespace WinkNaturals.Controllers
         private ShoppingCartItemsPropertyBag _shoppingCart;
 
         public Exception PointPaymentError = new Exception(Resources.CommonResource.PointPaymentError);
+
         /// <summary>
         /// Get item category
         /// </summary>
@@ -144,7 +143,6 @@ namespace WinkNaturals.Controllers
                 throw new Exception(ex.ToString());
             }
         }
-
 
         //[Route("GetCartItem")]
         //[HttpGet]
@@ -237,6 +235,7 @@ namespace WinkNaturals.Controllers
         {          
             return Ok(_shoppingService.SubmitCheckout(transactionRequests, 103082));
         }
+
         //if (!PropertyBag.IsSubmitting)
         //{
         //    PropertyBag.IsSubmitting = true;
@@ -869,12 +868,12 @@ namespace WinkNaturals.Controllers
             return Ok(_shoppingService.GetWarehouses(warehousesRequest));
         }
       
-
         [HttpGet("GetOrder")]
         public IActionResult GetOrder(GetOrdersRequest ordersRequest)
         {
             return Ok(_shoppingService.GetOrder(ordersRequest));
         }
+
         [HttpGet("SearchProducts/{query}")]
         public IActionResult SearchProducts(string query)
         {
@@ -1021,6 +1020,7 @@ namespace WinkNaturals.Controllers
             }
             return Ok();
         }
+
         [HttpPost("RemoveItemFromCart")]
         public IActionResult RemoveItemFromCart(Guid id)
         {
@@ -1100,6 +1100,7 @@ namespace WinkNaturals.Controllers
             });
             return Ok();
         }
+
         [HttpPost("UpdateItemQuantity")]
         public IActionResult UpdateItemQuantity(Guid id, decimal quantity)
         {
@@ -1186,7 +1187,9 @@ namespace WinkNaturals.Controllers
             // DAL.PropertyBags.Update(PropertyBag);
             return Ok();
         }
+
         #region Private methods
+
         private void PayUsingPointAccount(int newOrderID, decimal pointPaymentAmount, CustomerPointAccount pointAccount)
         {
             try
@@ -1213,6 +1216,7 @@ namespace WinkNaturals.Controllers
             return BaseReplicatedUrl.FormatWith(webAlias);
 
         }
+
         #endregion
 
         [HttpGet("Testing")]
@@ -1258,12 +1262,12 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_shoppingService.CreateParty(createPartyRequest));
         }
+
         [HttpGet("GetPartyAccountId")]
         public IActionResult GetPartyAccountId(int partyId)
         {
             return Ok(_shoppingService.GetParty(partyId));
         }
-
 
         //[HttpGet("Review")]
         //public  async  Task<IActionResult> Review()

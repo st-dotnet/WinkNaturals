@@ -24,8 +24,6 @@
         public string field8 { get; set; }
         public string field9 { get; set; }
         public string field10 { get; set; }
-
-
         public string groupMasterItemCode { get; set; }
         public string groupMasterItemDescription { get; set; }
         public string groupMembersDescription { get; set; }
@@ -38,10 +36,7 @@
         public bool? isDisabled { get; set; }
         public bool isDynamicKitMaster { get; set; }
         public bool isGroupMaster { get; set; }
-
         public bool isVirtual { get; set; }
-
-
         public string itemCode { get; set; }
         public string itemDescription { get; set; }
         public string itemID { get; set; }
@@ -57,7 +52,6 @@
         public bool OtherCheck3 { get; set; }
         public bool OtherCheck4 { get; set; }
         public bool OtherCheck5 { get; set; }
-
         public decimal OtherPrice1 { get; set; }
         public decimal OtherPrice2 { get; set; }
         public decimal OtherPrice3 { get; set; }
@@ -68,16 +62,11 @@
         public decimal OtherPrice8 { get; set; }
         public decimal OtherPrice9 { get; set; }
         public decimal OtherPrice10 { get; set; }
-
-
-
         public string ParentItemCode { get; set; }
         public string priceEachOverride { get; set; }
         public string priceTypeID { get; set; }
         public string productImage { get; set; }
         public decimal Quantity { get; set; }
-
-
         public string quantityModel { get; set; }
         public string selectDelivery { get; set; }
         public string shippingPriceEachOverride { get; set; }

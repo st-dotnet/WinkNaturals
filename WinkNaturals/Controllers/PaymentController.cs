@@ -24,8 +24,6 @@ namespace WinkNaturals.Controllers
             _customerService = customerService;
         }
 
-
-
         [HttpGet("ProcessPayment")]
         public IActionResult ProcessPayment(WinkPaymentRequest winkPaymentRequest)
         {
@@ -37,7 +35,6 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_paymentService.CreateCustomerProfile(model));
         }
-
 
         // This code is for make payment using propay account
         [HttpPost("CreatePaymentUsingProPay")]

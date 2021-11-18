@@ -39,9 +39,6 @@ namespace WinkNatural.Web.Services.Services
             _customerAuto = customerAuto;
         }
 
-        #region constructor
-
-        #endregion
         /// <summary>
         /// GetItemCategory
         /// </summary>
@@ -67,9 +64,6 @@ namespace WinkNatural.Web.Services.Services
             return categories.OrderBy(c => c.SortOrder).ToList();
         }
 
-        //mk
-
-        //public ShopProductsResponse GetShopProducts()
         /// <summary>
         /// GetShopProducts
         /// </summary>
@@ -175,8 +169,6 @@ namespace WinkNatural.Web.Services.Services
 
             return items;
         }
-
-
 
         //public ShopProductsResponse GetProductDetailById(int[] productIds)
         //{
@@ -284,8 +276,6 @@ namespace WinkNatural.Web.Services.Services
             }
         }
 
-
-
         public ShopProductsResponse AddToCart(ShopProductsResponse shopProducts)
         {
             ShopProductsResponse productsResponse = new ShopProductsResponse();
@@ -295,11 +285,6 @@ namespace WinkNatural.Web.Services.Services
 
         }
 
-        /// <summary>
-        /// SubmitCheckout
-        /// </summary>
-        /// <param name="TransactionalRequestModel"></param>
-        /// <returns>TransactionalResponse</returns>
         /// <summary>
         /// SubmitCheckout
         /// </summary>
@@ -774,7 +759,6 @@ namespace WinkNatural.Web.Services.Services
             }
             return res;
         }
-
 
         /// <summary>
         /// CreateOrderImport
@@ -1495,7 +1479,6 @@ namespace WinkNatural.Web.Services.Services
             return verifyAddressResponse;
         }
 
-
         // Controller Action Method to Add or Update the Customer Address
         public async Task<Address> AddUpdateCustomerAddress(int customerID, Address address)
         {
@@ -1559,9 +1542,6 @@ namespace WinkNatural.Web.Services.Services
 
             return address;
         }
-
-
-
 
         public List<Address> GetCustomerAddress(int customerID)
         {
@@ -1671,7 +1651,6 @@ namespace WinkNatural.Web.Services.Services
             }
         }
 
-
         public async Task<GetWarehousesResponse> GetWarehouses(GetWarehousesRequest warehousesRequest)
         {
             //Create Request
@@ -1726,7 +1705,6 @@ namespace WinkNatural.Web.Services.Services
                 return response[0];
             }
         }
-
 
         #region Private methods
 
@@ -1950,7 +1928,6 @@ namespace WinkNatural.Web.Services.Services
             }
         }
 
-
         [NonAction]
         public static IEnumerable<ShopProductsResponse> GetItems(GetItemListRequest request, bool includeItemDescriptions = true)
         {
@@ -2142,6 +2119,7 @@ namespace WinkNatural.Web.Services.Services
             var response = await _exigoApiContext.GetContext().GetCustomersAsync(req);
             return response;
         }
+
         /// <summary>
         /// UpdateCustomer
         /// </summary>
@@ -2178,12 +2156,12 @@ namespace WinkNatural.Web.Services.Services
                 throw new Exception(ex.ToString());
             }
         }
+
         /// <summary>
         /// PromoCode
         /// </summary>
         /// <param name="promoCode"></param>
         /// <returns></returns>
-
         public PromoCode GetPromoDetail(string promoCode, int customerId)
         {
             //dynamic response;
@@ -2215,6 +2193,7 @@ namespace WinkNatural.Web.Services.Services
                 return coupon;
             }
         }
+
         /// <summary>
         /// Create Item
         /// </summary>
@@ -2266,6 +2245,7 @@ namespace WinkNatural.Web.Services.Services
             }
             return res;
         }
+
         /// <summary>
         /// Update Item
         /// </summary>
@@ -2579,6 +2559,7 @@ namespace WinkNatural.Web.Services.Services
             }
             return res;
         }
+        
         public async Task<GetPartiesResponse> GetParty(int partyId)
         {
             var req = new GetPartiesRequest();
@@ -2586,6 +2567,7 @@ namespace WinkNatural.Web.Services.Services
             var response = await _exigoApiContext.GetContext().GetPartiesAsync(req);
             return response;
         }
+        
         public async Task<CreatePartyResponse> CreateParty(CreatePartyRequest createPartyRequest)
         {
             var res = new CreatePartyResponse();
