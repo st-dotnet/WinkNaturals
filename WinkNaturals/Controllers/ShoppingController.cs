@@ -234,10 +234,8 @@ namespace WinkNaturals.Controllers
         /// <returns></returns>
         [HttpPost("SubmitCheckout")]
         public IActionResult SubmitCheckout(TransactionalRequestModel transactionRequests)
-        {
-
-          
-            return Ok(_shoppingService.SubmitCheckout(transactionRequests, Identity.CustomerID));
+        {          
+            return Ok(_shoppingService.SubmitCheckout(transactionRequests, 103082));
         }
         //if (!PropertyBag.IsSubmitting)
         //{

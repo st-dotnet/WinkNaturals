@@ -14,8 +14,8 @@ namespace WinkNaturals.Setting
         }
         public ExigoApiClient GetContext()
         {
-            //return new ExigoApiClient(_config.Value.ExigoConfig.CompanyKey, _config.Value.ExigoConfig.LoginName, _config.Value.ExigoConfig.Password);
-            return new ExigoApiClient(new Uri("https://sandboxapi2.exigo.com/3.0/"), _config.Value.ExigoConfig.CompanyKey, "KaranB", "Karan12345");
+            return new ExigoApiClient(_config.Value.ExigoConfig.CompanyKey, _config.Value.ExigoConfig.LoginName, _config.Value.ExigoConfig.Password);
+            //return new ExigoApiClient(new Uri("https://sandboxapi2.exigo.com/3.0/"), _config.Value.ExigoConfig.CompanyKey, "KaranB", "Karan12345");
             // return new ExigoApiClient(new Uri("https://sandboxapi2.exigo.com/3.0/"), _config.Value.ExigoConfig.CompanyKey, _config.Value.ExigoConfig.LoginName, _config.Value.ExigoConfig.Password);
         }
     }

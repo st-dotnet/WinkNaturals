@@ -7,7 +7,7 @@ using WinkNaturals.Setting;
 
 namespace WinkNaturals.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class PaymentController : BaseController
     {

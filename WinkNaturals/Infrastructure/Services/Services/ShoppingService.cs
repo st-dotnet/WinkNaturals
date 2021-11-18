@@ -300,6 +300,11 @@ namespace WinkNatural.Web.Services.Services
         /// </summary>
         /// <param name="TransactionalRequestModel"></param>
         /// <returns>TransactionalResponse</returns>
+        /// <summary>
+        /// SubmitCheckout
+        /// </summary>
+        /// <param name="TransactionalRequestModel"></param>
+        /// <returns>TransactionalResponse</returns>
         public async Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId)
         {
             TransactionalResponse response = new();
@@ -351,7 +356,7 @@ namespace WinkNatural.Web.Services.Services
                         City = transactionRequest.CreateOrderRequest.City,
                         Zip = transactionRequest.CreateOrderRequest.Zip,
                         Country = transactionRequest.CreateOrderRequest.Country,
-                        State=transactionRequest.CreateOrderRequest.State,
+                        State = transactionRequest.CreateOrderRequest.State,
                         Email = transactionRequest.CreateOrderRequest.Email,
                         Phone = transactionRequest.CreateOrderRequest.Phone,
                         Notes = transactionRequest.CreateOrderRequest.Notes,
@@ -366,27 +371,21 @@ namespace WinkNatural.Web.Services.Services
                         Other19 = transactionRequest.CreateOrderRequest.Other19,
                         Other20 = transactionRequest.CreateOrderRequest.Other20,
                         OrderType = OrderType.Default,
-                       
                         TransferVolumeToID = transactionRequest.CreateOrderRequest.TransferVolumeToID,
-
-                       // ReturnOrderID =1, //transactionRequest.CreateOrderRequest.ReturnOrderID,
-
-                   //     OverwriteExistingOrder = transactionRequest.CreateOrderRequest.OverwriteExistingOrder,
-                     //   ExistingOrderID =transactionRequest.CreateOrderRequest.ExistingOrderID,
-                      //  PartyID = transactionRequest.CreateOrderRequest.PartyID,
                         ReturnOrderID = transactionRequest.CreateOrderRequest.ReturnOrderID,
                         OverwriteExistingOrder = transactionRequest.CreateOrderRequest.OverwriteExistingOrder,
                         ExistingOrderID = transactionRequest.CreateOrderRequest.ExistingOrderID,
-                        PartyID = 2, // ToDo
+                        PartyID = 1, // ToDo
                         Details = transactionRequest.CreateOrderRequest.Details.ToArray(),
                         SuppressPackSlipPrice = transactionRequest.CreateOrderRequest.SuppressPackSlipPrice,
                         TransferVolumeToKey = transactionRequest.CreateOrderRequest.TransferVolumeToKey,
                         ReturnOrderKey = transactionRequest.CreateOrderRequest.ReturnOrderKey,
                         ExistingOrderKey = transactionRequest.CreateOrderRequest.ExistingOrderKey,
-                       CustomerKey = transactionRequest.CreateOrderRequest.CustomerKey,
+                        CustomerKey = transactionRequest.CreateOrderRequest.CustomerKey,
                     };
                     request.TransactionRequests[1] = customerOrderRequest;
-
+                    // todo
+                    // coupon code is not implement here
                 }
                 ChargeCreditCardTokenRequest chargeCreditCardTokenRequest = new()
                 {
@@ -398,12 +397,10 @@ namespace WinkNatural.Web.Services.Services
                     BillingZip = transactionRequest.ChargeCreditCardTokenRequest.BillingZip,
                     ExpirationMonth = transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth,
                     ExpirationYear = transactionRequest.ChargeCreditCardTokenRequest.ExpirationYear,
-                    OrderKey = "1",
                     BillingCountry = transactionRequest.ChargeCreditCardTokenRequest.BillingCountry,
                     BillingState = transactionRequest.ChargeCreditCardTokenRequest.BillingState,
-                    MaxAmount = 10
+                    MaxAmount = Math.Round((decimal)transactionRequest.ChargeCreditCardTokenRequest.MaxAmount, 2),
                     //OrderKey = "1",
-
                 };
                 request.TransactionRequests[2] = chargeCreditCardTokenRequest;
 
@@ -442,7 +439,13 @@ namespace WinkNatural.Web.Services.Services
                     //request.TransactionRequests[3] = createAutoOrderRequest;
                 }
 
-                request.TransactionRequests[3] = new CreateAutoOrderRequest();
+                CreateAutoOrderRequest createAutoOrderRequest = new()
+                {
+                    Country = transactionRequest.CreateOrderRequest.Country,
+                    State = transactionRequest.CreateOrderRequest.State
+                };
+
+                request.TransactionRequests[3] = createAutoOrderRequest;
 
                 SetAccountCreditCardTokenRequest setAccountCreditCardTokenRequest = new()
                 {

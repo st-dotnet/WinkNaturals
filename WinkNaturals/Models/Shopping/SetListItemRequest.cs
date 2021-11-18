@@ -2,7 +2,7 @@
 {
     public class SetListItemRequest
     {
-        public int price { get; set; }
+        public decimal price { get; set; }
         public bool allowOnAutoOrder { get; set; }
         public string bundle { get; set; }
         public string businessVolumeEachOverride { get; set; }
@@ -10,10 +10,10 @@
         public int categoryID { get; set; }
         public string commissionableVolumeEachOverride { get; set; }
         public string currencyCode { get; set; }
-        public int cv { get; set; }
+        public decimal cv { get; set; }
         public int discount { get; set; }
         public int discountdynamicKitCategories { get; set; }
-        public int dynamicKitCategory { get; set; }
+        public int? dynamicKitCategory { get; set; }
         public string field1 { get; set; }
         public string field2 { get; set; }
         public string field3 { get; set; }
@@ -29,13 +29,13 @@
         public string groupMasterItemCode { get; set; }
         public string groupMasterItemDescription { get; set; }
         public string groupMembersDescription { get; set; }
-        public int id { get; set; }
+        public string id { get; set; }
         public string image_01 { get; set; }
         public string image_02 { get; set; }
         public string image_03 { get; set; }
         public int inventoryFlag { get; set; }
         public string inventoryFlagDesc { get; set; }
-        public bool isDisabled { get; set; }
+        public bool? isDisabled { get; set; }
         public bool isDynamicKitMaster { get; set; }
         public bool isGroupMaster { get; set; }
 
