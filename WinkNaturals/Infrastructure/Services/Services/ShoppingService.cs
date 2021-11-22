@@ -16,6 +16,9 @@ using WinkNaturals.Models;
 using WinkNaturals.Models.Shopping.Interfaces;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
+using Address = WinkNatural.Web.Services.DTO.Shopping.Address;
+using AddressType = WinkNatural.Web.Services.DTO.Shopping.AddressType;
+using ShippingAddress = WinkNatural.Web.Services.DTO.Shopping.ShippingAddress;
 
 namespace WinkNatural.Web.Services.Services
 {

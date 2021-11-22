@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Infrastructure.Services.ExigoService;
+using Address = WinkNatural.Web.Services.DTO.Shopping.Address;
 
 namespace WinkNatural.Web.Services.Interfaces
 {

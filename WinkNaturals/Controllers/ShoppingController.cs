@@ -18,13 +18,11 @@ using WinkNaturals.Models.Shopping.PointAccount.Interfaces;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
 using WinkNaturals.Utilities.Common;
-using WinkNaturals.Utilities.WebDrip;
 using WinkNaturals.WebDrip;
 using System.Threading.Tasks;
 using WinkNaturals.Helpers;
-using WinkNaturals.Infrastructure.Services.ExigoService;
-using WinkNaturals.Models.Shopping.Orders;
-
+using WinkNaturals.Utilities.WebDrip;
+using ShippingAddress = WinkNatural.Web.Services.DTO.Shopping.ShippingAddress;
 
 namespace WinkNaturals.Controllers
 {
@@ -852,7 +850,7 @@ namespace WinkNaturals.Controllers
         }
 
         [HttpPost("AddUpdateCustomerAddress/{CustomerID:int}")]
-        public IActionResult AddUpdateCustomerAddress(int CustomerID, Infrastructure.Services.ExigoService.ShippingAddress address)
+        public IActionResult AddUpdateCustomerAddress(int CustomerID, ShippingAddress address)
         {
             //if ( Address.AddressType == AddressType.New)
             //{
