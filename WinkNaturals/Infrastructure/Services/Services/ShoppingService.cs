@@ -409,7 +409,7 @@ namespace WinkNatural.Web.Services.Services
                 {
                     CustomerID = customerId,
                     CreditCardAccountType = AccountCreditCardType.Primary,
-                    CreditCardToken = "41X1111WBCXTE1111",//transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
+                    CreditCardToken = transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
                     ExpirationMonth = Convert.ToInt32(transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth),
                     ExpirationYear = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationYear,
                     CreditCardType = 1,
