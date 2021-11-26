@@ -26,6 +26,7 @@ using WinkNaturals.Models.Shopping.PointAccount;
 using WinkNaturals.Models.Shopping.PointAccount.Interfaces;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
+using static WinkNaturals.Models.UnitedStatesConfiguration;
 
 namespace WinkNatural.Web.WinkNaturals
 {
@@ -69,6 +70,7 @@ namespace WinkNatural.Web.WinkNaturals
             services.AddScoped<ICustomerPointAccount, PointAccountRepo>();
             services.AddScoped<IAutoOrders, AutoOrders>();
             services.AddScoped<ICustomerAutoOreder, CustomerAutoOreder>();
+            services.AddScoped<IOrderConfiguration, BaseOrderConfiguration>();
 
             services.AddDistributedSqlServerCache(options =>
             {

@@ -874,10 +874,10 @@ namespace WinkNaturals.Controllers
         }
 
         // To implement Special Item block in Cart
-        [HttpGet("GetSpecialItem")]
-        public IActionResult GetSpecialItem()
+        [HttpGet("GetOrderSpecialItem")]
+        public IActionResult GetOrderSpecialItem()
         {
-            return Ok(_shoppingService.GetSpecialItem());
+            return Ok(_shoppingService.GetOrderSpecialItem());
         }
 
         [HttpGet("GetCustomerRealTime/{customerID:int}")]

@@ -32,19 +32,21 @@ namespace WinkNatural.Web.Services.Services
         // private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
         private readonly IExigoApiContext _exigoApiContext;
         private readonly IOptions<ConfigSettings> _config;
-
+        
         public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext)
         {
             _config = config;
             _exigoApiContext = exigoApiContext;
         }
         private readonly ICustomerAutoOreder _customerAuto;
+        private readonly IOrderConfiguration _orderConfiguration;
 
-        public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext, ICustomerAutoOreder customerAuto)
+        public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext, ICustomerAutoOreder customerAuto,IOrderConfiguration orderConfiguration)
         {
             _config = config;
             _exigoApiContext = exigoApiContext;
             _customerAuto = customerAuto;
+            _orderConfiguration = orderConfiguration;
         }
 
         /// <summary>
@@ -331,17 +333,17 @@ namespace WinkNatural.Web.Services.Services
                 }
                 ChargeCreditCardTokenRequest chargeCreditCardTokenRequest = new()
                 {
-                    CreditCardToken = "41X1111WBCXTE1111",//transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
-                    BillingName = "OM",// transactionRequest.ChargeCreditCardTokenRequest.BillingName,
-                    BillingAddress = "#street",//transactionRequest.ChargeCreditCardTokenRequest.BillingAddress,
+                    CreditCardToken = transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
+                    BillingName = transactionRequest.ChargeCreditCardTokenRequest.BillingName,
+                    BillingAddress = transactionRequest.ChargeCreditCardTokenRequest.BillingAddress,
                     BillingAddress2 = null,//transactionRequest.ChargeCreditCardTokenRequest.BillingAddress2,
-                    BillingCity = "123456",//transactionRequest.ChargeCreditCardTokenRequest.BillingCity,
-                    BillingZip = "123456",//transactionRequest.ChargeCreditCardTokenRequest.BillingZip,
-                    ExpirationMonth = 1,// transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth,
-                    ExpirationYear = 2023,//transactionRequest.ChargeCreditCardTokenRequest.ExpirationYear,
-                    BillingCountry = "US",//transactionRequest.ChargeCreditCardTokenRequest.BillingCountry,
-                    BillingState = "AA",//transactionRequest.ChargeCreditCardTokenRequest.BillingState,
-                    MaxAmount = null,//Math.Round((decimal)transactionRequest.ChargeCreditCardTokenRequest.MaxAmount, 2),
+                    BillingCity = transactionRequest.ChargeCreditCardTokenRequest.BillingCity,
+                    BillingZip = transactionRequest.ChargeCreditCardTokenRequest.BillingZip,
+                    ExpirationMonth =transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth,
+                    ExpirationYear = transactionRequest.ChargeCreditCardTokenRequest.ExpirationYear,
+                    BillingCountry = transactionRequest.ChargeCreditCardTokenRequest.BillingCountry,
+                    BillingState = transactionRequest.ChargeCreditCardTokenRequest.BillingState,
+                    MaxAmount = Math.Round((decimal)transactionRequest.ChargeCreditCardTokenRequest.MaxAmount, 2),
                                      //OrderKey = "1",
                 };
                 request.TransactionRequests[1] = chargeCreditCardTokenRequest;
@@ -353,10 +355,10 @@ namespace WinkNatural.Web.Services.Services
                         CustomerID = customerId,
                         OrderStatus = Exigo.Api.Client.OrderStatusType.Incomplete,
                         OrderDate = DateTime.Now,
-                        CurrencyCode = "usd",
-                        WarehouseID = 1, // WarehouseID,
-                        ShipMethodID = 6, //ToDo
-                        PriceType = 1,
+                        CurrencyCode = _orderConfiguration.CurrencyCode,
+                        WarehouseID = _orderConfiguration.WarehouseID, // WarehouseID,
+                        ShipMethodID = _orderConfiguration.DefaultShipMethodID, //ToDo
+                        PriceType = _orderConfiguration.PriceTypeID,
                         FirstName = transactionRequest.CreateOrderRequest.FirstName,
                         LastName = transactionRequest.CreateOrderRequest.LastName,
                         Company = transactionRequest.CreateOrderRequest.Company,
@@ -391,10 +393,10 @@ namespace WinkNatural.Web.Services.Services
                     {
                         Frequency = FrequencyType.Weekly,
                         StartDate = DateTime.Today,
-                        CurrencyCode = "usd",
-                        WarehouseID = 1,
-                        ShipMethodID = 6,// transactionRequest.CreateAutoOrderRequest.ShipMethodID,
-                        PriceType = 1,
+                        CurrencyCode = _orderConfiguration.CurrencyCode,
+                        WarehouseID = _orderConfiguration.WarehouseID,
+                        ShipMethodID = _orderConfiguration.DefaultShipMethodID,// transactionRequest.CreateAutoOrderRequest.ShipMethodID,
+                        PriceType = _orderConfiguration.PriceTypeID,
                         PaymentType = AutoOrderPaymentType.PrimaryCreditCard,
                         OverwriteExistingAutoOrder = true,
                         Details = transactionRequest.CreateAutoOrderRequest.Details.ToArray(),
@@ -408,8 +410,8 @@ namespace WinkNatural.Web.Services.Services
                     CustomerID = customerId,
                     CreditCardAccountType = AccountCreditCardType.Primary,
                     CreditCardToken = "41X1111WBCXTE1111",//transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
-                    ExpirationMonth = 1,
-                    ExpirationYear = 2023,
+                    ExpirationMonth = Convert.ToInt32(transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth),
+                    ExpirationYear = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationYear,
                     CreditCardType = 1,
                     UseMainAddress = true,
                 };
@@ -1669,17 +1671,17 @@ namespace WinkNatural.Web.Services.Services
         /// <param name=""></param>
         /// <returns></returns>
 
-        public ShopProductsResponse GetSpecialItem()
+        public ShopProductsResponse GetOrderSpecialItem()
         {
             //dynamic response;
             using (var context = Common.Utils.DbConnection.Sql())
             {
                 var response = context.Query<ShopProductsResponse>(QueryUtility.GetSpecialItem_Query, new
                 {
-                    warehouse = 1,
-                    currencyCode = "usd",
-                    languageID = 0,
-                    priceTypeID = 1
+                    warehouse = _orderConfiguration.WarehouseID,
+                    currencyCode = _orderConfiguration.CurrencyCode,
+                    languageID = _orderConfiguration.LanguageID,
+                    priceTypeID = _orderConfiguration.PriceTypeID
                 }).ToList();
                 return response[0];
             }
