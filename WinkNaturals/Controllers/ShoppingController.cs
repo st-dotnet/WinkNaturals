@@ -243,7 +243,7 @@ namespace WinkNaturals.Controllers
         //    {
         //        // Start creating the API requests
         //        var willCallAddress = PropertyBag.ShipMethodID == 9 ? PropertyBag.WillCallShippingAddress : PropertyBag.ShippingAddress;
-        //        var details = new List<ApiRequest>();
+        //       var details = new List<ApiRequest>();
         //        var orderItems = ShoppingCart.Items.Where(c => c.Type == ShoppingCartItemType.Order);
         //        var hasOrder = orderItems.Count() > 0;
         //        var autoOrderItems = ShoppingCart.Items.Where(c => c.Type == ShoppingCartItemType.AutoOrder);
@@ -866,12 +866,7 @@ namespace WinkNaturals.Controllers
             return Ok(_shoppingService.GetWarehouses(warehousesRequest));
         }
       
-        [HttpGet("GetOrder")]
-        public IActionResult GetOrder(GetOrdersRequest ordersRequest)
-        {
-            return Ok(_shoppingService.GetOrder(ordersRequest));
-        }
-
+  
         [HttpGet("SearchProducts/{query}")]
         public IActionResult SearchProducts(string query)
         {
@@ -1200,7 +1195,7 @@ namespace WinkNaturals.Controllers
                     Amount = pointPaymentAmount
                 };
 
-                var pointPaymentResponse = _exigoApiContext.GetContext().CreatePaymentPointAccountAsync(pointPaymentRequest);//_exigoApiContext.GetContext().CreatePaymentPointAccount(pointPaymentRequest);
+                var pointPaymentResponse = _exigoApiContext.GetContext(true).CreatePaymentPointAccountAsync(pointPaymentRequest);//_exigoApiContext.GetContext().CreatePaymentPointAccount(pointPaymentRequest);
             }
             catch (Exception ex)
             {
@@ -1266,6 +1261,14 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_shoppingService.GetParty(partyId));
         }
+
+        [HttpGet("GetReviewOrder")]
+        public IActionResult GetReviewOrder(int customerId,int OrderId)
+        {
+            return Ok(_shoppingService.GetCustomerReviewOrder(Identity.CustomerID, OrderId));
+        }
+
+      
 
         //[HttpGet("Review")]
         //public  async  Task<IActionResult> Review()
@@ -1533,6 +1536,11 @@ namespace WinkNaturals.Controllers
         //    //return Ok(model);
 
         //}
-
+        [HttpGet("GetCustomer")]
+        public IActionResult GetCustomer(int partyId)
+        {
+            return Ok(_shoppingService.GetCustomer(partyId));
+        }
+       
     }
 }

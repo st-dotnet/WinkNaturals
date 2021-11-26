@@ -41,7 +41,7 @@ namespace WinkNaturals.Controllers
                 req.WarehouseID = 1;
                 req.PriceType = 1;
 
-                GetItemsResponse res = await _exigoApiContext.GetContext().GetItemsAsync(req);
+                GetItemsResponse res = await _exigoApiContext.GetContext(true).GetItemsAsync(req);
                 //using (var context = WinkNatural.Web.Common.Utils.DbConnection.Sql())
                 //{
                 //   apiItems= context.Query<EnrollmentModel>(@"

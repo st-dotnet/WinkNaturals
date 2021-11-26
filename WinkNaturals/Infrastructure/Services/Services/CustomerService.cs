@@ -34,7 +34,7 @@ namespace WinkNatural.Web.Services.Services
         {
             try
             {
-                return await _exigoApiContext.GetContext().GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId });
+                return await _exigoApiContext.GetContext(true).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId });
             }
             catch (Exception ex)
             {
@@ -47,7 +47,7 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 GetResourceSetCulturesRequest req = new GetResourceSetCulturesRequest();
-                var aa = await _exigoApiContext.GetContext().GetResourceSetCulturesAsync(req);
+                var aa = await _exigoApiContext.GetContext(true).GetResourceSetCulturesAsync(req);
                 return null;
             }
             catch (Exception ex)

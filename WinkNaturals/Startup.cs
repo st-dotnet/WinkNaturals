@@ -111,7 +111,40 @@ namespace WinkNatural.Web.WinkNaturals
             //ExigoConfig.Instance = exigoconfig;
 
             services.AddSingleton(mapper);
+            services.AddSwaggerGen(setup =>
+            {
+                setup.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo
+                    {
 
+                        Title = "WinkNaturals",
+                        Version = "v1"
+                    });
+                setup.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme."
+                });
+                setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
+            });
             //Exigo resourceset  configuration
             ResourceSetManager.Start(new ResourceSetUpdaterOptions
             {
@@ -147,10 +180,10 @@ namespace WinkNatural.Web.WinkNaturals
             });
 
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WinkNaturals", Version = "v1" });
-            });
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "WinkNaturals", Version = "v1" });
+            //});
 
         }
 

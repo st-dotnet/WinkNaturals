@@ -4,6 +4,6 @@ namespace WinkNaturals.Setting.Interfaces
 {
     public interface IExigoApiContext
     {
-        public ExigoApiClient GetContext();
+        public ExigoApiClient GetContext(bool isSandbox);
     }
 }

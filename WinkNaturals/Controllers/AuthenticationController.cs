@@ -81,7 +81,7 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
                     MainCountry = CountryCode //GlobalUtilities.GetSelectedCountryCode();
                 };
                 // Create the customer
-                var response = await _exigoApiContext.GetContext().CreateCustomerAsync(request); //createCustomerRequest(request);
+                var response = await _exigoApiContext.GetContext(true).CreateCustomerAsync(request); //createCustomerRequest(request);
 
                 if (model.IsOptedIn)
                 {

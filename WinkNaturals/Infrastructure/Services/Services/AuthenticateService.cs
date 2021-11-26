@@ -47,7 +47,7 @@ namespace WinkNatural.Web.Services.Services
         {
             try
             {
-                var res = await _exigoApiContext.GetContext().CreateCustomerAsync(request);
+                var res = await _exigoApiContext.GetContext(true).CreateCustomerAsync(request);
                 return res;
             }
             catch (Exception ex)
@@ -66,7 +66,7 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 //Exigo service login request
-                var result = await _exigoApiContext.GetContext().AuthenticateCustomerAsync(request);
+                var result = await _exigoApiContext.GetContext(false).AuthenticateCustomerAsync(request);
                 if (result.CustomerID == 0)
                 {
                     return new CustomerCreateResponse { ErrorMessage = "User is not authenticated." };
@@ -122,7 +122,7 @@ namespace WinkNatural.Web.Services.Services
                 ,
                     LoginName = customer.LoginName
                 };
-                var result = await _exigoApiContext.GetContext().UpdateCustomerAsync(customerUpdateRequest);
+                var result = await _exigoApiContext.GetContext(true).UpdateCustomerAsync(customerUpdateRequest);
                 return new CustomerUpdateResponse { Success = true };
             }
             catch (Exception ex)
@@ -142,11 +142,11 @@ namespace WinkNatural.Web.Services.Services
             {
                 //Get customer by login name
                 var getCustomerRequest = new GetCustomersRequest { Email = request.Email };
-                var customer = await _exigoApiContext.GetContext().GetCustomersAsync(getCustomerRequest);
+                var customer = await _exigoApiContext.GetContext(true).GetCustomersAsync(getCustomerRequest);
 
                 var body = $"To reset your password click this link! <a href={request.Url}/{customer.Customers[0].CustomerID}>Reset Password</a>";
 
-                var sendEmail = await _exigoApiContext.GetContext().SendEmailAsync(new SendEmailRequest
+                var sendEmail = await _exigoApiContext.GetContext(true).SendEmailAsync(new SendEmailRequest
                 {
                     CustomerID = customer.Customers[0].CustomerID,
                     Body = body,
@@ -174,12 +174,12 @@ namespace WinkNatural.Web.Services.Services
                 //Check if Email is exists or not
                 if (!string.IsNullOrEmpty(request.Email) && string.IsNullOrEmpty(request.Username))
                 {
-                    var customerEmailResult = await _exigoApiContext.GetContext().GetCustomersAsync(new GetCustomersRequest { Email = request.Email });
+                    var customerEmailResult = await _exigoApiContext.GetContext(true).GetCustomersAsync(new GetCustomersRequest { Email = request.Email });
                     if (customerEmailResult.Customers.Length != 0) return true;
                 }
                 if (!string.IsNullOrEmpty(request.Username))//Check if username is exists or not
                 {
-                    var customerUsernameResult = await _exigoApiContext.GetContext().GetCustomersAsync(new GetCustomersRequest { LoginName = request.Username });
+                    var customerUsernameResult = await _exigoApiContext.GetContext(true).GetCustomersAsync(new GetCustomersRequest { LoginName = request.Username });
                     if (customerUsernameResult.Customers.Length != 0) return true;
                 }
                 return false;

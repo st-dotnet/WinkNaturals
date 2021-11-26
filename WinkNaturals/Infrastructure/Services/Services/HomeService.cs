@@ -88,7 +88,7 @@ namespace WinkNatural.Web.Services.Services
                 };
 
                 //Send email from Exigo service
-                var sendEmailRequest = await _exigoApiContext.GetContext().SendEmailAsync(data);
+                var sendEmailRequest = await _exigoApiContext.GetContext(true).SendEmailAsync(data);
                 return new ContactResponse { Success = true, ErrorMessage = null };
             }
             catch (Exception)

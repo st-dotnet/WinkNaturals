@@ -387,5 +387,23 @@
 									,[CustomerTypes]
 									FROM [OrderCalcContext].[CouponCodes]
 									WHERE [Code] = @Code";
-    }
+
+		public static string GetCoupenCodes = @" SELECT 
+									[Code]
+									,[StartDate]
+									,[EndDate]
+									,[MinSubtotal]
+									,[FreeShipping]
+									,[PercentOff]
+									,[WebCategoryID]
+									,[MinRank]
+									,[MaxRank]
+									,[MinSubtotal]
+									,[SingleUseByCustomer]
+									,[DisplayOnWeb]
+									,[CreatedDate]
+									,[RowGuid]
+									,[CustomerTypes]
+									FROM [OrderCalcContext].[CouponCodes]";
+	}
 }

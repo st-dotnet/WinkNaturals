@@ -1,8 +1,11 @@
 ﻿using Exigo.Api.Client;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web.Http.Results;
+using System.Web.Mvc;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Infrastructure.Services.ExigoService;
+using WinkNaturals.Models;
 using Address = WinkNatural.Web.Services.DTO.Shopping.Address;
 
 namespace WinkNatural.Web.Services.Interfaces
@@ -40,7 +43,7 @@ namespace WinkNatural.Web.Services.Interfaces
         List<Address> GetCustomerAddress(int customerID);
         Task<Address> AddUpdateCustomerAddress(int customerID, Address address);
         Task<GetWarehousesResponse> GetWarehouses(GetWarehousesRequest warehousesRequest);
-        Task<GetOrdersResponse> GetOrder(GetOrdersRequest ordersRequest);
+        Task<GetOrdersResponse> GetOrder(GetOrdersRequest ordersRequest, int customerId);
         List<ShopProductsResponse> SearchProducts(string query);
 
         // static IEnumerable<ShopProductsResponse> GetItems(GetItemListRequest request, bool includeItemDescriptions = true);
@@ -68,5 +71,12 @@ namespace WinkNatural.Web.Services.Interfaces
         Task<SetItemPointAccountResponse> SetItemPointAccount(SetItemPointAccountRequest setItemPointAccountRequest);
         Task<CreatePartyResponse> CreateParty(CreatePartyRequest createPartyRequest);
         Task<GetPartiesResponse> GetParty(int partyId);
+
+        Task<GetOrdersResponse> GetCustomerReviewOrder(int customerId, int OrderId);
+        Task<GetCustomersResponse> GetCustomer(int customerID);
+
+       
+
+
     }
 }
