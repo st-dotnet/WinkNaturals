@@ -72,6 +72,6 @@ namespace WinkNatural.Web.Services.Interfaces
 
         Task<GetOrdersResponse> GetCustomerReviewOrder(int customerId, int OrderId);
         Task<GetCustomersResponse> GetCustomer(int customerID);
-        ShopProductsResponse GetOrderSpecialItem();
+        ShopProductsResponse GetSpecialItem();
     }
 }

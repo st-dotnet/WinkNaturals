@@ -426,22 +426,6 @@ namespace WinkNatural.Web.Services.Services
             {
                 ex.Message.ToString();
             }
-            //foreach (Exigo.Api.Client.ApiResponse item in response.TransactionResponses)
-            //{
-            //    if (item is CreateCustomerResponse)
-            //        Console.WriteLine("CustomerID: {0}", ((CreateCustomerResponse)item).CustomerID);
-
-            //    if (item is CreateOrderResponse)
-            //        Console.WriteLine("OrderID: {0}", ((CreateOrderResponse)item).OrderID);
-
-            //    if (item is Exigo.Api.Client.CreatePaymentResponse)
-            //        Console.WriteLine("PaymentID: {0}", ((Exigo.Api.Client.CreatePaymentResponse)item).PaymentID);
-
-            //    if (item is CreateAutoOrderResponse)
-            //        Console.WriteLine("AutoOrderID: {0}", ((CreateAutoOrderResponse)item).AutoOrderID);
-
-            //}
-
             return response;
         }
         /// <summary>
@@ -465,11 +449,9 @@ namespace WinkNatural.Web.Services.Services
                     State = request.State,
                     Zip = request.Zip,
                     Country = request.Country,
-
                     Address1 = request.Address1,
                     Address2 = request.Address2,
                     Address3 = " ",
-
                     // CustomerID = request.CustomerID.Value,
                     OrderType = request.OrderType,
                     //County=calculateOrder.
@@ -1671,7 +1653,7 @@ namespace WinkNatural.Web.Services.Services
         /// <param name=""></param>
         /// <returns></returns>
 
-        public ShopProductsResponse GetOrderSpecialItem()
+        public ShopProductsResponse GetSpecialItem()
         {
             //dynamic response;
             using (var context = Common.Utils.DbConnection.Sql())
@@ -2604,110 +2586,7 @@ namespace WinkNatural.Web.Services.Services
             var responseShipmethod= GetShipMethodsRequest(shipMethodId,response.Orders[0].WarehouseID);
             var currentShipmethodId = responseShipmethod.Where(x => x.ShipMethodID == shipMethodId).ToList();
             response.Orders[0].Other11 = currentShipmethodId.ToString();
-            //var req2 = new CalculateOrderRequest();
-            //req2.CustomerID = customerId;
-            //req2.OrderID = 268403;
-            //var res = await _exigoApiContext.GetContext(true).CalculateOrderAsync(req2);
-
-
-            //foreach (var order in response.Orders)
-
-            //{
-                
-            //    Console.WriteLine("OrderID: {0}", order.OrderID);
-
-            //    Console.WriteLine("CustomerID: {0}", order.CustomerID);
-
-            //    Console.WriteLine("OrderStatus: {0}", order.OrderStatus);
-
-            //    Console.WriteLine("OrderDate: {0}", order.OrderDate);
-
-            //    Console.WriteLine("CurrencyCode: {0}", order.CurrencyCode);
-
-            //    Console.WriteLine("WarehouseID: {0}", order.WarehouseID);
-
-            //    Console.WriteLine("ShipMethodID: {0}", order.ShipMethodID);
-
-            //    Console.WriteLine("ShipMethodID:{0}", currentShipmethodId);
-
-            //    Console.WriteLine("PriceType: {0}", order.PriceType);
-
-            //    Console.WriteLine("Total: {0}", order.Total);
-
-
-
-            //    foreach (var orderDetail in order.Details)
-
-            //    {
-
-            //        Console.WriteLine("OrderDetailID: {0}", orderDetail.OrderDetailID);
-
-            //        Console.WriteLine("ParentOrderDetailID: {0}", orderDetail.ParentOrderDetailID);
-
-            //        Console.WriteLine("ItemCode: {0}", orderDetail.ItemCode);
-
-            //        Console.WriteLine("Description: {0}", orderDetail.Description);
-
-            //        Console.WriteLine("Quantity: {0}", orderDetail.Quantity);
-
-            //        Console.WriteLine("OrderLine: {0}", orderDetail.OrderLine);
-
-            //        Console.WriteLine("Reference1: {0}", orderDetail.Reference1);
-
-            //        Console.WriteLine("ShippingPriceEach: {0}", orderDetail.ShippingPriceEach);
-
-            //    }
-
-            //    foreach (var payment in order.Payments)
-
-            //    {
-
-            //        Console.WriteLine("CustomerID: {0}", payment.CustomerID);
-
-            //        Console.WriteLine("Amount: {0}", payment.Amount);
-
-            //        Console.WriteLine("OrderID: {0}", payment.OrderID);
-
-            //        Console.WriteLine("BillingName: {0}", payment.BillingName);
-
-            //        Console.WriteLine("BillingAddress1: {0}", payment.BillingAddress1);
-
-            //        Console.WriteLine("BillingAddress2: {0}", payment.BillingAddress2);
-
-            //        Console.WriteLine("BillingCity: {0}", payment.BillingCity);
-
-            //        Console.WriteLine("BillingZip: {0}", payment.BillingZip);
-
-            //        Console.WriteLine("BankName: {0}", payment.BankName);
-
-            //        Console.WriteLine("Memo: {0}", payment.Memo);
-
-            //        Console.WriteLine("CreditCardNumberDisplay: {0}", payment.CreditCardNumberDisplay);
-
-            //        Console.WriteLine("AuthorizationCode: {0}", payment.AuthorizationCode);
-
-            //        Console.WriteLine("CreditCardTypeDescription: {0}", payment.CreditCardTypeDescription);
-
-            //        Console.WriteLine("OrderKey: {0}", payment.OrderKey);
-
-            //        Console.WriteLine("CustomerKey: {0}", payment.CustomerKey);
-
-            //    }
-
-            //    Console.WriteLine("BackOrderFromID: {0}", order.BackOrderFromID);
-
-            //    Console.WriteLine("OrderKey: {0}", order.OrderKey);
-
-            //    Console.WriteLine("CustomerKey: {0}", order.CustomerKey);
-
-            //}
-
-            //Console.WriteLine("RecordCount: {0}", response.RecordCount);
-
-
-             return response;
-         
-
+            return response;
         }
         private List<ShipMethodsResponse> GetShipMethodsRequest(int shipMethodId, int warehouseId)
         {
