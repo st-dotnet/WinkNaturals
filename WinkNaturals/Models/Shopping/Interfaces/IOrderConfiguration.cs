@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WinkNaturals.Models.Shopping.Interfaces
+﻿namespace WinkNaturals.Models.Shopping.Interfaces
 {
-   public interface IOrderConfiguration
+    public interface IOrderConfiguration
     {
         int WarehouseID { get; set; }
         string CurrencyCode { get; set; }

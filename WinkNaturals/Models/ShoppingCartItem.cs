@@ -1,8 +1,5 @@
 ﻿using Exigo.Api.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WinkNaturals.Models.Shopping.Interfaces;
 using WinkNaturals.Utilities;
 
@@ -39,21 +36,21 @@ namespace WinkNaturals.Models
             }
         }
         private Guid _id;
-        public string ItemCode { get ; set ; }
-        public decimal Quantity { get ; set; }
-        public string ParentItemCode { get; set ; }
-        public string GroupMasterItemCode { get ; set; }
+        public string ItemCode { get; set; }
+        public decimal Quantity { get; set; }
+        public string ParentItemCode { get; set; }
+        public string GroupMasterItemCode { get; set; }
         public string DynamicKitCategory { get; set; }
         public ShoppingCartItemType Type { get; set; }
-        public string Field4 { get; set ; }
+        public string Field4 { get; set; }
         public string Field5 { get; set; }
-        public bool OtherCheck2 { get ; set; }
-        public decimal? PriceEachOverride { get ; set ; }
+        public bool OtherCheck2 { get; set; }
+        public decimal? PriceEachOverride { get; set; }
         public decimal? TaxableEachOverride { get; set; }
         public decimal? BusinessVolumeEachOverride { get; set; }
         public decimal? CommissionableVolumeEachOverride { get; set; }
-        public decimal? ShippingPriceEachOverride { get ; set; }
-       
+        public decimal? ShippingPriceEachOverride { get; set; }
+
 
         public ShoppingCartItem(IShoppingCartItem item)
         {

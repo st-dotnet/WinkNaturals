@@ -1,13 +1,6 @@
-﻿using Exigo.Api.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WinkNatural.Web.Services.DTO.Shopping.CalculateOrder
+﻿namespace WinkNatural.Web.Services.DTO.Shopping.CalculateOrder
 {
-   public class ShipMethod 
+    public class ShipMethod
     {
         public int ShipMethodID { get; set; }
         public string Description { get; set; }

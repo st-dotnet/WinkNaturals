@@ -32,7 +32,7 @@ namespace WinkNaturals.AuthantictionMiddleware
             await _next(context);
         }
 
-        private void AttachUserToContext(HttpContext context,string token)
+        private void AttachUserToContext(HttpContext context, string token)
         {
             try
             {

@@ -4,7 +4,7 @@ using static WinkNaturals.Helpers.Constant;
 
 namespace WinkNaturals.Infrastructure.Services.ExigoService.CreditCard.Interfaces
 {
-    public interface ICreditCard: IPaymentMethod, IAutoOrderPaymentMethod
+    public interface ICreditCard : IPaymentMethod, IAutoOrderPaymentMethod
     {
         CreditCardType Type { get; set; }
         string NameOnCard { get; set; }

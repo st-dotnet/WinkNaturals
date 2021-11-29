@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WinkNaturals.Models.Shopping.Interfaces
 {
-    public interface IPropertyBag
+    public interface IPropertyBags
     {
         string Version { get; set; }
         string Description { get; set; }
@@ -14,6 +14,7 @@ namespace WinkNaturals.Models.Shopping.Interfaces
         int Expires { get; set; }
 
         bool IsValid();
-        T OnBeforeUpdate<T>(T propertyBag) where T : IPropertyBag;
+        T OnBeforeUpdate<T>(T propertyBag) where T : IPropertyBags;
+
     }
 }

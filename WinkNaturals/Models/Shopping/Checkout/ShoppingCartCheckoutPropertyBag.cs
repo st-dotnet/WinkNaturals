@@ -1,10 +1,8 @@
 ﻿using Exigo.Api.Client;
 using System;
-using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Models.Shopping.Checkout.Coupon;
 using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
-using WinkNaturals.Models.Shopping.Interfaces;
 
 
 namespace WinkNaturals.Models.Shopping.Checkout
@@ -65,8 +63,8 @@ namespace WinkNaturals.Models.Shopping.Checkout
         }
         public override bool IsValid()
         {
-           // Need to develop
-          //  var currentCustomerID = (Identity.Customer != null) ? Identity.Customer.CustomerID : 0;
+            // Need to develop
+            //  var currentCustomerID = (Identity.Customer != null) ? Identity.Customer.CustomerID : 0;
             return this.Version == version && this.CustomerID == 1;
         }
         #endregion

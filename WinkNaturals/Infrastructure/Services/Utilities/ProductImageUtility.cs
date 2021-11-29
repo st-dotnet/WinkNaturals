@@ -1,17 +1,13 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WinkNatural.Web.Services.Utilities
 {
-   public static class ProductImageUtility
+    public static class ProductImageUtility
     {
-        public static  FileContentResult GetProductImageUtility(string imageName)
+        public static FileContentResult GetProductImageUtility(string imageName)
         {
             try
             {

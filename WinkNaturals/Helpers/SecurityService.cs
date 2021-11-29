@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace WinkNaturals.Helpers
@@ -19,7 +18,7 @@ namespace WinkNaturals.Helpers
             {"=", "!"}
         };
 
-    
+
         public static string Encrypt(object value, object key)
         {
             var toEncrypt = JsonConvert.SerializeObject(value);

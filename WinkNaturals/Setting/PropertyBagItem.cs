@@ -3,10 +3,8 @@ using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Infrastructure.Services.ExigoService.Items.Requests;
-using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Models.Shopping.Interfaces;
 using WinkNaturals.Utilities;
@@ -414,7 +412,7 @@ namespace WinkNaturals.Setting
                         break;
                 }
 
-                if (request.IgnoreCache ) //!MemoryCache.Default.Contains(cacheKey))
+                if (request.IgnoreCache) //!MemoryCache.Default.Contains(cacheKey))
                 {
 
                     int warehouseID = request.Configuration.WarehouseID;
@@ -529,13 +527,13 @@ namespace WinkNaturals.Setting
                         }
                         else
                         {
-                           // MemoryCache.Default.Add(cacheKey, orderedItems, DateTime.Now.AddMinutes(GlobalSettings.Exigo.Api.CacheTimeout));
+                            // MemoryCache.Default.Add(cacheKey, orderedItems, DateTime.Now.AddMinutes(GlobalSettings.Exigo.Api.CacheTimeout));
                         }
                     }
                 }
 
-               // var data =  MemoryCache.Default.Get(cacheKey) as List<Item>;
-               // return data;
+                // var data =  MemoryCache.Default.Get(cacheKey) as List<Item>;
+                // return data;
 
                 return new List<Item>();
 

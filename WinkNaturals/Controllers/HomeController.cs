@@ -1,18 +1,12 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Customer;
 using WinkNatural.Web.Services.Interfaces;
-using WinkNaturals.Models; 
+using WinkNaturals.Models;
 using WinkNaturals.Setting;
 
 namespace WinkNaturals.Controllers
@@ -60,13 +54,13 @@ namespace WinkNaturals.Controllers
         {
             try
             {
-                return _homeService.GetReviews(); 
+                return _homeService.GetReviews();
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.ToString());
             }
-            
+
         }
     }
 }

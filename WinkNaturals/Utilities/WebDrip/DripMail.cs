@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WinkNaturals.Utilities.WebDrip
 {
@@ -40,7 +37,8 @@ namespace WinkNaturals.Utilities.WebDrip
             request.AddJsonBody(subscribers);
 
             // var res = client.Execute(request);
-            client.ExecuteAsync(request, response => {
+            client.ExecuteAsync(request, response =>
+            {
             });
         }
     }

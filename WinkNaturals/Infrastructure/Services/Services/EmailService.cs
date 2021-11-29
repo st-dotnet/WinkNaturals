@@ -23,7 +23,7 @@ namespace WinkNatural.Web.Services.Services
         {
             try
             {
-                var sendEmailResponse = await _exigoApiContext.GetContext().SendEmailAsync(new SendEmailRequest
+                var sendEmailResponse = await _exigoApiContext.GetContext(true).SendEmailAsync(new SendEmailRequest
                 {
                     CustomerID = request.CustomerId,
                     Body = request.Body,

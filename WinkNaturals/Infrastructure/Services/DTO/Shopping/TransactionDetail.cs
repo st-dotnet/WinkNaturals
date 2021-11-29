@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WinkNatural.Web.Services.DTO.Shopping
+﻿namespace WinkNatural.Web.Services.DTO.Shopping
 {
-   public class TransactionDetail
+    public class TransactionDetail
     {
         public string firstName { get; set; }
         public string lastName { get; set; }

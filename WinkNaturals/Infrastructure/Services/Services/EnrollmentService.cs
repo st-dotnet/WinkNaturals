@@ -1,13 +1,9 @@
 ﻿using Dapper;
 using Exigo.Api.Client;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.DTO;
@@ -17,9 +13,9 @@ namespace WinkNatural.Web.Services.Services
 {
     public class EnrollmentService : IEnrollmentService
     {
-		//private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
+        //private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
 
-		private readonly IConfiguration _config;
+        private readonly IConfiguration _config;
         public EnrollmentService(IConfiguration config)
         {
             _config = config;
@@ -37,7 +33,7 @@ namespace WinkNatural.Web.Services.Services
                     //We will be requesting three items
                     ItemCodes = new string[3]
                 };
-                request.ItemCodes[0] = "SK-Q1KIT3-21";
+                request.ItemCodes[0] = "SK -Q1KIT3-21";
                 request.ItemCodes[1] = "SK-Q1KIT2-21";
                 request.ItemCodes[2] = "SK-Q1KIT1-21";
                 using (var context = DbConnection.Sql())
@@ -132,7 +128,7 @@ namespace WinkNatural.Web.Services.Services
             }
         }
 
-     
+
 
         public Task<TransactionalResponse> ProcessExigoPayment()
         {

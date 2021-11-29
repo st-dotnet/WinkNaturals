@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WinkNaturals.Models.Shopping.Interfaces;
-using WinkNaturals.Utilities.Common.Exception;
 
 namespace WinkNaturals.Models
 {
@@ -11,6 +9,7 @@ namespace WinkNaturals.Models
     {
         public void Add(IShoppingCartItem item)
         {
+
             var newItem = new ShoppingCartItem(item);
 
             // Don't process items with no quantities
@@ -19,9 +18,9 @@ namespace WinkNaturals.Models
             // Get a list of all items that have the same item code and type.
             var preExistingItems = this.FindAll(i =>
                   i.ItemCode == newItem.ItemCode
-               && i.Type.Equals(newItem.Type)
-               && i.DynamicKitCategory == newItem.DynamicKitCategory
-               && i.ParentItemCode == newItem.ParentItemCode);
+            && i.Type.Equals(newItem.Type)
+              && i.DynamicKitCategory == newItem.DynamicKitCategory
+             && i.ParentItemCode == newItem.ParentItemCode);
 
             // If we returned any existing items that match the item code and type, we need to add to those existing items.
             if (preExistingItems.Count() > 0)
@@ -41,7 +40,6 @@ namespace WinkNaturals.Models
                 base.Add(newItem);
             }
         }
-
         public void Update(Guid id, decimal quantity)
         {
             var item = this.Where(c => c.ID == id).FirstOrDefault();
@@ -122,14 +120,14 @@ namespace WinkNaturals.Models
             // Don't process items with no quantities
             if (newItem.Quantity == 0) return false;
 
-             var fieldMax = Convert.ToInt32(item.Field4);
-       
-             // Get a list of all items that have the same item code and type.
-             var preExistingItems = this.FindAll(i =>
-                  i.ItemCode == newItem.ItemCode
-               && i.Type.Equals(newItem.Type)
-               && i.DynamicKitCategory == newItem.DynamicKitCategory
-               && i.ParentItemCode == newItem.ParentItemCode);
+            var fieldMax = Convert.ToInt32(item.Field4);
+
+            // Get a list of all items that have the same item code and type.
+            var preExistingItems = this.FindAll(i =>
+                 i.ItemCode == newItem.ItemCode
+              && i.Type.Equals(newItem.Type)
+              && i.DynamicKitCategory == newItem.DynamicKitCategory
+              && i.ParentItemCode == newItem.ParentItemCode);
             if (preExistingItems.FirstOrDefault() != null && (preExistingItems.FirstOrDefault().Quantity + newItem.Quantity) > fieldMax && fieldMax > 0)
                 return false;
             else

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WinkNaturals.Models.Shopping.Orders
+﻿namespace WinkNaturals.Models.Shopping.Orders
 {
     public class AutoOrderPaymentTypes
     {

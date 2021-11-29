@@ -1,5 +1,4 @@
 ﻿using System;
-using WinkNatural.Web.Common.Utils.Enum;
 using WinkNaturals.Models;
 
 namespace WinkNatural.Web.Services.DTO.Shopping
@@ -7,10 +6,10 @@ namespace WinkNatural.Web.Services.DTO.Shopping
     public class DynamicKitCategoryItem
     {
         public int ItemID { get; set; }
-        public string ItemDescription { get; set; } 
+        public string ItemDescription { get; set; }
         public string TinyImageUrl { get; set; }
         public string SmallImageUrl { get; set; }
-        public string LargeImageUrl { get; set; } 
+        public string LargeImageUrl { get; set; }
         // IShoppingCartItem Properties
         public Guid ID { get; set; }
         public string ItemCode { get; set; }

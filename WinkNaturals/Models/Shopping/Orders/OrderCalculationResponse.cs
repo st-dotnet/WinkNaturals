@@ -16,7 +16,7 @@ namespace WinkNaturals.Models.Shopping.Orders
         public decimal Total { get; set; }
         public List<OrderDetail> Details { get; set; }
 
-        public IEnumerable<ShipMethod> ShipMethods { get; set; }
+        //public IEnumerable<ShipMethod> ShipMethods { get; set; }
 
         public static implicit operator OrderCalculationResponse(Task<CalculateOrderResponse> v)
         {

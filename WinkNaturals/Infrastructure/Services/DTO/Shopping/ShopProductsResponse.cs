@@ -33,7 +33,7 @@ namespace WinkNatural.Web.Services.DTO.Shopping
         public bool IsGroupMaster { get; set; }
         public string GroupMasterItemDescription { get; set; }
         public string GroupMembersDescription { get; set; }
-       // public IEnumerable<ItemGroupMember> GroupMembers { get; set; }
+        // public IEnumerable<ItemGroupMember> GroupMembers { get; set; }
 
         public bool IsDynamicKitMaster { get; set; }
         public IEnumerable<DynamicKitCategory> DynamicKitCategories { get; set; }
@@ -105,7 +105,7 @@ namespace WinkNatural.Web.Services.DTO.Shopping
             {
                 Field1 = ((int)value).ToString();
             }
-        } 
+        }
         public string Image_01
         {
             get

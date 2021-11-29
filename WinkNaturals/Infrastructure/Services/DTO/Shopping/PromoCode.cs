@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WinkNatural.Web.Services.DTO.Shopping
 {
-   public class PromoCode
+    public class PromoCode
     {
         public string Code { get; set; }
         public DateTime StartDate { get; set; }

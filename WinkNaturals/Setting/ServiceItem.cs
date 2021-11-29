@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Infrastructure.Services.ExigoService.Items.Requests;
-using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Models.Shopping.Interfaces;
 using WinkNaturals.Setting.Interfaces;

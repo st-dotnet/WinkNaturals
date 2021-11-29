@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WinkNaturals.Models.Shopping.Interfaces
 {
@@ -36,7 +33,7 @@ namespace WinkNaturals.Models.Shopping.Interfaces
         bool IsDynamicKitMaster { get; set; }
         string GroupMasterItemDescription { get; set; }
         string GroupMembersDescription { get; set; }
-      // IEnumerable<ItemGroupMember> GroupMembers { get; set; }
+        // IEnumerable<ItemGroupMember> GroupMembers { get; set; }
 
         int PriceTypeID { get; set; }
         string CurrencyCode { get; set; }

@@ -25,6 +25,7 @@ namespace WinkNatural.Web.Services.DTO.Customer
             Token = token;
             Email = user.Email;
             TypeOfCustomer = user.CustomerType;
+
         }
     }
 }

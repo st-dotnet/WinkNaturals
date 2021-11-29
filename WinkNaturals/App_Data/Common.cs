@@ -1,12 +1,10 @@
 
 namespace Resources
 {
-    using System.Threading;
     using ExigoResourceSet.Providers.Resource;
-    using System.Globalization;
-    using System.Web;
     using System.Collections.Generic;
-    using Microsoft.Extensions.Hosting.Internal;
+    using System.Globalization;
+    using System.Threading;
 
 
     public static class Common
@@ -6350,20 +6348,20 @@ namespace Resources
         /////</summary>
         // public static string Zipcode => GetObject("Zipcode", Thread.CurrentThread.CurrentUICulture); 
 
-        public static string GetObject(string resourceName, string culture,string path )
+        public static string GetObject(string resourceName, string culture, string path)
         {
-            return DbResourceProvider.GetResourceValue("Common",path, culture, resourceName);
-        } 
+            return DbResourceProvider.GetResourceValue("Common", path, culture, resourceName);
+        }
 
         public static string GetObject(string resourceName)
         {
             return null;//DbResourceProvider.GetResourceValue( Thread.CurrentThread.CurrentUICulture.Name, resourceName);
-        } 
+        }
 
-        private static string GetCarouselObject(string resourceName, CultureInfo culture, Dictionary<string,string> filters)
+        private static string GetCarouselObject(string resourceName, CultureInfo culture, Dictionary<string, string> filters)
         {
             return null;//DbResourceProvider.GetCarouselObject("Common", culture.Name, resourceName, filters);
-        } 
+        }
 
         public static bool IsValueInList(string resourceName, string valueToCompare)
         {

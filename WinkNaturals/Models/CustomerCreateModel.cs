@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WinkNaturals.Models
 {
     public class CustomerCreateModel
     {
-        public int CustomerID { get; set; }     
+        public int CustomerID { get; set; }
         public string InsertEnrollerTree { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
