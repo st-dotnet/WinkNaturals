@@ -1,10 +1,8 @@
-﻿using System;
+
+using Exigo.Api.Client;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Exigo.Api.Client;
 using WinkNaturals.Models;
-using WinkNaturals.Models.Shopping.Interfaces;
 
 namespace WinkNaturals.Setting
 {
@@ -13,6 +11,7 @@ namespace WinkNaturals.Setting
         public string DefaultConnection { get; set; }
         public string DefaultConnectionforCache { get; set; }
     }
+
     public class ConfigSettings
     {
         public string Title { get; set; }
@@ -39,8 +38,25 @@ namespace WinkNaturals.Setting
 
         public AppSettings AppSettings { get; set; }
 
+        public TokenEx TokenEx { get; set; }
+
+        public Backofficelogin Backofficelogin { get; set; }
+
+
 
     }
+    public  class Backofficelogin
+    {
+        public string DistributorBackofficeUrl { get; set; }
+        public string RetailCustomerBackofficeUrl { get; set; }
+    }
+    public class TokenEx
+    {
+        public string APIKey { get; set; }
+        public string TokenExID { get; set; }
+        public string TokenScheme { get; set; }
+    }
+
     public class AppSettings
     {
         public string billerAccountId { get; set; }
@@ -50,7 +66,7 @@ namespace WinkNaturals.Setting
 
         public string Secret { get; set; }
 
-    } 
+    }
     public class JwtSettings
     {
         public string Key { get; set; }
@@ -74,10 +90,10 @@ namespace WinkNaturals.Setting
     public class Api
     {
         public int CacheTimeout { get; set; }
-        public  string LoginName  { get; set; }
-        public  string Password  { get; set; }
+        public string LoginName { get; set; }
+        public string Password { get; set; }
         //Errors out without exception and won't authenticate when CompanyKey is incorrect
-        public  string CompanyKey  { get; set; }
+        public string CompanyKey { get; set; }
     }
     public class GlobalItems
     {
@@ -87,8 +103,8 @@ namespace WinkNaturals.Setting
     {
         public string BaseReplicatedUrl { get; set; }
         public string Phone { get; set; }
-      
-       
+
+
     }
 
     public class ReplicatedSites
@@ -110,10 +126,10 @@ namespace WinkNaturals.Setting
     }
     public class YotPo
     {
-        public  string APIUrl { get; set; }
-        public  string ApiKey { get; set; }
-        public  string ApiSecrete { get; set; }
-        public  string Platform { get; set; }
+        public string APIUrl { get; set; }
+        public string ApiKey { get; set; }
+        public string ApiSecrete { get; set; }
+        public string Platform { get; set; }
         public string HomePageEndpoints { get; set; }
 
         public string ApiBaseUrl { get; set; }
@@ -132,16 +148,15 @@ namespace WinkNaturals.Setting
     }
     public class Globalization
     {
-        public  string CookieKey { get; set; }
-        public  string CountryCookieName { get; set; }
-        public  string CountryCookieChosenName { get; set; }
-        public  string SiteCultureCookieName { get; set; }
-        public  string LanguageCookieName { get; set; }
-        public  string LogInAlertCookieName { get; set; }
-        public  string BaseImageURL { get; set; }
+        public string CookieKey { get; set; }
+        public string CountryCookieName { get; set; }
+        public string CountryCookieChosenName { get; set; }
+        public string SiteCultureCookieName { get; set; }
+        public string LanguageCookieName { get; set; }
+        public string LogInAlertCookieName { get; set; }
+        public string BaseImageURL { get; set; }
         public string ReplicatedSites { get; set; }
     }
-
     public class Autoorder
     {
         public static List<int> AvailableFrequencyTypeIDs
@@ -162,14 +177,14 @@ namespace WinkNaturals.Setting
     {
         //JS, 09/11/2015
         //Removed the Comma because Commas will break Cookie Names in Safari
-         public string MarketCookieName { get; set; }
+        public string MarketCookieName { get; set; }
 
         public List<Market> AvailableMarkets = new List<Market>
             {
                 new UnitedStatesMarket()
             };
     }
-   
+
     public class EmailConfiguration
     {
         public string NoReplyEmail { get; set; }

@@ -1,19 +1,14 @@
 ﻿using Exigo.Api.Client;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.DTO.Customer;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Models;
@@ -24,7 +19,7 @@ namespace WinkNatural.Web.Services.Services
 {
     public class AuthenticateService : IAuthenticateService
     {
-       // private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
+        // private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
         private readonly IConfiguration _config;
         private readonly ICustomerService _customerService;
         private readonly IExigoApiContext _exigoApiContext;
@@ -52,7 +47,7 @@ namespace WinkNatural.Web.Services.Services
         {
             try
             {
-                var res = await _exigoApiContext.GetContext().CreateCustomerAsync(request);
+                var res = await _exigoApiContext.GetContext(true).CreateCustomerAsync(request);
                 return res;
             }
             catch (Exception ex)
@@ -71,19 +66,18 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 //Exigo service login request
-                var result = await _exigoApiContext.GetContext().AuthenticateCustomerAsync(request);
+                var result = await _exigoApiContext.GetContext(false).AuthenticateCustomerAsync(request);
                 if (result.CustomerID == 0)
                 {
                     return new CustomerCreateResponse { ErrorMessage = "User is not authenticated." };
                 }
                 // Get customer
                 var customer = await _customerService.GetCustomer(result.CustomerID);
-               // var token = GenerateJwtToken(result, customer.Customers[0].Email);
+                // var token = GenerateJwtToken(result, customer.Customers[0].Email);
                 var token = GenerateJwtToken(result, customer.Customers[0].Email);
                 return new CustomerCreateResponse
                 {
-
-                    CustomerId=customer.Customers[0].CustomerID,
+                    CustomerId = customer.Customers[0].CustomerID,
                     Email = customer.Customers[0].Email,
                     LoginName = customer.Customers[0].LoginName,
                     Phone = customer.Customers[0].Phone,
@@ -107,7 +101,7 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 var customerResult = true;
-                if(request.CustomerId==0) return new CustomerUpdateResponse { Success = false, ErrorMessage = "Some issues occurred during updating the customer!" };
+                if (request.CustomerId == 0) return new CustomerUpdateResponse { Success = false, ErrorMessage = "Some issues occurred during updating the customer!" };
                 var customer = new CustomerResponse();
                 try
                 {
@@ -121,9 +115,14 @@ namespace WinkNatural.Web.Services.Services
 
                 if (!customerResult) return new CustomerUpdateResponse { Success = false, ErrorMessage = "Unable to find the customer!" };
                 //Customer update password request
-                var customerUpdateRequest = new UpdateCustomerRequest { CustomerID = request.CustomerId, LoginPassword = request.NewPassword
-                ,LoginName=customer.LoginName };
-                var result = await _exigoApiContext.GetContext().UpdateCustomerAsync(customerUpdateRequest);
+                var customerUpdateRequest = new UpdateCustomerRequest
+                {
+                    CustomerID = request.CustomerId,
+                    LoginPassword = request.NewPassword
+                ,
+                    LoginName = customer.LoginName
+                };
+                var result = await _exigoApiContext.GetContext(true).UpdateCustomerAsync(customerUpdateRequest);
                 return new CustomerUpdateResponse { Success = true };
             }
             catch (Exception ex)
@@ -143,11 +142,11 @@ namespace WinkNatural.Web.Services.Services
             {
                 //Get customer by login name
                 var getCustomerRequest = new GetCustomersRequest { Email = request.Email };
-                var customer = await _exigoApiContext.GetContext().GetCustomersAsync(getCustomerRequest);
+                var customer = await _exigoApiContext.GetContext(true).GetCustomersAsync(getCustomerRequest);
 
                 var body = $"To reset your password click this link! <a href={request.Url}/{customer.Customers[0].CustomerID}>Reset Password</a>";
 
-                var sendEmail = await _exigoApiContext.GetContext().SendEmailAsync(new SendEmailRequest
+                var sendEmail = await _exigoApiContext.GetContext(true).SendEmailAsync(new SendEmailRequest
                 {
                     CustomerID = customer.Customers[0].CustomerID,
                     Body = body,
@@ -175,12 +174,12 @@ namespace WinkNatural.Web.Services.Services
                 //Check if Email is exists or not
                 if (!string.IsNullOrEmpty(request.Email) && string.IsNullOrEmpty(request.Username))
                 {
-                    var customerEmailResult = await _exigoApiContext.GetContext().GetCustomersAsync(new GetCustomersRequest { Email = request.Email });
+                    var customerEmailResult = await _exigoApiContext.GetContext(true).GetCustomersAsync(new GetCustomersRequest { Email = request.Email });
                     if (customerEmailResult.Customers.Length != 0) return true;
                 }
                 if (!string.IsNullOrEmpty(request.Username))//Check if username is exists or not
                 {
-                    var customerUsernameResult = await _exigoApiContext.GetContext().GetCustomersAsync(new GetCustomersRequest { LoginName = request.Username });
+                    var customerUsernameResult = await _exigoApiContext.GetContext(true).GetCustomersAsync(new GetCustomersRequest { LoginName = request.Username });
                     if (customerUsernameResult.Customers.Length != 0) return true;
                 }
                 return false;
@@ -211,7 +210,7 @@ namespace WinkNatural.Web.Services.Services
         }
 
         //Generate JWT token
-        private string GenerateJwtToken(AuthenticateCustomerResponse customer,string email)
+        private string GenerateJwtToken(AuthenticateCustomerResponse customer, string email)
         {
             try
             {
@@ -269,7 +268,7 @@ namespace WinkNatural.Web.Services.Services
 
         public CustomerCreateModel GetById(int id)
         {
-            return _users.FirstOrDefault(x => x.CustomerID==id);
+            return _users.FirstOrDefault(x => x.CustomerID == id);
         }
         private string generateJwtToken(CustomerCreateModel user)
         {

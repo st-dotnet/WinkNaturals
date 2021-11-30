@@ -1,16 +1,14 @@
 ﻿using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Threading.Tasks;
 using WinkNaturals.Setting.Interfaces;
 
 namespace WinkNaturals.Setting
 {
     public class SqlInMemoryCacheProvider : ICacheProvider
-    { 
+    {
         private readonly IOptions<ConnectionStrings> _config;
 
         public SqlInMemoryCacheProvider(IOptions<ConnectionStrings> config)
@@ -244,6 +242,6 @@ namespace WinkNaturals.Setting
                 command.ExecuteNonQuery();
             }
         }
-     
+
     }
 }

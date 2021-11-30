@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WinkNatural.Web.Services.Utilities
+﻿namespace WinkNatural.Web.Services.Utilities
 {
-   public class QueryUtility
+    public class QueryUtility
     {
         public static string itemCategoryList_Query = @";WITH webcat(WebCategoryID, WebCategoryDescription, ParentID, NestedLevel, SortOrder)AS(SELECT WebCategoryID,WebCategoryDescription,
 									ParentID = COALESCE(ParentID, 0),
@@ -276,7 +270,7 @@ namespace WinkNatural.Web.Services.Utilities
 						                    AND il.LanguageID = @languageID
 					            WHERE i.ItemCode in @itemCodes";
 
-		public static string getProductDetailById_Query = @"
+        public static string getProductDetailById_Query = @"
                 			    SELECT
 	                                ItemID = i.ItemID,
 	                                ItemCode = i.ItemCode,
@@ -295,13 +289,13 @@ namespace WinkNatural.Web.Services.Utilities
 	                                ShortDetail2 = COALESCE(il.ShortDetail2, i.ShortDetail2),
 	                                ShortDetail3 = COALESCE(il.ShortDetail3, i.ShortDetail3),
 	                                ShortDetail4 = COALESCE(il.ShortDetail4, i.ShortDetail4),"
-						 + (true
-						   ? @"LongDetail1 = COALESCE(il.LongDetail, i.LongDetail),
+                         + (true
+                           ? @"LongDetail1 = COALESCE(il.LongDetail, i.LongDetail),
 	                                LongDetail2 = COALESCE(il.LongDetail2, i.LongDetail2),
 	                                LongDetail3 = COALESCE(il.LongDetail3, i.LongDetail3),
 	                                LongDetail4 = COALESCE(il.LongDetail4, i.LongDetail4),"
-						   : string.Empty)
-						 + @"IsVirtual = i.IsVirtual,
+                           : string.Empty)
+                         + @"IsVirtual = i.IsVirtual,
 	                                AllowOnAutoOrder = i.AllowOnAutoOrder,
 	                                IsGroupMaster = i.IsGroupMaster,
 	                                IsDynamicKitMaster = cast(case when i.ItemTypeID = 2 then 1 else 0 end as bit),
@@ -350,7 +344,7 @@ namespace WinkNatural.Web.Services.Utilities
 					            WHERE i.ItemCode in @itemCodes
                           ";
 
-		public static string GetSpecialItem_Query = @"SELECT top 1
+        public static string GetSpecialItem_Query = @"SELECT top 1
 	                                ItemID = i.ItemID,
 	                                ItemCode = i.ItemCode,
 	                                ItemDescription = i.ItemDescription,
@@ -375,7 +369,7 @@ namespace WinkNatural.Web.Services.Utilities
 						                    AND il.LanguageID = @languageID
 					            WHERE i.Field5 is not null and  i.Field5 <> ''";
 
-		public static string GetCoupenCode_Query = @" SELECT TOP 1
+        public static string GetCoupenCode_Query = @" SELECT TOP 1
 									[Code]
 									,[StartDate]
 									,[EndDate]
@@ -393,5 +387,23 @@ namespace WinkNatural.Web.Services.Utilities
 									,[CustomerTypes]
 									FROM [OrderCalcContext].[CouponCodes]
 									WHERE [Code] = @Code";
+
+		public static string GetCoupenCodes = @" SELECT 
+									[Code]
+									,[StartDate]
+									,[EndDate]
+									,[MinSubtotal]
+									,[FreeShipping]
+									,[PercentOff]
+									,[WebCategoryID]
+									,[MinRank]
+									,[MaxRank]
+									,[MinSubtotal]
+									,[SingleUseByCustomer]
+									,[DisplayOnWeb]
+									,[CreatedDate]
+									,[RowGuid]
+									,[CustomerTypes]
+									FROM [OrderCalcContext].[CouponCodes]";
 	}
 }

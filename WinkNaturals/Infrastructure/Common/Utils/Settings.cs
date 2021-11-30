@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static WinkNaturals.Utilities.Common.Settings;
+﻿using static WinkNaturals.Utilities.Common.Settings;
 
 namespace WinkNatural.Web.Common.Utils
 {
@@ -29,6 +24,6 @@ namespace WinkNatural.Web.Common.Utils
                 };
             }
         }
-      
+
     }
 }

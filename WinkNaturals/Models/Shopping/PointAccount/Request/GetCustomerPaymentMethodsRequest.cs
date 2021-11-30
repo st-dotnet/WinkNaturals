@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WinkNaturals.Models.Shopping.PointAccount.Request
+﻿namespace WinkNaturals.Models.Shopping.PointAccount.Request
 {
     public class GetCustomerPaymentMethodsRequest
     {

@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Infrastructure.Services.ExigoService.Items.Requests;
 using WinkNaturals.Models;
@@ -76,18 +75,18 @@ namespace WinkNaturals.Setting
 
         private void PopulateAdditionalItemData(IEnumerable<Item> items, GetItemsRequest request)
         {
-            
-                GlobalUtilities.RunAsyncTasks(
-                    () => { PopulateItemImages(items); },
-                    () => { PopulateGroupMembers(items, request); },
-                    () =>
+
+            GlobalUtilities.RunAsyncTasks(
+                () => { PopulateItemImages(items); },
+                () => { PopulateGroupMembers(items, request); },
+                () =>
+                {
+                    if (request.IncludeDynamicKitChildren)
                     {
-                        if (request.IncludeDynamicKitChildren)
-                        {
-                            PopulateDynamicKitMembers(items, (IOrderConfiguration)request.Configuration, request.LanguageID, request);
-                        }
+                        PopulateDynamicKitMembers(items, (IOrderConfiguration)request.Configuration, request.LanguageID, request);
                     }
-                );
+                }
+            );
         }
 
         private void PopulateDynamicKitMembers(IEnumerable<Item> items, IOrderConfiguration configuration, int languageID, GetItemsRequest request)
@@ -956,7 +955,7 @@ namespace WinkNaturals.Setting
             {
                 throw;
             }
-           
+
         }
 
         public IEnumerable<Item> GetShoppingCartItem(GetItemsRequest request, bool includeItemDescriptions = true)

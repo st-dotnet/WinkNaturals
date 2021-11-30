@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WinkNatural.Web.Services.DTO.Shopping;
-using WinkNaturals.Models.Shopping.Interfaces;
+﻿using WinkNaturals.Models.Shopping.Interfaces;
 
 namespace WinkNaturals.Infrastructure.Services.ExigoService.Items.Requests
 {

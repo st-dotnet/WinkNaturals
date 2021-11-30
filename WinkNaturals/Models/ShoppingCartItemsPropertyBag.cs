@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WinkNaturals.Models.Shopping.Interfaces;
+﻿using WinkNaturals.Models.Shopping.Interfaces;
 
 namespace WinkNaturals.Models
 {
@@ -14,8 +10,8 @@ namespace WinkNaturals.Models
         #region Constructors
         public ShoppingCartItemsPropertyBag()
         {
-           Expires = expires;
-            Items = new ShoppingCartItemCollection();
+            this.Expires = expires;
+            this.Items = new ShoppingCartItemCollection();
         }
         #endregion
 
@@ -28,16 +24,16 @@ namespace WinkNaturals.Models
         #endregion
 
         #region Methods
-        //public override T OnBeforeUpdate<T>(T propertyBag)
-        //{
-        //    propertyBag.Version = version;
+        public override T OnBeforeUpdate<T>(T propertyBag)
+        {
+            propertyBag.Version = version;
 
-        //    return propertyBag;
-        //}
-        //public override bool IsValid()
-        //{
-        //    return this.Version == version;
-        //}
+            return propertyBag;
+        }
+        public override bool IsValid()
+        {
+            return this.Version == version;
+        }
         #endregion
     }
 }

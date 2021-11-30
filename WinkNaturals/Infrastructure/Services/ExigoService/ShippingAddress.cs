@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WinkNaturals.Infrastructure.Services.ExigoService
 {
@@ -51,7 +47,7 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService
         public string Company { get; set; }
 
         [Required(ErrorMessageResourceName = "PhoneNumberRequired"), DataType(DataType.PhoneNumber), Display(Name = "PhoneNumber")]
-      
+
         public string Phone { get; set; }
 
         [Required(ErrorMessageResourceName = "EmailRequired"), DataType(DataType.EmailAddress), Display(Name = "Email")]

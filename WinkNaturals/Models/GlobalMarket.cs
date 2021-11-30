@@ -1,15 +1,13 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WinkNaturals.Setting;
 
 namespace WinkNaturals.Models
 {
     public class GlobalMarket
     {
-        private  readonly IOptions<ConfigSettings> _config;
+        private readonly IOptions<ConfigSettings> _config;
 
         public GlobalMarket(IOptions<ConfigSettings> config)
         {

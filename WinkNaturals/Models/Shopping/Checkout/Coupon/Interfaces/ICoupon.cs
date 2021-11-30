@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces
 {
-   public  interface ICoupon
+    public interface ICoupon
     {
         string Code { get; set; }
         DateTime StartDate { get; set; }

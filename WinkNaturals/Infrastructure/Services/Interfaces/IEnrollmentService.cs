@@ -1,8 +1,8 @@
 ﻿using Exigo.Api.Client;
-using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO;
+using WinkNatural.Web.Services.DTO.Shopping;
 
 namespace WinkNatural.Web.Services.Interfaces
 {
@@ -11,8 +11,11 @@ namespace WinkNatural.Web.Services.Interfaces
         //Get packs data
         List<EnrollmentResponse> GetItems();
 
-       
+
         //Process exigo payment
-        Task<TransactionalResponse> ProcessExigoPayment(); //TransactionalRequest request
+        Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId);
+
+      //  string GetDistributors(string query);
+
     }
 }

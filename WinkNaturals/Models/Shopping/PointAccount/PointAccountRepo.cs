@@ -1,11 +1,8 @@
 ﻿using Dapper;
 using Exigo.Api.Client;
-using Microsoft.AspNetCore.Http;
-using Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder;
 using WinkNaturals.Infrastructure.Services.ExigoService.BankAccount;
@@ -134,7 +131,7 @@ namespace WinkNaturals.Models.Shopping.PointAccount
                 BillingZip = card.BillingAddress.Zip,
                 BillingCountry = card.BillingAddress.Country
             };
-            var response = _exigoApiContext.GetContext().SetAccountCreditCardTokenAsync(request);//DAL.WebService().SetAccountCreditCardToken(request);
+            var response = _exigoApiContext.GetContext(true).SetAccountCreditCardTokenAsync(request);//DAL.WebService().SetAccountCreditCardToken(request);
 
 
             return card;
@@ -142,11 +139,11 @@ namespace WinkNaturals.Models.Shopping.PointAccount
         public IEnumerable<IPaymentMethod> GetCustomerPaymentMethods(GetCustomerPaymentMethodsRequest request, IEnumerable<AutoOrder> autoOrders = null)
         {
             var methods = new List<IPaymentMethod>();
-          //  if (!HttpContext.Request.IsAuthenticated) return methods.AsEnumerable();
+            //  if (!HttpContext.Request.IsAuthenticated) return methods.AsEnumerable();
 
 
             // Get the customer's billing info
-            var billing = _exigoApiContext.GetContext().GetCustomerBillingAsync(new GetCustomerBillingRequest //DAL.WebService().GetCustomerBilling(new GetCustomerBillingRequest
+            var billing = _exigoApiContext.GetContext(true).GetCustomerBillingAsync(new GetCustomerBillingRequest //DAL.WebService().GetCustomerBilling(new GetCustomerBillingRequest
             {
                 CustomerID = request.CustomerID
             });
@@ -243,6 +240,31 @@ namespace WinkNaturals.Models.Shopping.PointAccount
             public bool IsVirtual { get; set; }
             public string ImageUrl { get; set; }
         }
+        public static void DeleteCustomerCreditCard(int customerID, CreditCardType type)
+        {
+            // If this is a new credit card, don't delete it - we have nothing to delete
+            if (type == CreditCardType.New) return;
 
+
+            // Save the a blank copy of the credit card
+            // Passing a blank token will do the trick
+            var request = new SetAccountCreditCardTokenRequest
+            {
+                CustomerID = customerID,
+
+                CreditCardAccountType = (type == CreditCardType.Primary) ? AccountCreditCardType.Primary : AccountCreditCardType.Secondary,
+                CreditCardToken = string.Empty,
+                ExpirationMonth = 1,
+                ExpirationYear = DateTime.Now.Year + 1,
+
+                BillingName = string.Empty,
+                BillingAddress = string.Empty,
+                BillingCity = string.Empty,
+                BillingState = string.Empty,
+                BillingZip = string.Empty,
+                BillingCountry = string.Empty
+            };
+            // var response = DAL.WebService().SetAccountCreditCardToken(request);
+        }
     }
 }

@@ -1,11 +1,6 @@
-﻿using Exigo.Api.Client;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using WinkNatural.Web.Services.DTO.Customer; 
+using WinkNatural.Web.Services.DTO.Customer;
 using WinkNaturals.Models;
 
 namespace WinkNatural.Web.Services.Interfaces

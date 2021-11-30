@@ -1,16 +1,11 @@
 ﻿using ExigoAPIRef;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using WinkNaturals.Models;
-using WinkNaturals.Models.Shopping.Interfaces;
-using WinkNaturals.Setting;
 
 namespace WinkNaturals.Utilities
 {
@@ -26,8 +21,8 @@ namespace WinkNaturals.Utilities
         {
             return strings.Where(s => !string.IsNullOrEmpty(s)).FirstOrDefault();
         }
-        
-  
+
+
         /// <summary>
         /// Condenses the provided string to the provided max length of characters. If the content is longer than the max length, "..." will be appended to the end.
         /// </summary>
@@ -306,9 +301,9 @@ namespace WinkNaturals.Utilities
             Task.WaitAll(tasks.ToArray());
             tasks.Clear();
         }
-      
-           
-       
+
+
+
     }
-    }
+}
 

@@ -1,28 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.Interfaces;
-using System.Net.Http;
-using WinkNaturals.Models;
-using Newtonsoft.Json;
-using static WinkNaturals.Models.GetPaymentModel;
-using WinkNatural.Web.Services.Services;
-using Microsoft.Extensions.Configuration;
-
+using WinkNaturals.Models.BraintreeService;
+using WinkNaturals.Setting;
 
 namespace WinkNaturals.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class PaymentController : BaseController
     {
-        private readonly IConfiguration _config;
+        private readonly IOptions<ConfigSettings> _config;
         private readonly IPaymentService _paymentService;
         private readonly ICustomerService _customerService;
 
-        public PaymentController(IConfiguration config,
+        public PaymentController(IOptions<ConfigSettings> config,
             IPaymentService paymentService,
             ICustomerService customerService)
         {
@@ -30,9 +23,11 @@ namespace WinkNaturals.Controllers
             _paymentService = paymentService;
             _customerService = customerService;
         }
-
-
-
+        [HttpGet("GenerateCreditCardToken")]
+        public IActionResult GenerateCreditCardToken(string cardNumber)
+        {
+            return Ok(_paymentService.GenerateCreditCardToken(cardNumber));
+        }
         [HttpGet("ProcessPayment")]
         public IActionResult ProcessPayment(WinkPaymentRequest winkPaymentRequest)
         {
@@ -45,7 +40,6 @@ namespace WinkNaturals.Controllers
             return Ok(_paymentService.CreateCustomerProfile(model));
         }
 
-
         // This code is for make payment using propay account
         [HttpPost("CreatePaymentUsingProPay")]
         public IActionResult CreatePaymentUsingProPay(GetPaymentRequest getPaymentProPayModel)
@@ -57,6 +51,17 @@ namespace WinkNaturals.Controllers
         public IActionResult CreatePaymentUsingAuthorizeNet(AddPaymentModel model)
         {
             return Ok(_paymentService.PaymentUsingAuthorizeNet(model));
+        }
+
+        [HttpGet("GetClientToken")]
+        public IActionResult GetClientToken()
+        {
+            var braintreeService = new BraintreeService(_config);
+            var paypalClientToken = braintreeService.GetClientToken();
+            return Ok(new
+            {
+                token = paypalClientToken
+            });
         }
 
     }

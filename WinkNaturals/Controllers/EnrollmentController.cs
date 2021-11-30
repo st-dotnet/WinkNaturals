@@ -1,14 +1,9 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNatural.Web.Services.Utilities;
-using WinkNaturals.Models;
 
 namespace WinkNaturals.Controllers
 {
@@ -36,7 +31,7 @@ namespace WinkNaturals.Controllers
 
                 foreach (var item in items)
                 {
-                    item.ProductImage = ProductImageUtility.GetProductImageUtility(item.LargeImageUrl); 
+                    item.ProductImage = ProductImageUtility.GetProductImageUtility(item.LargeImageUrl);
                 }
                 items = items.OrderByDescending(x => x.Price).ToList();
                 return Ok(items);
@@ -46,6 +41,16 @@ namespace WinkNaturals.Controllers
             {
                 throw new Exception(ex.ToString());
             }
+        }
+
+        /// <summary>
+        /// SubmitCheckout
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("SubmitCheckout")]
+        public IActionResult SubmitCheckout(TransactionalRequestModel transactionRequests)
+        {
+            return Ok(_enrollmentService.SubmitCheckout(transactionRequests, Identity.CustomerID));
         }
     }
 }

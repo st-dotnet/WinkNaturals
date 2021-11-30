@@ -1,12 +1,12 @@
 ﻿using Exigo.Api.Client;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using WinkNatural.Web.Services.DTO;
+using System.Web.Http.Results;
+using System.Web.Mvc;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Infrastructure.Services.ExigoService;
-using WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder;
 using WinkNaturals.Models;
-using WinkNaturals.Models.Shopping.Orders;
+using Address = WinkNatural.Web.Services.DTO.Shopping.Address;
 
 namespace WinkNatural.Web.Services.Interfaces
 {
@@ -15,8 +15,6 @@ namespace WinkNatural.Web.Services.Interfaces
         //Get shop products list
         //Get shop products list
         List<ShopProductsResponse> GetShopProducts(int categoryID, int sortBy, int pageSize = 18, int pageIndex = 0, string[] sizes = null);
-
-
         //Get item category
         List<ItemCategoryResponse> GetItemCategory(int webCategoryID);
 
@@ -24,7 +22,7 @@ namespace WinkNatural.Web.Services.Interfaces
 
         ShopProductsResponse AddToCart(ShopProductsResponse shopProducts);
         byte[] GetProductImage(string imageName);
-       Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest);
+        Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId);
         Task<CalculateOrderResponse> CalculateOrder(CalculateOrderRequest calculateOrder);
         Task<CreateOrderResponse> CreateOrder(CreateOrderRequest createOrderRequest);
         Task<CreateOrderImportResponse> CreateOrderImport(CreateOrderImportRequest createOrderImportRequest);
@@ -45,13 +43,11 @@ namespace WinkNatural.Web.Services.Interfaces
         List<Address> GetCustomerAddress(int customerID);
         Task<Address> AddUpdateCustomerAddress(int customerID, Address address);
         Task<GetWarehousesResponse> GetWarehouses(GetWarehousesRequest warehousesRequest);
-        Task<GetOrdersResponse> GetOrder(GetOrdersRequest ordersRequest);
+        Task<GetOrdersResponse> GetOrder(GetOrdersRequest ordersRequest, int customerId);
         List<ShopProductsResponse> SearchProducts(string query);
 
         // static IEnumerable<ShopProductsResponse> GetItems(GetItemListRequest request, bool includeItemDescriptions = true);
-
-        ShopProductsResponse GetSpecialItem();
-        PromoCode GetPromoDetail(string promoCode);
+        PromoCode GetPromoDetail(string promoCode, int customerId);
 
         //To Get customer detail for editing.
         Task<GetCustomersResponse> GetCustomerRealTime(int customerID);
@@ -71,6 +67,13 @@ namespace WinkNatural.Web.Services.Interfaces
         Task<AdjustInventoryResponse> AdjustInventory(AdjustInventoryRequest adjustInventoryRequest);
         Task<SetItemSubscriptionResponse> SetItemSubscription(SetItemSubscriptionRequest setItemSubscriptionRequest);
         Task<SetItemPointAccountResponse> SetItemPointAccount(SetItemPointAccountRequest setItemPointAccountRequest);
-        object CalculateOrder(OrderCalculationRequest orderCalcRequest);
+        Task<CreatePartyResponse> CreateParty(CreatePartyRequest createPartyRequest);
+        Task<GetPartiesResponse> GetParty(int partyId);
+
+        Task<GetOrdersResponse> GetCustomerReviewOrder(int customerId, int OrderId);
+        Task<GetCustomersResponse> GetCustomer(int customerID);
+        ShopProductsResponse GetSpecialItem();
+
+        
     }
 }

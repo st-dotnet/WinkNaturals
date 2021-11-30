@@ -1,23 +1,17 @@
 ﻿using Exigo.Api.Client;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WinkNatural.Web.Common;
+using WinkNaturals.Models.Shopping;
 
 namespace WinkNatural.Web.Services.DTO.Shopping
 {
     public class TransactionalRequestModel
     {
-        public CreateCustomerRequest createCustomerRequest { get; set; }
-        public CreateOrderRequest createOrderRequest { get; set; }
+        //public List<Item> ItemList { get; set; }
 
-        public ChargeCreditCardTokenRequest chargeCreditCardTokenRequest { get; set; }
-
-        public CreateAutoOrderRequest createAutoOrderRequest { get; set; }
-
-        public SetAccountCreditCardTokenRequest setAccountCreditCardTokenRequest { get; set; }
-
+        public CreateOrderRequest CreateOrderRequest { get; set; }
+        public ChargeCreditCardTokenRequest ChargeCreditCardTokenRequest { get; set; }
+        public CreateAutoOrderRequest CreateAutoOrderRequest { get; set; }
+        public SetAccountCreditCardTokenRequest SetAccountCreditCardTokenRequest { get; set; }
+        public List<SetListItemRequest> SetListItemRequest { get; set; }
     }
 }

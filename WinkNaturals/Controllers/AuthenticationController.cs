@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using WinkNatural.Web.Common;
 using WinkNatural.Web.Common.Utils.Enum;
@@ -13,7 +14,6 @@ using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
-using static WinkNatural.Web.Services.Services.AuthenticateService;
 
 namespace WinkNatural.Web.WinkNaturals.Controllers
 {
@@ -31,7 +31,7 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
         private readonly ICustomerService _customerService;
 
         public AuthenticationController(IAuthenticateService authenticate,
-            IMapper mapper, IHttpContextAccessor httpContextAccessor, 
+            IMapper mapper, IHttpContextAccessor httpContextAccessor,
             IOptions<ConfigSettings> configSettings,
             IExigoApiContext exigoApiContext, IGetCurrentMarket getCurrentMarket, ICustomerService customerService)
         {
@@ -43,7 +43,7 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
             _getCurrentMarket = getCurrentMarket;
             _customerService = customerService;
         }
-      
+
         #region Customer
 
         /// <summary>
@@ -56,8 +56,8 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
         {
             try
             {
-                var cookieValueFromContext = _httpContextAccessor.HttpContext.Request.Cookies[_configSettings.Value.Globalization.CookieKey]; 
-                var CountryCode = "US"; 
+                var cookieValueFromContext = _httpContextAccessor.HttpContext.Request.Cookies[_configSettings.Value.Globalization.CookieKey];
+                var CountryCode = "US";
                 var configuration = _getCurrentMarket.curretMarket(CountryCode).GetConfiguration().Orders;
 
                 // // Create the request
@@ -82,20 +82,21 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
                     MainCountry = CountryCode //GlobalUtilities.GetSelectedCountryCode();
                 };
                 // Create the customer
-                var response = await _exigoApiContext.GetContext().CreateCustomerAsync(request); //createCustomerRequest(request);
+                var response = await _exigoApiContext.GetContext(false).CreateCustomerAsync(request); //createCustomerRequest(request);
 
                 if (model.IsOptedIn)
                 {
                     await _customerService.SendEmailVerification(response.CustomerID, request.Email);
                 }
                 //281021
-                //var createCustomerRequest = _mapper.Map<CreateCustomerRequest>(model);
+                var createCustomerRequest = _mapper.Map<CreateCustomerRequest>(model);
 
                 //Create customer in Exigo service
-                //await _authenticateService.CreateCustomer(createCustomerRequest);
+                await _authenticateService.CreateCustomer(createCustomerRequest);
 
                 //Authenticate customer
                 var result = await _authenticateService.SignInCustomer(new AuthenticateCustomerRequest { LoginName = model.LoginName, Password = model.LoginPassword });
+
 
                 return Ok(result);
             }
@@ -118,6 +119,8 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
                 var signinRequest = _mapper.Map<AuthenticateCustomerRequest>(model);
 
                 //Signin customer in Exigo service
+                var response = await _authenticateService.SignInCustomer(signinRequest);
+
                 return Ok(await _authenticateService.SignInCustomer(signinRequest));
             }
             catch (Exception ex)

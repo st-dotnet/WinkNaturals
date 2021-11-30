@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
 
 namespace WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder
@@ -69,7 +68,7 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder
 
         public string Other20 { get; set; }
 
-     
+
 
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }
