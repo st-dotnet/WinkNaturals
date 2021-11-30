@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNatural.Web.Services.Utilities;
 
@@ -40,6 +41,16 @@ namespace WinkNaturals.Controllers
             {
                 throw new Exception(ex.ToString());
             }
+        }
+
+        /// <summary>
+        /// SubmitCheckout
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("SubmitCheckout")]
+        public IActionResult SubmitCheckout(TransactionalRequestModel transactionRequests)
+        {
+            return Ok(_enrollmentService.SubmitCheckout(transactionRequests, Identity.CustomerID));
         }
     }
 }

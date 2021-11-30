@@ -69,7 +69,7 @@
         public decimal Quantity { get; set; }
         public string quantityModel { get; set; }
         public string selectDelivery { get; set; }
-        public string shippingPriceEachOverride { get; set; }
+        public decimal shippingPriceEachOverride { get; set; }
         public string shortDetail1 { get; set; }
         public string shortDetail2 { get; set; }
         public string shortDetail3 { get; set; }

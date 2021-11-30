@@ -11,6 +11,7 @@ namespace WinkNaturals.Setting
         public string DefaultConnection { get; set; }
         public string DefaultConnectionforCache { get; set; }
     }
+
     public class ConfigSettings
     {
         public string Title { get; set; }
@@ -37,8 +38,25 @@ namespace WinkNaturals.Setting
 
         public AppSettings AppSettings { get; set; }
 
+        public TokenEx TokenEx { get; set; }
+
+        public Backofficelogin Backofficelogin { get; set; }
+
+
 
     }
+    public  class Backofficelogin
+    {
+        public string DistributorBackofficeUrl { get; set; }
+        public string RetailCustomerBackofficeUrl { get; set; }
+    }
+    public class TokenEx
+    {
+        public string APIKey { get; set; }
+        public string TokenExID { get; set; }
+        public string TokenScheme { get; set; }
+    }
+
     public class AppSettings
     {
         public string billerAccountId { get; set; }

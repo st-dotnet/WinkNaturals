@@ -1,10 +1,18 @@
-﻿using Exigo.Api.Client;
+﻿using Dapper;
+using Exigo.Api.Client;
+using ExigoResourceSet.Providers.Resource;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Resources;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using WinkNaturals.Models;
+using WinkNaturals.Models.Shopping.Interfaces;
 using WinkNaturals.Setting.Interfaces;
 
 namespace WinkNaturals.Controllers
@@ -16,11 +24,13 @@ namespace WinkNaturals.Controllers
 
         private readonly IWebHostEnvironment _env;
         private readonly IExigoApiContext _exigoApiContext;
+        private readonly IOrderConfiguration _orderConfiguration;
 
-        public CustomersController(IWebHostEnvironment env, IExigoApiContext exigoApiContext)
+        public CustomersController(IWebHostEnvironment env, IExigoApiContext exigoApiContext, IOrderConfiguration orderConfiguration)
         {
             _env = env;
             _exigoApiContext = exigoApiContext;
+            _orderConfiguration = orderConfiguration;
         }
 
         [HttpPost("GetCustomer")]
@@ -41,7 +51,7 @@ namespace WinkNaturals.Controllers
                 req.WarehouseID = 1;
                 req.PriceType = 1;
 
-                GetItemsResponse res = await _exigoApiContext.GetContext(true).GetItemsAsync(req);
+                GetItemsResponse res = await _exigoApiContext.GetContext(false).GetItemsAsync(req);
                 //using (var context = WinkNatural.Web.Common.Utils.DbConnection.Sql())
                 //{
                 //   apiItems= context.Query<EnrollmentModel>(@"

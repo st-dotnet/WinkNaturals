@@ -16,6 +16,8 @@ namespace WinkNatural.Web.Services.Interfaces
 
         AddCardResponse PaymentUsingAuthorizeNet(AddPaymentModel model);
 
+        string GenerateCreditCardToken(string cardNumber);
+
 
     }
 }
