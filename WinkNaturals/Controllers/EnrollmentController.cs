@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
@@ -12,12 +13,13 @@ namespace WinkNaturals.Controllers
     public class EnrollmentController : BaseController
     {
         private readonly IEnrollmentService _enrollmentService;
+        private readonly IShoppingService _shoppingService;
 
-        public EnrollmentController(IEnrollmentService enrollmentService)
+        public EnrollmentController(IEnrollmentService enrollmentService, IShoppingService shoppingService)
         {
             _enrollmentService = enrollmentService;
+            _shoppingService = shoppingService;
         }
-
         /// <summary>
         /// Get packs data
         /// </summary>
@@ -52,5 +54,36 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_enrollmentService.SubmitCheckout(transactionRequests, Identity.CustomerID));
         }
+        /// <summary>
+        /// GetDistributors
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("GetDistributors")]
+        public IActionResult GetDistributors(TransactionalRequestModel transactionRequests)
+        {
+            return Ok(_enrollmentService.GetDistributors(Identity.CustomerID));
+        }
+        /// <summary>
+        /// Get ProductList data
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("ProductList")]
+        public List<ShopProductsResponse> ProductList(int categoryID, int sortBy)
+        {
+            categoryID = categoryID == 0 ? 1 : categoryID;
+            var categories = new List<ShopProductsResponse>();
+            GetItemListRequest itemsRequest;
+            var items = new List<ShopProductsResponse>();
+            itemsRequest = new GetItemListRequest
+            {
+                IncludeChildCategories = true,
+                CategoryID = categoryID,
+                SortBy = sortBy
+            };
+            items = _shoppingService.GetItems(itemsRequest, false).OrderBy(c => c.SortOrder).ToList();
+            return items;
+        }
+
+
     }
 }

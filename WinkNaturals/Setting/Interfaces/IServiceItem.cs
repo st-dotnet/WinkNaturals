@@ -1,7 +1,11 @@
-﻿namespace WinkNaturals.Setting.Interfaces
+﻿using Exigo.Api.Client;
+using System.Collections.Generic;
+using WinkNaturals.Models;
+
+namespace WinkNaturals.Setting.Interfaces
 {
     public interface IServiceItem
     {
-        //    List<Item> GetItems(IEnumerable<ShoppingCartItem> shoppingCartItems, IOrderConfiguration configuration, int languageID, int _priceTypeID = 0);
+       //    List<Item> EnrollItems(bool includeItemDescriptions = true);
     }
 }

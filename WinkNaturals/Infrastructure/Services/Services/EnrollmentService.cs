@@ -26,15 +26,17 @@ namespace WinkNatural.Web.Services.Services
         private readonly IOrderConfiguration _orderConfiguration;
         private readonly IExigoApiContext _exigoApiContext;
         private readonly ICustomerService _customerService;
+        private readonly IShoppingService _shoppingService;
 
         public IOrderConfiguration AutoOrderConfiguration { get; set; }
 
-        public EnrollmentService(IConfiguration config, IOrderConfiguration orderConfiguration, IExigoApiContext exigoApiContext, ICustomerService customerService)
+        public EnrollmentService(IConfiguration config, IOrderConfiguration orderConfiguration, IExigoApiContext exigoApiContext, ICustomerService customerService, IShoppingService shoppingService)
         {
             _config = config;
             _orderConfiguration = orderConfiguration;
             _exigoApiContext = exigoApiContext;
             _customerService = customerService;
+            _shoppingService = shoppingService;
 
         }
         public List<EnrollmentResponse> GetItems()
@@ -152,7 +154,7 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 var hasOrder = transactionRequest.SetListItemRequest.Where(x => x.OrderType == ShoppingCartItemType.Order || x.OrderType == ShoppingCartItemType.EnrollmentPack).ToList();
-                var hasAutoOrder = transactionRequest.SetListItemRequest.Where(x => x.OrderType == ShoppingCartItemType.AutoOrder || x.OrderType == ShoppingCartItemType.EnrollmentAutoOrderPack).ToList().Count>0;
+                var hasAutoOrder = transactionRequest.SetListItemRequest.Where(x => x.OrderType == ShoppingCartItemType.AutoOrder || x.OrderType == ShoppingCartItemType.EnrollmentAutoOrderPack).ToList().Count > 0;
                 var customertype = _exigoApiContext.GetContext(false).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId }).Result.Customers[0].CustomerType;
                 var customerDetails = _exigoApiContext.GetContext(false).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId });
                 var autoOrderPaymentType = AutoOrderPaymentType.PrimaryCreditCard;
@@ -169,8 +171,8 @@ namespace WinkNatural.Web.Services.Services
 
                 if (customertype == CustomerTypes.RetailCustomer)
                 {
-                        CreateCustomerRequest createCustomerRequest = new()
-                        {
+                    CreateCustomerRequest createCustomerRequest = new()
+                    {
                         InsertEnrollerTree = true,
                         InsertUnilevelTree = true,
                         EnrollerID = customerDetails.Result.Customers[0].EnrollerID,
@@ -204,7 +206,7 @@ namespace WinkNatural.Web.Services.Services
                 };
                 request.TransactionRequests[1] = chargeCreditCardTokenRequest;
 
-                if (hasOrder.Count>0)
+                if (hasOrder.Count > 0)
                 {
                     CreateOrderRequest customerOrderRequest = new()
                     {
@@ -245,14 +247,14 @@ namespace WinkNatural.Web.Services.Services
                 }
 
 
-                
+
 
 
                 else if (hasAutoOrder)
                 {
                     CreateAutoOrderRequest createAutoOrderRequest = new()
                     {
-                       
+
                         Frequency = FrequencyType.Weekly,
                         StartDate = DateTime.Today,
                         CurrencyCode = _orderConfiguration.CurrencyCode,
@@ -266,7 +268,7 @@ namespace WinkNatural.Web.Services.Services
 
                     request.TransactionRequests[2] = createAutoOrderRequest;
                 }
-             
+
                 SetAccountCreditCardTokenRequest setAccountCreditCardTokenRequest = new()
                 {
 
@@ -284,10 +286,10 @@ namespace WinkNatural.Web.Services.Services
 
                 //TransactionRequest
                 response = await _exigoApiContext.GetContext(true).ProcessTransactionAsync(request);
-                if (response.TransactionResponses.Length>0)
+                if (response.TransactionResponses.Length > 0)
                 {
-                   await _customerService.SendEmailVerification(customerId,customerDetails.Result.Customers[0].Email);
-            
+                    await _customerService.SendEmailVerification(customerId, customerDetails.Result.Customers[0].Email);
+
                 }
             }
             catch (Exception ex)
@@ -296,97 +298,92 @@ namespace WinkNatural.Web.Services.Services
             }
             return response;
         }
+        public List<dynamic> GetDistributors(int customerId)
+        {
+            {
+                // assemble a list of customers who match the search criteria
+                var enrollerCollection = new List<SearchResult>();
+                int[] customerTypes = { CustomerTypes.Distributor, CustomerTypes.Distributor2, CustomerTypes.Distributor3 };
+                var nodeDataRecords = new List<dynamic>();
 
-        //public string GetDistributors(string query)
-        //{
-        //    {
-        //        //try
-        //        //{
-        //        //    // assemble a list of customers who match the search criteria
-        //        //    var enrollerCollection = new List<SearchResult>();
-        //        //    int[] customerTypes = { CustomerTypes.Distributor, CustomerTypes.Distributor2, CustomerTypes.Distributor3 };
-        //        //    var nodeDataRecords = new List<dynamic>();
+                if (customerId == null)
+                {
+                    using (var context = Common.Utils.DbConnection.Sql())
+                    {
+                        nodeDataRecords = context.Query(@"
+                                SELECT
+                                    cs.CustomerID, cs.FirstName, cs.LastName, cs.WebAlias,
+                                    c.MainCity, c.MainState, c.MainCountry
+                                FROM CustomerSites cs
+                                INNER JOIN Customers c
+                                ON cs.CustomerID = c.CustomerID
+                                WHERE c.CustomerTypeID IN @customertypes
+                                AND cs.CustomerID = @customerid
+                        ", new
+                        {
+                            customertypes = customerTypes,
+                            customerid = customerId
+                        }).ToList();
+                    }
+                }
+                else
+                {
+                    using (var context = Common.Utils.DbConnection.Sql())
+                    {
+                        nodeDataRecords = context.Query(@"
+                                SELECT
+                                    cs.CustomerID, cs.FirstName, cs.LastName, cs.WebAlias,
+                                    c.MainCity, c.MainState, c.MainCountry
+                                FROM CustomerSites cs
+                                INNER JOIN Customers c
+                                ON cs.CustomerID = c.CustomerID
+                                WHERE c.CustomerTypeID IN @customertypes
+                                AND (c.FirstName LIKE @queryValue OR c.LastName LIKE @queryvalue OR cs.FirstName LIKE @queryValue OR cs.LastName LIKE @queryValue)
+                        ", new
+                        {
+                            customertypes = customerTypes,
+                            queryValue = "%" + customerId + "%"
+                        }).ToList();
+                    }
+                }
 
-        //        //    if (isCustomerID)
-        //        //    {
-        //        //        using (var context = DAL.Sql())
-        //        //        {
-        //        //            nodeDataRecords = context.Query(@"
-        //        //                SELECT
-        //        //                    cs.CustomerID, cs.FirstName, cs.LastName, cs.WebAlias,
-        //        //                    c.MainCity, c.MainState, c.MainCountry
-        //        //                FROM CustomerSites cs
-        //        //                INNER JOIN Customers c
-        //        //                ON cs.CustomerID = c.CustomerID
-        //        //                WHERE c.CustomerTypeID IN @customertypes
-        //        //                AND cs.CustomerID = @customerid
-        //        //        ", new
-        //        //            {
-        //        //                customertypes = customerTypes,
-        //        //                customerid = query
-        //        //            }).ToList();
-        //        //        }
-        //        //    }
-        //        //    else
-        //        //    {
-        //        //        using (var context = DAL.Sql())
-        //        //        {
-        //        //            nodeDataRecords = context.Query(@"
-        //        //                SELECT
-        //        //                    cs.CustomerID, cs.FirstName, cs.LastName, cs.WebAlias,
-        //        //                    c.MainCity, c.MainState, c.MainCountry
-        //        //                FROM CustomerSites cs
-        //        //                INNER JOIN Customers c
-        //        //                ON cs.CustomerID = c.CustomerID
-        //        //                WHERE c.CustomerTypeID IN @customertypes
-        //        //                AND (c.FirstName LIKE @queryValue OR c.LastName LIKE @queryvalue OR cs.FirstName LIKE @queryValue OR cs.LastName LIKE @queryValue)
-        //        //        ", new
-        //        //            {
-        //        //                customertypes = customerTypes,
-        //        //                queryValue = "%" + query + "%"
-        //        //            }).ToList();
-        //        //        }
-        //        //    }
+                if (nodeDataRecords.Count() > 0)
+                {
+                    foreach (var record in nodeDataRecords)
+                    {
+                        var node = new SearchResult();
+                        node.CustomerID = record.CustomerID;
+                        node.FirstName = record.FirstName;
+                        node.LastName = record.LastName;
+                        node.MainCity = record.MainCity;
+                        node.MainState = record.MainState;
+                        node.MainCountry = record.MainCountry;
+                        node.WebAlias = record.WebAlias;
+                        enrollerCollection.Add(node);
+                    }
+                }
+                return nodeDataRecords;
+            }
+        }
 
-        //        //    if (nodeDataRecords.Count() > 0)
-        //        //    {
-        //        //        foreach (var record in nodeDataRecords)
-        //        //        {
-        //        //            var node = new SearchResult();
-        //        //            node.CustomerID = record.CustomerID;
-        //        //            node.FirstName = record.FirstName;
-        //        //            node.LastName = record.LastName;
-        //        //            node.MainCity = record.MainCity;
-        //        //            node.MainState = record.MainState;
-        //        //            node.MainCountry = record.MainCountry;
-        //        //            node.WebAlias = record.WebAlias;
-        //        //            enrollerCollection.Add(node);
-        //        //        }
-        //        //    }
-
-
-        //        //    var urlHelper = new UrlHelper(Request.RequestContext);
-        //        //    foreach (var item in enrollerCollection)
-        //        //    {
-        //        //        item.AvatarURL = urlHelper.Avatar(item.CustomerID);
-        //        //    }
-
-        //        //    return new JsonResult(new
-        //        //    {
-        //        //        success = true,
-        //        //        enrollers = enrollerCollection
-        //        //    });
-        //        //}
-        //        //catch (Exception ex)
-        //        //{
-        //        //    return new JsonNetResult(new
-        //        //    {
-        //        //        success = false,
-        //        //        message = ex.Message
-        //        //    });
-        //        //}
-        //    }
-      //  }
+      
+        public class SearchResult
+        {
+            public int CustomerID { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string FullName
+            {
+                get { return this.FirstName + " " + this.LastName; }
+            }
+            public string AvatarURL { get; set; }
+            public string WebAlias { get; set; }
+            public string ReplicatedSiteUrl { get; set; }
+            
+            public string MainState { get; set; }
+            public string MainCity { get; set; }
+            public string MainCountry { get; set; }
+        }
     }
 }
 

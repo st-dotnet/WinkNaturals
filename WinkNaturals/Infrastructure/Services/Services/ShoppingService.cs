@@ -1877,7 +1877,7 @@ namespace WinkNatural.Web.Services.Services
         }
 
         [System.Web.Http.NonAction]
-        public static IEnumerable<ShopProductsResponse> GetItems(GetItemListRequest request, bool includeItemDescriptions = true)
+        public IEnumerable<ShopProductsResponse> GetItems(GetItemListRequest request, bool includeItemDescriptions = true)
         {
             var tempCategoryIDs = new List<int>();
             var categoryIDs = new List<int>();
