@@ -13,5 +13,7 @@ namespace WinkNatural.Web.Services.DTO.Shopping
         public CreateAutoOrderRequest CreateAutoOrderRequest { get; set; }
         public SetAccountCreditCardTokenRequest SetAccountCreditCardTokenRequest { get; set; }
         public List<SetListItemRequest> SetListItemRequest { get; set; }
+        public CreateCustomerRequest CreateCustomerRequest { get; set; }
+
     }
 }
