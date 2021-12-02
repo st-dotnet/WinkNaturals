@@ -34,7 +34,7 @@ namespace WinkNatural.Web.Services.Services
         {
             try
             {
-                return await _exigoApiContext.GetContext(true).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId });
+                return await _exigoApiContext.GetContext(false).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId });
             }
             catch (Exception ex)
             {
