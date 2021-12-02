@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using RestSharp;
+using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Services;
-
+using WinkNaturals.Infrastructure.Services.Token;
 
 namespace WinkNatural.Web.Services.Interfaces
 {
@@ -16,7 +17,7 @@ namespace WinkNatural.Web.Services.Interfaces
 
         AddCardResponse PaymentUsingAuthorizeNet(AddPaymentModel model);
 
-        string GenerateCreditCardToken(string cardNumber);
+        GenerateTokenResponse GenerateCreditCardToken(string cardNumber);
 
 
     }

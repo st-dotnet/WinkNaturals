@@ -317,7 +317,6 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 var hasOrder = transactionRequest.SetListItemRequest.Where(x => x.OrderType == ShoppingCartItemType.Order).ToList().Count > 0;
-
                 var hasAutoOrder = transactionRequest.SetListItemRequest.Where(x => x.OrderType == ShoppingCartItemType.AutoOrder).ToList().Count > 0;
                 var customertype = _exigoApiContext.GetContext(false).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId }).Result.Customers[0].CustomerType;
                 if (customertype == CustomerTypes.RetailCustomer)
@@ -338,7 +337,7 @@ namespace WinkNatural.Web.Services.Services
                 }
                 ChargeCreditCardTokenRequest chargeCreditCardTokenRequest = new()
                 {
-                    CreditCardToken = transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
+                    CreditCardToken = "41X111UAXYE31111",//transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
                     BillingName = transactionRequest.ChargeCreditCardTokenRequest.BillingName,
                     BillingAddress = transactionRequest.ChargeCreditCardTokenRequest.BillingAddress,
                     BillingAddress2 = null,//transactionRequest.ChargeCreditCardTokenRequest.BillingAddress2,
@@ -392,7 +391,7 @@ namespace WinkNatural.Web.Services.Services
                     };
                     request.TransactionRequests[2] = customerOrderRequest;
                 }
-                else if (hasAutoOrder)
+                if (hasAutoOrder)
                 {
                     CreateAutoOrderRequest createAutoOrderRequest = new()
                     {
@@ -414,7 +413,7 @@ namespace WinkNatural.Web.Services.Services
                 {
                     CustomerID = customerId,
                     CreditCardAccountType = AccountCreditCardType.Primary,
-                    CreditCardToken = transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
+                    CreditCardToken = "41X111UAXYE31111",//transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
                     ExpirationMonth = Convert.ToInt32(transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth),
                     ExpirationYear = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationYear,
                     CreditCardType = 1,
@@ -1877,7 +1876,7 @@ namespace WinkNatural.Web.Services.Services
         }
 
         [System.Web.Http.NonAction]
-        public static IEnumerable<ShopProductsResponse> GetItems(GetItemListRequest request, bool includeItemDescriptions = true)
+        public IEnumerable<ShopProductsResponse> GetItems(GetItemListRequest request, bool includeItemDescriptions = true)
         {
             var tempCategoryIDs = new List<int>();
             var categoryIDs = new List<int>();

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
+using WinkNaturals.Infrastructure.Services.Token;
 using WinkNaturals.Setting;
 
 namespace WinkNatural.Web.Services.Services
@@ -238,8 +239,9 @@ namespace WinkNatural.Web.Services.Services
             throw new NotImplementedException();
         }
 
-        public string GenerateCreditCardToken(string cardNumber)
+        public GenerateTokenResponse GenerateCreditCardToken(string cardNumber)
         {
+             GenerateTokenResponse newtokenResponse = new GenerateTokenResponse();
                 var client = new RestClient("https://test-api.tokenex.com/TokenServices.svc/REST/Tokenize");
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
@@ -253,10 +255,20 @@ namespace WinkNatural.Web.Services.Services
                 IRestResponse response = client.Execute(request);
                 var data = (JObject)JsonConvert.DeserializeObject(response.Content);
                 string token = data["Token"].Value<string>();
+                if(!string.IsNullOrEmpty(token))
+                {
                 StringBuilder sb = new StringBuilder(token);
                 sb[2] = 'X';
                 var newToken = sb.ToString();
-                return newToken;
+                return new GenerateTokenResponse {Token=newToken,Success=true,ErrorMessage="" };
+                }
+                 else 
+                { 
+               return new GenerateTokenResponse { Token =null, Success = false, ErrorMessage = "error" }; 
+                 }
+            
+            
+                
         }
     }
 }
