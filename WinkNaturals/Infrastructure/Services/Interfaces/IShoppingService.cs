@@ -46,7 +46,7 @@ namespace WinkNatural.Web.Services.Interfaces
         Task<GetOrdersResponse> GetOrder(GetOrdersRequest ordersRequest, int customerId);
         List<ShopProductsResponse> SearchProducts(string query);
 
-        // static IEnumerable<ShopProductsResponse> GetItems(GetItemListRequest request, bool includeItemDescriptions = true);
+       IEnumerable<ShopProductsResponse> GetItems(GetItemListRequest request, bool includeItemDescriptions = true);
         PromoCode GetPromoDetail(string promoCode, int customerId);
 
         //To Get customer detail for editing.
@@ -73,5 +73,7 @@ namespace WinkNatural.Web.Services.Interfaces
         Task<GetOrdersResponse> GetCustomerReviewOrder(int customerId, int OrderId);
         Task<GetCustomersResponse> GetCustomer(int customerID);
         ShopProductsResponse GetSpecialItem();
+
+        
     }
 }

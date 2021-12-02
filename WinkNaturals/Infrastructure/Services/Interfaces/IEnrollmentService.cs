@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO;
+using WinkNatural.Web.Services.DTO.Shopping;
+using WinkNaturals.Models;
 
 namespace WinkNatural.Web.Services.Interfaces
 {
@@ -12,6 +14,13 @@ namespace WinkNatural.Web.Services.Interfaces
 
 
         //Process exigo payment
-        Task<TransactionalResponse> ProcessExigoPayment(); //TransactionalRequest request
+        Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId);
+
+        List<dynamic> GetDistributors(int customerId);
+
+
+  
+
+
     }
 }

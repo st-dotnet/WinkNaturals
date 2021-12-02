@@ -3,10 +3,14 @@ using Exigo.Api.Client;
 using ExigoAPIRef;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Helpers;
 using System.Web.Http.Results;
@@ -40,6 +44,7 @@ namespace WinkNatural.Web.Services.Services
         }
         private readonly ICustomerAutoOreder _customerAuto;
         private readonly IOrderConfiguration _orderConfiguration;
+     
 
         public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext, ICustomerAutoOreder customerAuto,IOrderConfiguration orderConfiguration)
         {
@@ -312,10 +317,9 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 var hasOrder = transactionRequest.SetListItemRequest.Where(x => x.OrderType == ShoppingCartItemType.Order).ToList().Count > 0;
-
                 var hasAutoOrder = transactionRequest.SetListItemRequest.Where(x => x.OrderType == ShoppingCartItemType.AutoOrder).ToList().Count > 0;
                 var customertype = _exigoApiContext.GetContext(false).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId }).Result.Customers[0].CustomerType;
-                if (customertype != CustomerTypes.RetailCustomer)
+                if (customertype == CustomerTypes.RetailCustomer)
                 {
                     UpdateCustomerRequest updateCustomerRequest = new()
                     {
@@ -333,7 +337,7 @@ namespace WinkNatural.Web.Services.Services
                 }
                 ChargeCreditCardTokenRequest chargeCreditCardTokenRequest = new()
                 {
-                    CreditCardToken = transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
+                    CreditCardToken = "41X111UAXYE31111",//transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
                     BillingName = transactionRequest.ChargeCreditCardTokenRequest.BillingName,
                     BillingAddress = transactionRequest.ChargeCreditCardTokenRequest.BillingAddress,
                     BillingAddress2 = null,//transactionRequest.ChargeCreditCardTokenRequest.BillingAddress2,
@@ -387,7 +391,7 @@ namespace WinkNatural.Web.Services.Services
                     };
                     request.TransactionRequests[2] = customerOrderRequest;
                 }
-                else if (hasAutoOrder)
+                if (hasAutoOrder)
                 {
                     CreateAutoOrderRequest createAutoOrderRequest = new()
                     {
@@ -409,7 +413,7 @@ namespace WinkNatural.Web.Services.Services
                 {
                     CustomerID = customerId,
                     CreditCardAccountType = AccountCreditCardType.Primary,
-                    CreditCardToken = transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
+                    CreditCardToken = "41X111UAXYE31111",//transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
                     ExpirationMonth = Convert.ToInt32(transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth),
                     ExpirationYear = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationYear,
                     CreditCardType = 1,
@@ -428,6 +432,8 @@ namespace WinkNatural.Web.Services.Services
             }
             return response;
         }
+
+       
         /// <summary>
         /// CalculateOrder
         /// </summary>
@@ -1165,28 +1171,6 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 var req = new ValidateCreditCardTokenRequest();
-                //req.CreditCardIdentifier = "1";
-                //req.ExpirationYear = 1;
-                //req.ExpirationMonth = 1;
-                //req.CvcCode = "1";
-                //req.BillingName = "1";
-                //req.BillingAddress1 = "1";
-                //req.BillingAddress2 = "1";
-                //req.BillingCity = "1";
-                //req.BillingZip = "1";
-                //req.CustomerID = 1;             //Unique numeric identifier for a customer record.
-                //req.CustomerKey = "DDks8235txcid";//Unique alpha numeric identifier for customer record. Exeption will occur if CustomerID & CustomerKey are provided.
-                //req.OrderID = 1;                //Unique numeric identifier for order record.
-                //req.OrderKey = "DDks8235txcid"; //Unique alpha numeric identifier for order record. Exeption will occur if OrderID & OrderKey are provided.
-                //req.ValidateTokenOnFile = true;    //Optional. Use this option to validate information already on file
-                //req.AccountOnFile = TokenAccount.Primary;          //Optional. To be used when ValidateTokenOnFile = true
-                //req.WarehouseID = 1;            //Optional
-                //req.CurrencyCode = "1";         //Optional
-                //req.Email = "1";                //Optional
-                //req.Phone = "1";                //Optional
-                //req.ClientIpAddress = "1";      //Optional
-
-
                 req.CreditCardIdentifier = creditCardTokenRequest.CreditCardIdentifier;
                 req.ExpirationYear = creditCardTokenRequest.ExpirationYear;
                 req.ExpirationMonth = creditCardTokenRequest.ExpirationMonth;
@@ -1892,7 +1876,7 @@ namespace WinkNatural.Web.Services.Services
         }
 
         [System.Web.Http.NonAction]
-        public static IEnumerable<ShopProductsResponse> GetItems(GetItemListRequest request, bool includeItemDescriptions = true)
+        public IEnumerable<ShopProductsResponse> GetItems(GetItemListRequest request, bool includeItemDescriptions = true)
         {
             var tempCategoryIDs = new List<int>();
             var categoryIDs = new List<int>();
@@ -2611,5 +2595,7 @@ namespace WinkNatural.Web.Services.Services
 
             return shipMethods;
         }
+
+       
     }
 }

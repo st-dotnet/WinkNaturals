@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
+using WinkNaturals.Infrastructure.Services.Token;
 using WinkNaturals.Setting;
 
 namespace WinkNatural.Web.Services.Services
@@ -28,8 +29,6 @@ namespace WinkNatural.Web.Services.Services
             _customerService = customerService;
             _configsetting = configsetting;
         }
-
-
         /// <summary>
         /// Request information for a call to the "ProcessPaymentMethodTransaction" method.
         /// </summary>
@@ -240,5 +239,36 @@ namespace WinkNatural.Web.Services.Services
             throw new NotImplementedException();
         }
 
+        public GenerateTokenResponse GenerateCreditCardToken(string cardNumber)
+        {
+             GenerateTokenResponse newtokenResponse = new GenerateTokenResponse();
+                var client = new RestClient("https://test-api.tokenex.com/TokenServices.svc/REST/Tokenize");
+                client.Timeout = -1;
+                var request = new RestRequest(Method.POST);
+                request.AddHeader("Content-Type", "application/json");
+            //  var body = @"{" + @" ""APIKey"":" + _configsetting.Value.TokenEx.APIKey + "," + @" ""TokenExID"":" + _configsetting.Value.TokenEx.TokenExID + "," + @" ""Data"":" + cardNumber + "," + @" ""TokenScheme"":" + _configsetting.Value.TokenEx.TokenScheme + @"}";
+            //   var body = @"{ ""APIKey"": ""jvgxuIWt6aTlRA2rqgKIVNoow7BUxA9Mm1jnVwFh"", ""TokenExID"": ""3649316995937637"", ""Data"": ""2222405343248877"", ""TokenScheme"": 9 }";
+                var body = @"{" + "\n" + @" ""APIKey"":#" + _configsetting.Value.TokenEx.APIKey + "#" + "," + @" ""TokenExID"":#" + _configsetting.Value.TokenEx.TokenExID + "#" + "," + "\n" +
+                            @" ""Data"":#" + cardNumber + "#" + "," + "\n" + @" ""TokenScheme"":#" + _configsetting.Value.TokenEx.TokenScheme + "#" + "\n" + @"}";
+                body = body.Replace('#', '"');
+                request.AddParameter("application/json", body, ParameterType.RequestBody);
+                IRestResponse response = client.Execute(request);
+                var data = (JObject)JsonConvert.DeserializeObject(response.Content);
+                string token = data["Token"].Value<string>();
+                if(!string.IsNullOrEmpty(token))
+                {
+                StringBuilder sb = new StringBuilder(token);
+                sb[2] = 'X';
+                var newToken = sb.ToString();
+                return new GenerateTokenResponse {Token=newToken,Success=true,ErrorMessage="" };
+                }
+                 else 
+                { 
+               return new GenerateTokenResponse { Token =null, Success = false, ErrorMessage = "error" }; 
+                 }
+            
+            
+                
+        }
     }
 }

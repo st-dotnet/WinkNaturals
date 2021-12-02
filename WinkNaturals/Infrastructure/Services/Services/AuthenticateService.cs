@@ -47,7 +47,7 @@ namespace WinkNatural.Web.Services.Services
         {
             try
             {
-                var res = await _exigoApiContext.GetContext(true).CreateCustomerAsync(request);
+                var res = await _exigoApiContext.GetContext(false).CreateCustomerAsync(request);
                 return res;
             }
             catch (Exception ex)
