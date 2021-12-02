@@ -23,8 +23,9 @@ namespace WinkNaturals.Controllers
             _paymentService = paymentService;
             _customerService = customerService;
         }
-  
-        [HttpGet("GenerateCreditCardToken/{cardNumber}")]
+
+        //   [HttpGet("GenerateCreditCardToken/{cardNumber}")]
+        [HttpGet("GenerateCreditCardToken")]
         public IActionResult GenerateCreditCardToken(string cardNumber)
         {
             return Ok(_paymentService.GenerateCreditCardToken(cardNumber));
