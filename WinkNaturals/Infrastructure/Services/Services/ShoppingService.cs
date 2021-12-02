@@ -332,6 +332,7 @@ namespace WinkNatural.Web.Services.Services
                         OtherState = transactionRequest.CreateOrderRequest.State,
                         MailCountry = transactionRequest.CreateOrderRequest.Country,
                         MailState = transactionRequest.CreateOrderRequest.State,
+                        
                     };
                     request.TransactionRequests[0] = updateCustomerRequest;
                 }
@@ -386,6 +387,7 @@ namespace WinkNatural.Web.Services.Services
                         Other18 = null,
                         Other19 = null,
                         Other20 = null,
+                        
                         OrderType = OrderType.ShoppingCart,
                         Details = transactionRequest.CreateOrderRequest.Details.ToArray(),
                     };
@@ -404,6 +406,7 @@ namespace WinkNatural.Web.Services.Services
                         PaymentType = AutoOrderPaymentType.PrimaryCreditCard,
                         OverwriteExistingAutoOrder = true,
                         Details = transactionRequest.CreateAutoOrderRequest.Details.ToArray(),
+                       
                     };
 
                     request.TransactionRequests[2] = createAutoOrderRequest;
