@@ -47,7 +47,7 @@ namespace WinkNatural.Web.Services.Services
         {
             try
             {
-                var res = await _exigoApiContext.GetContext(false).CreateCustomerAsync(request);
+                var res = await _exigoApiContext.GetContext(true).CreateCustomerAsync(request);
                 return res;
             }
             catch (Exception ex)
@@ -66,7 +66,7 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 //Exigo service login request
-                var result = await _exigoApiContext.GetContext(false).AuthenticateCustomerAsync(request);
+                var result = await _exigoApiContext.GetContext(true).AuthenticateCustomerAsync(request);
                 if (result.CustomerID == 0)
                 {
                     return new CustomerCreateResponse { ErrorMessage = "User is not authenticated." };

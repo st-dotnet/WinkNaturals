@@ -82,17 +82,17 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
                     MainCountry = CountryCode //GlobalUtilities.GetSelectedCountryCode();
                 };
                 // Create the customer
-                var response = await _exigoApiContext.GetContext(false).CreateCustomerAsync(request); //createCustomerRequest(request);
+                var response = await _exigoApiContext.GetContext(true).CreateCustomerAsync(request); //createCustomerRequest(request);
 
                 if (model.IsOptedIn)
                 {
                     await _customerService.SendEmailVerification(response.CustomerID, request.Email);
                 }
                 //281021
-                var createCustomerRequest = _mapper.Map<CreateCustomerRequest>(model);
+              //  var createCustomerRequest = _mapper.Map<CreateCustomerRequest>(model);
 
                 //Create customer in Exigo service
-                await _authenticateService.CreateCustomer(createCustomerRequest);
+             //   await _authenticateService.CreateCustomer(createCustomerRequest);
 
                 //Authenticate customer
                 var result = await _authenticateService.SignInCustomer(new AuthenticateCustomerRequest { LoginName = model.LoginName, Password = model.LoginPassword });
