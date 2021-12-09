@@ -119,8 +119,6 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
                 var signinRequest = _mapper.Map<AuthenticateCustomerRequest>(model);
 
                 //Signin customer in Exigo service
-                var response = await _authenticateService.SignInCustomer(signinRequest);
-
                 return Ok(await _authenticateService.SignInCustomer(signinRequest));
             }
             catch (Exception ex)
