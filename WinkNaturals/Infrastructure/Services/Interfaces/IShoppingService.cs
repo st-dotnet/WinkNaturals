@@ -22,7 +22,8 @@ namespace WinkNatural.Web.Services.Interfaces
 
         ShopProductsResponse AddToCart(ShopProductsResponse shopProducts);
         byte[] GetProductImage(string imageName);
-        Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId);
+        Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId, string email);
+
         Task<CalculateOrderResponse> CalculateOrder(CalculateOrderRequest calculateOrder);
         Task<CreateOrderResponse> CreateOrder(CreateOrderRequest createOrderRequest);
         Task<CreateOrderImportResponse> CreateOrderImport(CreateOrderImportRequest createOrderImportRequest);

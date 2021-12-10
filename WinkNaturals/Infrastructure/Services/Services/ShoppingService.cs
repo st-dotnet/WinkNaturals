@@ -305,7 +305,7 @@ namespace WinkNatural.Web.Services.Services
         /// </summary>
         /// <param name="TransactionalRequestModel"></param>
         /// <returns>TransactionalResponse</returns>
-        public async Task<Exigo.Api.Client.TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId)
+        public async Task<Exigo.Api.Client.TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId,string email)
         {
             int arraySize = 4;
             Exigo.Api.Client.TransactionalResponse response = new();
@@ -374,7 +374,7 @@ namespace WinkNatural.Web.Services.Services
                         Zip = transactionRequest.CreateOrderRequest.Zip,
                         Country = transactionRequest.CreateOrderRequest.Country,
                         State = transactionRequest.CreateOrderRequest.State,
-                        Email = transactionRequest.CreateOrderRequest.Email,
+                        Email = email,
                         Phone = transactionRequest.CreateOrderRequest.Phone,
                         Notes = transactionRequest.CreateOrderRequest.Notes,
                         Other11 = null,
@@ -393,24 +393,24 @@ namespace WinkNatural.Web.Services.Services
                     };
                     request.TransactionRequests[2] = customerOrderRequest;
                 }
-                if (hasAutoOrder)
-                {
-                    CreateAutoOrderRequest createAutoOrderRequest = new()
-                    {
-                        Frequency = FrequencyType.Weekly,
-                        StartDate = DateTime.Today,
-                        CurrencyCode = _orderConfiguration.CurrencyCode,
-                        WarehouseID = _orderConfiguration.WarehouseID,
-                        ShipMethodID = _orderConfiguration.DefaultShipMethodID,// transactionRequest.CreateAutoOrderRequest.ShipMethodID,
-                        PriceType = _orderConfiguration.PriceTypeID,
-                        PaymentType = AutoOrderPaymentType.PrimaryCreditCard,
-                        OverwriteExistingAutoOrder = true,
-                        Details = transactionRequest.CreateAutoOrderRequest.Details.ToArray(),
+                //if (hasAutoOrder)
+                //{
+                //    CreateAutoOrderRequest createAutoOrderRequest = new()
+                //    {
+                //        Frequency = FrequencyType.Weekly,
+                //        StartDate = DateTime.Today,
+                //        CurrencyCode = _orderConfiguration.CurrencyCode,
+                //        WarehouseID = _orderConfiguration.WarehouseID,
+                //        ShipMethodID = _orderConfiguration.DefaultShipMethodID,// transactionRequest.CreateAutoOrderRequest.ShipMethodID,
+                //        PriceType = _orderConfiguration.PriceTypeID,
+                //        PaymentType = AutoOrderPaymentType.PrimaryCreditCard,
+                //        OverwriteExistingAutoOrder = true,
+                //        Details = transactionRequest.CreateAutoOrderRequest.Details.ToArray(),
                        
-                    };
+                //    };
 
-                    request.TransactionRequests[2] = createAutoOrderRequest;
-                }
+                //    request.TransactionRequests[2] = createAutoOrderRequest;
+                //}
 
                 SetAccountCreditCardTokenRequest setAccountCreditCardTokenRequest = new()
                 {
