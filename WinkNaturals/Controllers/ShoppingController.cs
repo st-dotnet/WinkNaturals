@@ -1102,6 +1102,17 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_shoppingService.GetCustomer(partyId));
         }
-       
+        /// <summary>
+        /// GetProductDetailById by itemCode
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetItemById/{itemCode}")]///{itemCode:string}
+        public IActionResult GetItemById(string itemCode, string itemcode2)
+        {
+            string[] itemCodes = new string[2];
+            itemCodes[0] = itemCode;
+            itemCodes[1] = itemcode2;
+            return Ok(_shoppingService.GetStaticProductDetailById(itemCodes));
+        }
     }
 }

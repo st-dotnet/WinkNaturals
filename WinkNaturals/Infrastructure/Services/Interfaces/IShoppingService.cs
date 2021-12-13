@@ -18,6 +18,7 @@ namespace WinkNatural.Web.Services.Interfaces
         //Get item category
         List<ItemCategoryResponse> GetItemCategory(int webCategoryID);
 
+        List<ShopProductsResponse> GetStaticProductDetailById(string[] itemCodes);
         ShopProductsResponse GetProductDetailById(string[] itemCodes);
 
         ShopProductsResponse AddToCart(ShopProductsResponse shopProducts);

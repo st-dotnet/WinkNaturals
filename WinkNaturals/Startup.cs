@@ -19,6 +19,7 @@ using WinkNatural.Web.Services.Services;
 using WinkNaturals.AuthantictionMiddleware;
 using WinkNaturals.Helpers;
 using WinkNaturals.Infrastructure.Services.Interfaces;
+using WinkNaturals.Infrastructure.Services.Services;
 using WinkNaturals.Models;
 using WinkNaturals.Models.Shopping;
 using WinkNaturals.Models.Shopping.Interfaces;
@@ -54,7 +55,6 @@ namespace WinkNatural.Web.WinkNaturals
             services.AddScoped<IShoppingService, ShoppingService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IPartyService, PartyService>();
-            //services.AddScoped<IServiceItem, ServiceItem>();
             services.AddScoped<ISqlCacheService, DistributedCache>();
             services.Configure<ConfigSettings>(option => Configuration.GetSection("Settings").Bind(option));
             services.Configure<ConnectionStrings>(option => Configuration.GetSection("ConnectionStrings").Bind(option));
@@ -71,6 +71,7 @@ namespace WinkNatural.Web.WinkNaturals
             services.AddScoped<IAutoOrders, AutoOrders>();
             services.AddScoped<ICustomerAutoOreder, CustomerAutoOreder>();
             services.AddScoped<IOrderConfiguration, BaseOrderConfiguration>();
+            services.AddScoped<IAccountService, AccountService>();
 
             services.AddDistributedSqlServerCache(options =>
             {

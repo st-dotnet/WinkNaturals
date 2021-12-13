@@ -239,12 +239,32 @@ namespace WinkNatural.Web.Services.Services
                     currencyCode = "usd",
                     languageID = 0,
                     priceTypeID = 1,
-                    itemCodes = itemCodes
+                    itemCodes = itemCodes 
                 }).ToList();
                 return response[0];
             }
         }
-
+        /// <summary>
+        /// GetProductDetailById
+        /// </summary>
+        /// <param name="itemCode of string type"></param>
+        /// <returns>Product Detail</returns>
+        public List<ShopProductsResponse> GetStaticProductDetailById(string[] itemCodes)
+        {
+            //dynamic response;
+            using (var context = Common.Utils.DbConnection.Sql())
+            {
+                var response = context.Query<ShopProductsResponse>(QueryUtility.getProductDetailById_Query, new
+                {
+                    warehouse = 1,
+                    currencyCode = "usd",
+                    languageID = 0,
+                    priceTypeID = 1,
+                    itemCodes = itemCodes
+                }).ToList();
+                return response;
+            }
+        }
         /// <summary>
         /// GetProductImage
         /// </summary>

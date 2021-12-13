@@ -6224,3 +6224,83 @@
 2021-12-03 13:55:35.0502 Info Validating config: TargetNames=logfile, otherFile-web, ConfigItems=38, FilePath=D:\surjit\WinkNaturals\NewWink23-11-2021\WinkNaturals\WinkNaturals\bin\Debug\net5.0\nlog.config
 2021-12-03 13:55:35.0549 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: logfile
 2021-12-03 13:55:35.0549 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: otherFile-web
+2021-12-13 13:37:09.9490 Info Message Template Auto Format enabled
+2021-12-13 13:37:09.9626 Info Loading assembly: NLog.Web.AspNetCore
+2021-12-13 13:37:09.9914 Info Adding target FileTarget(Name=logfile)
+2021-12-13 13:37:10.0134 Info Adding target FileTarget(Name=otherFile-web)
+2021-12-13 13:37:10.0182 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'alldata' not found for logging rule: *.
+2021-12-13 13:37:10.0409 Info Validating config: TargetNames=logfile, otherFile-web, ConfigItems=38, FilePath=D:\surjit\WinkNaturals\NewWink13-12-2021\WinkNaturals\bin\Debug\net5.0\nlog.config
+2021-12-13 13:37:10.0470 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: logfile
+2021-12-13 13:37:10.0470 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: otherFile-web
+2021-12-13 16:03:30.2550 Info Message Template Auto Format enabled
+2021-12-13 16:03:30.2718 Info Loading assembly: NLog.Web.AspNetCore
+2021-12-13 16:03:30.3026 Info Adding target FileTarget(Name=logfile)
+2021-12-13 16:03:30.3262 Info Adding target FileTarget(Name=otherFile-web)
+2021-12-13 16:03:30.3310 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'alldata' not found for logging rule: *.
+2021-12-13 16:03:30.3729 Info Validating config: TargetNames=logfile, otherFile-web, ConfigItems=38, FilePath=D:\surjit\WinkNaturals\NewWink13-12-2021\WinkNaturals\bin\Debug\net5.0\nlog.config
+2021-12-13 16:03:30.3825 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: logfile
+2021-12-13 16:03:30.3825 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: otherFile-web
+2021-12-13 16:04:51.2025 Info Message Template Auto Format enabled
+2021-12-13 16:04:51.2229 Info Loading assembly: NLog.Web.AspNetCore
+2021-12-13 16:04:51.2529 Info Adding target FileTarget(Name=logfile)
+2021-12-13 16:04:51.2686 Info Adding target FileTarget(Name=otherFile-web)
+2021-12-13 16:04:51.2686 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'alldata' not found for logging rule: *.
+2021-12-13 16:04:51.2943 Info Validating config: TargetNames=logfile, otherFile-web, ConfigItems=38, FilePath=D:\surjit\WinkNaturals\NewWink13-12-2021\WinkNaturals\bin\Debug\net5.0\nlog.config
+2021-12-13 16:04:51.2997 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: logfile
+2021-12-13 16:04:51.2997 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: otherFile-web
+2021-12-13 16:09:45.8965 Info Message Template Auto Format enabled
+2021-12-13 16:09:45.9059 Info Loading assembly: NLog.Web.AspNetCore
+2021-12-13 16:09:45.9418 Info Adding target FileTarget(Name=logfile)
+2021-12-13 16:09:45.9562 Info Adding target FileTarget(Name=otherFile-web)
+2021-12-13 16:09:45.9562 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'alldata' not found for logging rule: *.
+2021-12-13 16:09:45.9823 Info Validating config: TargetNames=logfile, otherFile-web, ConfigItems=38, FilePath=D:\surjit\WinkNaturals\NewWink13-12-2021\WinkNaturals\bin\Debug\net5.0\nlog.config
+2021-12-13 16:09:45.9870 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: logfile
+2021-12-13 16:09:45.9870 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: otherFile-web
+2021-12-13 16:12:20.1420 Info Message Template Auto Format enabled
+2021-12-13 16:12:20.1581 Info Loading assembly: NLog.Web.AspNetCore
+2021-12-13 16:12:20.1895 Info Adding target FileTarget(Name=logfile)
+2021-12-13 16:12:20.2032 Info Adding target FileTarget(Name=otherFile-web)
+2021-12-13 16:12:20.2032 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'alldata' not found for logging rule: *.
+2021-12-13 16:12:20.2301 Info Validating config: TargetNames=logfile, otherFile-web, ConfigItems=38, FilePath=D:\surjit\WinkNaturals\NewWink13-12-2021\WinkNaturals\bin\Debug\net5.0\nlog.config
+2021-12-13 16:12:20.2356 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: logfile
+2021-12-13 16:12:20.2356 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: otherFile-web
+2021-12-13 16:19:32.9522 Info Message Template Auto Format enabled
+2021-12-13 16:19:32.9629 Info Loading assembly: NLog.Web.AspNetCore
+2021-12-13 16:19:32.9916 Info Adding target FileTarget(Name=logfile)
+2021-12-13 16:19:33.0110 Info Adding target FileTarget(Name=otherFile-web)
+2021-12-13 16:19:33.0160 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'alldata' not found for logging rule: *.
+2021-12-13 16:19:33.0380 Info Validating config: TargetNames=logfile, otherFile-web, ConfigItems=38, FilePath=D:\surjit\WinkNaturals\NewWink13-12-2021\WinkNaturals\bin\Debug\net5.0\nlog.config
+2021-12-13 16:19:33.0380 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: logfile
+2021-12-13 16:19:33.0380 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: otherFile-web
+2021-12-13 16:22:43.7568 Info Message Template Auto Format enabled
+2021-12-13 16:22:43.7686 Info Loading assembly: NLog.Web.AspNetCore
+2021-12-13 16:22:43.8014 Info Adding target FileTarget(Name=logfile)
+2021-12-13 16:22:43.8186 Info Adding target FileTarget(Name=otherFile-web)
+2021-12-13 16:22:43.8186 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'alldata' not found for logging rule: *.
+2021-12-13 16:22:43.8522 Info Validating config: TargetNames=logfile, otherFile-web, ConfigItems=38, FilePath=D:\surjit\WinkNaturals\NewWink13-12-2021\WinkNaturals\bin\Debug\net5.0\nlog.config
+2021-12-13 16:22:43.8522 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: logfile
+2021-12-13 16:22:43.8522 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: otherFile-web
+2021-12-13 16:26:52.1309 Info Message Template Auto Format enabled
+2021-12-13 16:26:52.1484 Info Loading assembly: NLog.Web.AspNetCore
+2021-12-13 16:26:52.1756 Info Adding target FileTarget(Name=logfile)
+2021-12-13 16:26:52.1937 Info Adding target FileTarget(Name=otherFile-web)
+2021-12-13 16:26:52.1937 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'alldata' not found for logging rule: *.
+2021-12-13 16:26:52.2193 Info Validating config: TargetNames=logfile, otherFile-web, ConfigItems=38, FilePath=D:\surjit\WinkNaturals\NewWink13-12-2021\WinkNaturals\bin\Debug\net5.0\nlog.config
+2021-12-13 16:26:52.2193 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: logfile
+2021-12-13 16:26:52.2193 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: otherFile-web
+2021-12-13 16:32:39.2387 Info Message Template Auto Format enabled
+2021-12-13 16:32:39.2387 Info Loading assembly: NLog.Web.AspNetCore
+2021-12-13 16:32:39.2708 Info Adding target FileTarget(Name=logfile)
+2021-12-13 16:32:39.2890 Info Adding target FileTarget(Name=otherFile-web)
+2021-12-13 16:32:39.2890 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'alldata' not found for logging rule: *.
+2021-12-13 16:32:39.3144 Info Validating config: TargetNames=logfile, otherFile-web, ConfigItems=38, FilePath=D:\surjit\WinkNaturals\NewWink13-12-2021\WinkNaturals\bin\Debug\net5.0\nlog.config
+2021-12-13 16:32:39.3144 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: logfile
+2021-12-13 16:32:39.3144 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: otherFile-web
+2021-12-13 16:33:01.9565 Info Message Template Auto Format enabled
+2021-12-13 16:33:01.9873 Info Loading assembly: NLog.Web.AspNetCore
+2021-12-13 16:33:02.1242 Info Adding target FileTarget(Name=logfile)
+2021-12-13 16:33:02.1492 Info Adding target FileTarget(Name=otherFile-web)
+2021-12-13 16:33:02.1611 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'alldata' not found for logging rule: *.
+2021-12-13 16:33:02.1989 Info Validating config: TargetNames=logfile, otherFile-web, ConfigItems=38, FilePath=D:\surjit\WinkNaturals\NewWink13-12-2021\WinkNaturals\bin\Debug\net5.0\nlog.config
+2021-12-13 16:33:02.2101 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: logfile
+2021-12-13 16:33:02.2101 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: otherFile-web

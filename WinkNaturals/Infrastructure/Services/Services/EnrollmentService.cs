@@ -212,11 +212,8 @@ namespace WinkNatural.Web.Services.Services
                     DefaultWarehouseID = _orderConfiguration.WarehouseID,
                     CanLogin = true,
                     Notes = "Distributor was entered by Distributor 1. Created by the API Enrollment at " + _httpContextAccessor.HttpContext.Request.Host.Value + " on " + DateTime.Now.ToCST().ToString("dddd, MMMM d, yyyy h:mmtt") + " CST at IP " + ipaddress,
-                  
                     };
                     request.TransactionRequests[0] = updateCustomerRequest;
-               
-
                     ChargeCreditCardTokenRequest chargeCreditCardTokenRequest = new()
                     {
                         CreditCardToken = "41X111UAXYE31111",// transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
