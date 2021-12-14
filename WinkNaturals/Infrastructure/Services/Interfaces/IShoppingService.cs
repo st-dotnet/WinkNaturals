@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Models;
+using WinkNaturals.Models.Shopping.Interfaces.PointAccount;
 using Address = WinkNatural.Web.Services.DTO.Shopping.Address;
 
 namespace WinkNatural.Web.Services.Interfaces
@@ -17,10 +18,10 @@ namespace WinkNatural.Web.Services.Interfaces
         List<ShopProductsResponse> GetShopProducts(int categoryID, int sortBy, int pageSize = 18, int pageIndex = 0, string[] sizes = null);
         //Get item category
         List<ItemCategoryResponse> GetItemCategory(int webCategoryID);
-
+        CustomerPointAccount GetCustomerLoyaltyPointAccount(int customerId, int LoyaltyPointAccountId);
         List<ShopProductsResponse> GetStaticProductDetailById(string[] itemCodes);
         ShopProductsResponse GetProductDetailById(string[] itemCodes);
-
+       
         ShopProductsResponse AddToCart(ShopProductsResponse shopProducts);
         byte[] GetProductImage(string imageName);
         Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId, string email);
