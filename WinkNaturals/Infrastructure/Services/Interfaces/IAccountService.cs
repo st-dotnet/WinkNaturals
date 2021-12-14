@@ -1,4 +1,5 @@
 ﻿
+using Exigo.Api.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,9 @@ namespace WinkNaturals.Infrastructure.Services.Interfaces
         IEnumerable<PointTransaction> GetCustomerPointTransactions(int customerID, int pointAccountID);
         IEnumerable<PointTransaction> GetCustomerPointTransactions(int customerID, List<int> pointAccountIDs);
         bool ValidateCustomerHasPointAmount(int customerID, int pointAccountID, decimal pointAmount);
+
+        Task<CreatePointTransactionRequest> CreatePointPayment();
+
+
     }
 }
