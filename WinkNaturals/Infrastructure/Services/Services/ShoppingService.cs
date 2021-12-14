@@ -1,28 +1,21 @@
 ﻿using Dapper;
 using Exigo.Api.Client;
-using ExigoAPIRef;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web.Helpers;
-using System.Web.Http.Results;
-using System.Web.Mvc;
 using WinkNatural.Web.Common;
+using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNatural.Web.Services.Utilities;
-using WinkNaturals.Infrastructure.Services.ExigoService;
+using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Models.ShipMethod;
 using WinkNaturals.Models.Shopping.Interfaces;
+using WinkNaturals.Models.Shopping.Interfaces.PointAccount;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
 using Address = WinkNatural.Web.Services.DTO.Shopping.Address;
@@ -44,7 +37,7 @@ namespace WinkNatural.Web.Services.Services
         }
         private readonly ICustomerAutoOreder _customerAuto;
         private readonly IOrderConfiguration _orderConfiguration;
-     
+    
 
         public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext, ICustomerAutoOreder customerAuto,IOrderConfiguration orderConfiguration)
         {
@@ -52,6 +45,7 @@ namespace WinkNatural.Web.Services.Services
             _exigoApiContext = exigoApiContext;
             _customerAuto = customerAuto;
             _orderConfiguration = orderConfiguration;
+          
         }
 
         /// <summary>
@@ -185,44 +179,7 @@ namespace WinkNatural.Web.Services.Services
             return items;
         }
 
-        //public ShopProductsResponse GetProductDetailById(int[] productIds)
-        //{
-        //    //dynamic response;
-        //        using (var context = Common.Utils.DbConnection.Sql())
-        //        {
-        //      var  response= context.Query<ShopProductsResponse>(@"
-        //            SELECT 
-        //                 i.ItemID
-        //                ,i.ItemCode
-        //                ,i.ItemTypeID
-        //                ,ISNULL(il.ItemDescription, i.ItemDescription) as ItemDescription
-        //                ,ISNULL(il.ShortDetail, i.ShortDetail) as 'ShortDetail1'
-        //                ,ISNULL(il.ShortDetail2, i.ShortDetail2) as 'ShortDetail2'
-        //                ,ISNULL(il.ShortDetail3, i.ShortDetail3) as 'ShortDetail3'
-        //                ,ISNULL(il.ShortDetail4, i.ShortDetail4) as 'ShortDetail4'
-        //                ,ISNULL(il.LongDetail, i.LongDetail) as 'LongDetail1'
-        //                ,ISNULL(il.LongDetail2, i.LongDetail2) as 'LongDetail2'
-        //                ,ISNULL(il.LongDetail3, i.LongDetail3) as 'LongDetail3'
-        //                ,ISNULL(il.LongDetail4, i.LongDetail4) as 'LongDetail4'
-        //                ,i.TinyImageName as 'TinyImageUrl'
-        //                ,i.SmallImageName as 'SmallImageUrl'
-        //                ,i.LargeImageName as 'LargeImageUrl'
-        //              FROM Items i
-        //            LEFT JOIN ItemLanguages il
-        //                ON il.ItemID = i.ItemID
-        //                AND il.LanguageID = @languageID
-        //              WHERE i.ItemID in @ids
-        //        ", new
-        //        {
-        //            ids = productIds,
-        //            languageID = (int)0
-        //        }).ToList();
-        //        //ShopProductsResponse shopProducts = new ShopProductsResponse();
-        //        //shopProducts = response[0];
-        //        return response[0];
-        //    }
-        //}
-
+       
         /// <summary>
         /// GetProductDetailById
         /// </summary>
@@ -239,12 +196,32 @@ namespace WinkNatural.Web.Services.Services
                     currencyCode = "usd",
                     languageID = 0,
                     priceTypeID = 1,
-                    itemCodes = itemCodes
+                    itemCodes = itemCodes 
                 }).ToList();
                 return response[0];
             }
         }
-
+        /// <summary>
+        /// GetProductDetailById
+        /// </summary>
+        /// <param name="itemCode of string type"></param>
+        /// <returns>Product Detail</returns>
+        public List<ShopProductsResponse> GetStaticProductDetailById(string[] itemCodes)
+        {
+            //dynamic response;
+            using (var context = Common.Utils.DbConnection.Sql())
+            {
+                var response = context.Query<ShopProductsResponse>(QueryUtility.getProductDetailById_Query, new
+                {
+                    warehouse = 1,
+                    currencyCode = "usd",
+                    languageID = 0,
+                    priceTypeID = 1,
+                    itemCodes = itemCodes
+                }).ToList();
+                return response;
+            }
+        }
         /// <summary>
         /// GetProductImage
         /// </summary>
@@ -305,9 +282,9 @@ namespace WinkNatural.Web.Services.Services
         /// </summary>
         /// <param name="TransactionalRequestModel"></param>
         /// <returns>TransactionalResponse</returns>
-        public async Task<Exigo.Api.Client.TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId)
+        public async Task<Exigo.Api.Client.TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId,string email)
         {
-            int arraySize = 4;
+            int arraySize = 5;
             Exigo.Api.Client.TransactionalResponse response = new();
 
             Exigo.Api.Client.TransactionalRequest request = new()
@@ -332,27 +309,28 @@ namespace WinkNatural.Web.Services.Services
                         OtherState = transactionRequest.CreateOrderRequest.State,
                         MailCountry = transactionRequest.CreateOrderRequest.Country,
                         MailState = transactionRequest.CreateOrderRequest.State,
-                        
+                       
                     };
                     request.TransactionRequests[0] = updateCustomerRequest;
                 }
                 ChargeCreditCardTokenRequest chargeCreditCardTokenRequest = new()
                 {
+
                     CreditCardToken = "41X111UAXYE31111",//transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
                     BillingName = transactionRequest.ChargeCreditCardTokenRequest.BillingName,
                     BillingAddress = transactionRequest.ChargeCreditCardTokenRequest.BillingAddress,
                     BillingAddress2 = null,//transactionRequest.ChargeCreditCardTokenRequest.BillingAddress2,
                     BillingCity = transactionRequest.ChargeCreditCardTokenRequest.BillingCity,
                     BillingZip = transactionRequest.ChargeCreditCardTokenRequest.BillingZip,
-                    ExpirationMonth =transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth,
+                    ExpirationMonth = transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth,
                     ExpirationYear = transactionRequest.ChargeCreditCardTokenRequest.ExpirationYear,
                     BillingCountry = transactionRequest.ChargeCreditCardTokenRequest.BillingCountry,
                     BillingState = transactionRequest.ChargeCreditCardTokenRequest.BillingState,
                     MaxAmount = Math.Round((decimal)transactionRequest.ChargeCreditCardTokenRequest.MaxAmount, 2),
-                                     //OrderKey = "1",
+
+                    //OrderKey = "1",
                 };
                 request.TransactionRequests[1] = chargeCreditCardTokenRequest;
-
                 if (hasOrder)
                 {
                     CreateOrderRequest customerOrderRequest = new()
@@ -374,7 +352,7 @@ namespace WinkNatural.Web.Services.Services
                         Zip = transactionRequest.CreateOrderRequest.Zip,
                         Country = transactionRequest.CreateOrderRequest.Country,
                         State = transactionRequest.CreateOrderRequest.State,
-                        Email = transactionRequest.CreateOrderRequest.Email,
+                        Email = email,
                         Phone = transactionRequest.CreateOrderRequest.Phone,
                         Notes = transactionRequest.CreateOrderRequest.Notes,
                         Other11 = null,
@@ -387,7 +365,6 @@ namespace WinkNatural.Web.Services.Services
                         Other18 = null,
                         Other19 = null,
                         Other20 = null,
-                        
                         OrderType = OrderType.ShoppingCart,
                         Details = transactionRequest.CreateOrderRequest.Details.ToArray(),
                     };
@@ -397,19 +374,34 @@ namespace WinkNatural.Web.Services.Services
                 {
                     CreateAutoOrderRequest createAutoOrderRequest = new()
                     {
+                        CustomerID = customerId,
                         Frequency = FrequencyType.Weekly,
                         StartDate = DateTime.Today,
+                        StopDate = DateTime.Today,               //Leave null if there is no stop date.
+                        SpecificDayInterval = 1,    //To be used with Frequency Type SpecificDays
                         CurrencyCode = _orderConfiguration.CurrencyCode,
-                        WarehouseID = _orderConfiguration.WarehouseID,
-                        ShipMethodID = _orderConfiguration.DefaultShipMethodID,// transactionRequest.CreateAutoOrderRequest.ShipMethodID,
-                        PriceType = _orderConfiguration.PriceTypeID,
+                        WarehouseID = _orderConfiguration.WarehouseID,            //Unique location for orders
+                        ShipMethodID = _orderConfiguration.DefaultShipMethodID,
+                        PriceType = _orderConfiguration.PriceTypeID,              //Controls which price band to use
                         PaymentType = AutoOrderPaymentType.PrimaryCreditCard,
-                        OverwriteExistingAutoOrder = true,
+                        ProcessType = AutoOrderProcessType.AlwaysProcess,
+                        FirstName = transactionRequest.CreateAutoOrderRequest.FirstName,
+                        LastName = transactionRequest.CreateAutoOrderRequest.LastName,
+                        Company = transactionRequest.CreateAutoOrderRequest.Company,
+                        Address1 = transactionRequest.CreateAutoOrderRequest.Address1,
+                        Address2 = transactionRequest.CreateAutoOrderRequest.Address2,
+                        Address3 = transactionRequest.CreateAutoOrderRequest.Address3,
+                        City = transactionRequest.CreateAutoOrderRequest.City,
+                        Zip = transactionRequest.CreateAutoOrderRequest.Zip,
+                        County =transactionRequest.CreateAutoOrderRequest.County,
+                        Email = transactionRequest.CreateAutoOrderRequest.Email,
+                        Phone = transactionRequest.CreateAutoOrderRequest.Phone,
+                        Notes = transactionRequest.CreateAutoOrderRequest.Notes,
                         Details = transactionRequest.CreateAutoOrderRequest.Details.ToArray(),
-                       
+                        Country = transactionRequest.CreateAutoOrderRequest.Country,
+                        State = transactionRequest.CreateAutoOrderRequest.State,
                     };
-
-                    request.TransactionRequests[2] = createAutoOrderRequest;
+                    request.TransactionRequests[3] = createAutoOrderRequest;
                 }
 
                 SetAccountCreditCardTokenRequest setAccountCreditCardTokenRequest = new()
@@ -421,11 +413,14 @@ namespace WinkNatural.Web.Services.Services
                     ExpirationYear = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationYear,
                     CreditCardType = 1,
                     UseMainAddress = true,
+
+
                 };
-                request.TransactionRequests[3] = setAccountCreditCardTokenRequest;
+                request.TransactionRequests[4] = setAccountCreditCardTokenRequest;
 
                 request.TransactionRequests = request.TransactionRequests.Where(x => x != null).ToArray();
 
+               // arraySize = Convert.ToInt32(request.TransactionRequests);
                 //TransactionRequest
                 response = await _exigoApiContext.GetContext(true).ProcessTransactionAsync(request);
             }
@@ -2597,6 +2592,34 @@ namespace WinkNatural.Web.Services.Services
                 }
 
             return shipMethods;
+        }
+
+        public CustomerPointAccount GetCustomerLoyaltyPointAccount(int customerId, int LoyaltyPointAccountId)
+        {
+                var pointAccount = new CustomerPointAccount();
+                using (var context = DbConnection.Sql())
+                {
+                    pointAccount = context.Query<CustomerPointAccount>(@"
+                                SELECT cpa.PointAccountID
+                                      , cpa.CustomerID
+                                      , cpa.PointBalance AS Balance
+	                                  , pa.PointAccountDescription
+                                      , pa.CurrencyCode
+                                FROM CustomerPointAccounts cpa
+                                 LEFT JOIN PointAccounts pa
+	                                ON cpa.PointAccountID = pa.PointAccountID
+                                WHERE cpa.CustomerID = @CustomerID
+                                    AND cpa.PointAccountID = @PointAccountID
+                    ", new
+                    {
+                        CustomerID = customerId,
+                        PointAccountID = LoyaltyPointAccountId
+                    }).FirstOrDefault();
+                }
+
+                if (pointAccount == null) return null;
+
+                return pointAccount;
         }
 
        
