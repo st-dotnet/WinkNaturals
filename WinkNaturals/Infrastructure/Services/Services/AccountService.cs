@@ -3,6 +3,7 @@ using Exigo.Api.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Infrastructure.Services.Interfaces;
@@ -239,6 +240,11 @@ namespace WinkNaturals.Infrastructure.Services.Services
             if (pointTransactionTypes == null) return null;
 
             return pointTransactionTypes;
+        }
+
+        public Task<CreatePointTransactionRequest> CreatePointPayment()
+        {
+            throw new NotImplementedException();
         }
     }
 }

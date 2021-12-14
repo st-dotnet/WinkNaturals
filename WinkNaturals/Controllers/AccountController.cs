@@ -25,5 +25,13 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_accountService.GetShipMethodsRequest());
         }
+
+        [HttpGet("GetCustomerPointTransactions")]
+        public IActionResult GetCustomerPointTransactions()
+        {
+            return Ok(_accountService.GetCustomerPointTransactions(Identity.CustomerID, LoyaltyPointAccountId));
+        }
+
+
     }
 }
