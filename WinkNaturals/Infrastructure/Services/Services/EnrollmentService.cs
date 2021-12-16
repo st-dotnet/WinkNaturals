@@ -55,7 +55,7 @@ namespace WinkNatural.Web.Services.Services
                     //We will be requesting three items
                     ItemCodes = new string[3]
                 };
-                request.ItemCodes[0] = "SK -Q1KIT3-21";
+                request.ItemCodes[0] = "SK-Q1KIT3-21";
                 request.ItemCodes[1] = "SK-Q1KIT2-21";
                 request.ItemCodes[2] = "SK-Q1KIT1-21";
                 using (var context = DbConnection.Sql())
@@ -182,7 +182,7 @@ namespace WinkNatural.Web.Services.Services
 
                         }
                     }
-                    CreateCustomerRequest updateCustomerRequest = new()
+                    CreateCustomerRequest createCustomerRequest = new()
                     {
                     LoginName = "abcd13",
                     LoginPassword = "abcd13",
@@ -213,7 +213,7 @@ namespace WinkNatural.Web.Services.Services
                     CanLogin = true,
                     Notes = "Distributor was entered by Distributor 1. Created by the API Enrollment at " + _httpContextAccessor.HttpContext.Request.Host.Value + " on " + DateTime.Now.ToCST().ToString("dddd, MMMM d, yyyy h:mmtt") + " CST at IP " + ipaddress,
                     };
-                    request.TransactionRequests[0] = updateCustomerRequest;
+                    request.TransactionRequests[0] = createCustomerRequest;
                     ChargeCreditCardTokenRequest chargeCreditCardTokenRequest = new()
                     {
                         CreditCardToken = "41X111UAXYE31111",// transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,

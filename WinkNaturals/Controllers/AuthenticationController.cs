@@ -88,14 +88,8 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
                 {
                     await _customerService.SendEmailVerification(response.CustomerID, request.Email);
                 }
-                //281021
-              //  var createCustomerRequest = _mapper.Map<CreateCustomerRequest>(model);
-
-                //Create customer in Exigo service
-             //   await _authenticateService.CreateCustomer(createCustomerRequest);
-
                 //Authenticate customer
-                var result = await _authenticateService.SignInCustomer(new AuthenticateCustomerRequest { LoginName = model.LoginName, Password = model.LoginPassword });
+                var result = await _authenticateService.LoginCustomer(new AuthenticateCustomerRequest { LoginName = model.LoginName, Password = model.LoginPassword });
 
 
                 return Ok(result);
@@ -117,9 +111,9 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
             try
             {
                 var signinRequest = _mapper.Map<AuthenticateCustomerRequest>(model);
-
                 //Signin customer in Exigo service
-                return Ok(await _authenticateService.SignInCustomer(signinRequest));
+                return Ok(await _authenticateService.LoginCustomer(signinRequest));
+                
             }
             catch (Exception ex)
             {

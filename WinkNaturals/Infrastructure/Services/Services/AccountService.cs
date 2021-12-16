@@ -9,6 +9,7 @@ using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Models.ShipMethod;
+using WinkNaturals.Setting.Interfaces;
 using PointTransactionType = WinkNaturals.Models.PointTransactionType;
 
 namespace WinkNaturals.Infrastructure.Services.Services
@@ -16,10 +17,12 @@ namespace WinkNaturals.Infrastructure.Services.Services
     public class AccountService : IAccountService
     {
         private readonly IShoppingService _shoppingService;
+        private readonly IExigoApiContext _exigoApiContext;
 
-        public AccountService(IShoppingService shoppingService)
+        public AccountService(IShoppingService shoppingService, IExigoApiContext exigoApiContext)
         {
             _shoppingService = shoppingService;
+            _exigoApiContext = exigoApiContext;
         }
         public IEnumerable<PointTransaction> GetCustomerPointTransactions(int customerID, int pointAccountID)
         {
@@ -143,9 +146,6 @@ namespace WinkNaturals.Infrastructure.Services.Services
 
             return pointAccounts;
         }
-
-       
-
         public List<ShipMethodsResponse> GetShipMethodsRequest()
         {
             var shipMethods = new List<ShipMethodsResponse>();
@@ -222,9 +222,6 @@ namespace WinkNaturals.Infrastructure.Services.Services
             if (pointAccount == null) return false;
             return pointAccount.Balance >= pointAmount;
         }
-
-     
-
         private List<PointTransactionType> GetPointTransactionTypes()
         {
             var pointTransactionTypes = new List<PointTransactionType>();
@@ -242,9 +239,38 @@ namespace WinkNaturals.Infrastructure.Services.Services
             return pointTransactionTypes;
         }
 
-        public Task<CreatePointTransactionRequest> CreatePointPayment()
+        public async Task<GetPointAccountResponse> CreatePointPayment(int customerId, int LoyaltyPointAccountId)
         {
-            throw new NotImplementedException();
+            var res = new GetPointAccountResponse();
+            try
+            {
+                var req = new GetPointAccountRequest();
+                req.CustomerID = customerId;
+                req.PointAccountID = LoyaltyPointAccountId;
+                res = await _exigoApiContext.GetContext(true).GetPointAccountAsync(req);
+            }
+            catch (Exception e)
+            {
+                e.Message.ToString();
+            }
+            return res;
+        }
+
+        public async Task<GetOrdersResponse> GetCustomerOrders_SQL(int customerID, int LoyaltyPointAccountId)
+        {
+            //from order file
+            var res = new GetOrdersResponse();
+            try
+            {
+                var req = new GetOrdersRequest();
+                req.CustomerID = customerID;
+                res = await _exigoApiContext.GetContext(true).GetOrdersAsync(req);
+            }
+            catch (Exception e)
+            {
+                e.Message.ToString();
+            }
+            return res;
         }
     }
 }

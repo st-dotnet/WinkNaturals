@@ -57,16 +57,16 @@ namespace WinkNatural.Web.Services.Services
         }
 
         /// <summary>
-        /// Signin customer
+        /// Login customer
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<CustomerCreateResponse> SignInCustomer(AuthenticateCustomerRequest request)
+        public async Task<CustomerCreateResponse> LoginCustomer(AuthenticateCustomerRequest req)
         {
             try
             {
                 //Exigo service login request
-                var result = await _exigoApiContext.GetContext(true).AuthenticateCustomerAsync(request);
+                var result = await _exigoApiContext.GetContext(true).AuthenticateCustomerAsync(req);
                 if (result.CustomerID == 0)
                 {
                     return new CustomerCreateResponse { ErrorMessage = "User is not authenticated." };
@@ -90,7 +90,6 @@ namespace WinkNatural.Web.Services.Services
                 return new CustomerCreateResponse { ErrorMessage = "Invalid UserName and Password " };
             }
         }
-
         /// <summary>
         /// Update customer password
         /// </summary>
@@ -284,6 +283,8 @@ namespace WinkNatural.Web.Services.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+     
         #endregion
     }
 }

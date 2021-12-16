@@ -59,7 +59,7 @@ namespace WinkNatural.Web.Services.Services
             webCategoryID = webCategoryID == 0 ? 1 : webCategoryID;
             var categories = new List<ItemCategoryResponse>();
 
-            using (var context = Common.Utils.DbConnection.Sql())
+            using (var context = DbConnection.Sql())
             {
                 var data = context.Query<ItemCategoryResponse>(QueryUtility.itemCategoryList_Query, new
                 {
