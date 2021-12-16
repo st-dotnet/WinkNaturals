@@ -20,8 +20,9 @@ namespace WinkNaturals.Infrastructure.Services.Interfaces
         IEnumerable<PointTransaction> GetCustomerPointTransactions(int customerID, List<int> pointAccountIDs);
         bool ValidateCustomerHasPointAmount(int customerID, int pointAccountID, decimal pointAmount);
 
-        Task<CreatePointTransactionRequest> CreatePointPayment();
+       Task<GetPointAccountResponse> CreatePointPayment(int customerId, int LoyaltyPointAccountId);
 
+        Task<GetOrdersResponse> GetCustomerOrders_SQL(int customerID, int LoyaltyPointAccountId);
 
     }
 }

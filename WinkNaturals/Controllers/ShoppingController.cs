@@ -111,7 +111,6 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_shoppingService.GetShopProducts(categoryID, sortBy));
         }
-
         /// <summary>
         /// GetProductDetailById by itemCode
         /// </summary>
@@ -123,7 +122,6 @@ namespace WinkNaturals.Controllers
             itemCodes[0] = itemCode;
             return Ok(_shoppingService.GetProductDetailById(itemCodes));
         }
-
         /// <summary>
         /// GetProductImage by imageName
         /// </summary>
