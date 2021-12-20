@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using WinkNaturals.Helpers;
 using WinkNaturals.Utilities.WebDrip;
 using ShippingAddress = WinkNatural.Web.Services.DTO.Shopping.ShippingAddress;
+using WinkNaturals.Infrastructure.Services.Interfaces;
 
 namespace WinkNaturals.Controllers
 {
@@ -62,6 +63,7 @@ namespace WinkNaturals.Controllers
             _exigoApiContext = exigoApiContext;
             _distributedCache = distributedCache;
             _configuration = configuration;
+           
 
         }
                 
@@ -754,7 +756,7 @@ namespace WinkNaturals.Controllers
                     Amount = pointPaymentAmount
                 };
 
-                var pointPaymentResponse = _exigoApiContext.GetContext(true).CreatePaymentPointAccountAsync(pointPaymentRequest);//_exigoApiContext.GetContext().CreatePaymentPointAccount(pointPaymentRequest);
+                var pointPaymentResponse = _exigoApiContext.GetContext(false).CreatePaymentPointAccountAsync(pointPaymentRequest);//_exigoApiContext.GetContext().CreatePaymentPointAccount(pointPaymentRequest);
             }
             catch (Exception ex)
             {
@@ -842,6 +844,16 @@ namespace WinkNaturals.Controllers
             itemCodes[0] = itemCode;
             itemCodes[1] = itemcode2;
             return Ok(_shoppingService.GetStaticProductDetailById(itemCodes));
+        }
+        
+        /// <summary>
+        /// DeleteCustomerAddress
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("DeleteCustomer")]
+        public IActionResult DeleteCustomer(ShippingAddress address)
+        {
+            return Ok(_shoppingService.DeleteCustomerAddress(Identity.CustomerID, address));
         }
     }
 }

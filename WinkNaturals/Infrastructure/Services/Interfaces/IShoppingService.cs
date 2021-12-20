@@ -1,11 +1,8 @@
 ﻿using Exigo.Api.Client;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Web.Http.Results;
-using System.Web.Mvc;
 using WinkNatural.Web.Services.DTO.Shopping;
-using WinkNaturals.Infrastructure.Services.ExigoService;
-using WinkNaturals.Models;
+using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
 using WinkNaturals.Models.Shopping.Interfaces.PointAccount;
 using Address = WinkNatural.Web.Services.DTO.Shopping.Address;
 
@@ -76,7 +73,7 @@ namespace WinkNatural.Web.Services.Interfaces
         Task<GetOrdersResponse> GetCustomerReviewOrder(int customerId, int OrderId);
         Task<GetCustomersResponse> GetCustomer(int customerID);
         ShopProductsResponse GetSpecialItem();
-
         
+        Task<Address> DeleteCustomerAddress(int customerID, Address address);
     }
 }

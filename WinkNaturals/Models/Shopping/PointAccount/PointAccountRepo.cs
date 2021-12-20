@@ -131,7 +131,7 @@ namespace WinkNaturals.Models.Shopping.PointAccount
                 BillingZip = card.BillingAddress.Zip,
                 BillingCountry = card.BillingAddress.Country
             };
-            var response = _exigoApiContext.GetContext(true).SetAccountCreditCardTokenAsync(request);//DAL.WebService().SetAccountCreditCardToken(request);
+            var response = _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);//DAL.WebService().SetAccountCreditCardToken(request);
 
 
             return card;
@@ -143,7 +143,7 @@ namespace WinkNaturals.Models.Shopping.PointAccount
 
 
             // Get the customer's billing info
-            var billing = _exigoApiContext.GetContext(true).GetCustomerBillingAsync(new GetCustomerBillingRequest //DAL.WebService().GetCustomerBilling(new GetCustomerBillingRequest
+            var billing = _exigoApiContext.GetContext(false).GetCustomerBillingAsync(new GetCustomerBillingRequest //DAL.WebService().GetCustomerBilling(new GetCustomerBillingRequest
             {
                 CustomerID = request.CustomerID
             });

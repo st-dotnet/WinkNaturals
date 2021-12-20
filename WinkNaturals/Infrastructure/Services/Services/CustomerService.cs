@@ -4,12 +4,14 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.Interfaces;
+using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
 using WinkNaturals.Utilities.Common;
 using Settings = WinkNaturals.Utilities.Common.Settings;
+using VerifyAddressResponse = WinkNaturals.Infrastructure.Services.ExigoService.VerifyAddressResponse;
 
 namespace WinkNatural.Web.Services.Services
 {
@@ -17,6 +19,7 @@ namespace WinkNatural.Web.Services.Services
     {
         // private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
         private readonly IExigoApiContext _exigoApiContext;
+
         private readonly IConfiguration _config;
         private readonly IEmailService _emailService;
         private readonly IOptions<ConfigSettings> _settings;
@@ -26,6 +29,7 @@ namespace WinkNatural.Web.Services.Services
             _emailService = emailService;
             _settings = settings;
             _exigoApiContext = exigoApiContext;
+         
         }
 
         #region public methods
@@ -34,7 +38,7 @@ namespace WinkNatural.Web.Services.Services
         {
             try
             {
-                return await _exigoApiContext.GetContext(true).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId });
+                return await _exigoApiContext.GetContext(false).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId });
             }
             catch (Exception ex)
             {
@@ -47,7 +51,7 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 GetResourceSetCulturesRequest req = new GetResourceSetCulturesRequest();
-                var aa = await _exigoApiContext.GetContext(true).GetResourceSetCulturesAsync(req);
+                var aa = await _exigoApiContext.GetContext(false).GetResourceSetCulturesAsync(req);
                 return null;
             }
             catch (Exception ex)
@@ -109,7 +113,47 @@ namespace WinkNatural.Web.Services.Services
 
             return response.Success;
         }
+        Task<VerifyAddressResponse> ICustomerService.VerifyAddress(Address address)
+        {
+            var result = new VerifyAddressResponse();
+            result.OriginalAddress = address;
+            result.IsValid = false;
+            try
+            {
+                if (address.Country.ToUpper() == "US" && address.IsComplete)
+                {
+                    var verifiedAddress = _exigoApiContext.GetContext(false).VerifyAddressAsync(new VerifyAddressRequest
+                    {
+                        Address = address.AddressDisplay,
+                        City = address.City,
+                        State = address.State,
+                        Zip = address.Zip,
+                        Country = address.Country
+                    });
 
+                    result.VerifiedAddress = new Address()
+                    {
 
+                        AddressType = address.AddressType,
+                        Address1 = verifiedAddress.Result.Address,
+                        Address2 = string.Empty,
+                        City = verifiedAddress.Result.City,
+                        State = verifiedAddress.Result.City,
+                        Zip = verifiedAddress.Result.City,
+                        Country = verifiedAddress.Result.Country
+                    };
+
+                    result.IsValid = true;
+                }
+            }
+            catch
+            {
+               //return result;
+                return null;
+            }
+            //return result;
+             return null;
+
+        }
     }
 }

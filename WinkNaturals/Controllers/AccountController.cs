@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Infrastructure.Services.Interfaces;
 
@@ -49,6 +50,21 @@ namespace WinkNaturals.Controllers
         public IActionResult AddressList()
         {
             return Ok(_shoppingService.GetCustomerAddress(Identity.CustomerID).Where(c => c.IsComplete).ToList());
+        }
+
+        [HttpGet("EditAddress")]
+        public IActionResult EditAddress(AddressType addresstype)
+        {
+            return Ok(_shoppingService.GetCustomerAddress(Identity.CustomerID).Where(c => c.AddressType == addresstype).FirstOrDefault());
+        }
+        /// <summary>
+        /// GetCustomerBilling
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetCustomerBilling")]///{itemCode:string}
+        public IActionResult GetCustomerBilling()
+        {
+            return Ok(_accountService.GetCustomerBilling(Identity.CustomerID));
         }
     }
 }

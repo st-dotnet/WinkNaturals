@@ -82,7 +82,7 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
                     MainCountry = CountryCode //GlobalUtilities.GetSelectedCountryCode();
                 };
                 // Create the customer
-                var response = await _exigoApiContext.GetContext(true).CreateCustomerAsync(request); //createCustomerRequest(request);
+                var response = await _exigoApiContext.GetContext(false).CreateCustomerAsync(request); //createCustomerRequest(request);
 
                 if (model.IsOptedIn)
                 {
@@ -110,10 +110,9 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
         {
             try
             {
-                var signinRequest = _mapper.Map<AuthenticateCustomerRequest>(model);
+                  var signinRequest = _mapper.Map<AuthenticateCustomerRequest>(model);
                 //Signin customer in Exigo service
                 return Ok(await _authenticateService.LoginCustomer(signinRequest));
-                
             }
             catch (Exception ex)
             {
@@ -154,7 +153,6 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
             try
             {
                 var customerUpdateRequest = _mapper.Map<CustomerUpdateRequest>(model);
-
                 //Update customer password with Exigo service
                 return Ok(await _authenticateService.UpdateCustomerPassword(customerUpdateRequest));
             }
