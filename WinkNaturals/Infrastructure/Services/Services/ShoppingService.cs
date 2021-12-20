@@ -311,7 +311,7 @@ namespace WinkNatural.Web.Services.Services
                 }
                 ChargeCreditCardTokenRequest chargeCreditCardTokenRequest = new()
                 {
-                    CreditCardToken = "41X111UAXYE31111",//transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
+                    CreditCardToken = transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,//"41X111UAXYE31111",
                     BillingName = transactionRequest.ChargeCreditCardTokenRequest.BillingName,
                     BillingAddress = transactionRequest.ChargeCreditCardTokenRequest.BillingAddress,
                     BillingAddress2 = transactionRequest.ChargeCreditCardTokenRequest.BillingAddress2,
@@ -403,7 +403,7 @@ namespace WinkNatural.Web.Services.Services
                 {
                     CustomerID = customerId,
                     CreditCardAccountType = AccountCreditCardType.Primary,
-                    CreditCardToken = "41X111UAXYE31111",//transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
+                    CreditCardToken = transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,//"41X111UAXYE31111",//
                     ExpirationMonth = Convert.ToInt32(transactionRequest.SetAccountCreditCardTokenRequest.ExpirationMonth),
                     ExpirationYear = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationYear,
                     CreditCardType = 1,
