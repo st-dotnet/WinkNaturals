@@ -66,5 +66,13 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_accountService.GetCustomerBilling(Identity.CustomerID));
         }
+
+        [HttpPost("SaveAddress/{CustomerID:int}")]
+        public IActionResult SaveAddress(int CustomerID, ShippingAddress address)
+        {
+            return Ok(_shoppingService.AddUpdateCustomerAddress(CustomerID, address));
+        }
+
+      
     }
 }

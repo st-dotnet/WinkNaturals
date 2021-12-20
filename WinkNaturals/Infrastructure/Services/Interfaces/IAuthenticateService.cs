@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Customer;
-using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Models;
-using VerifyAddressResponse = WinkNaturals.Infrastructure.Services.ExigoService.VerifyAddressResponse;
 
 namespace WinkNatural.Web.Services.Interfaces
 {
@@ -27,9 +25,7 @@ namespace WinkNatural.Web.Services.Interfaces
         CustomerCreateResponse Authenticate(AuthenticateCustomerRequest model);
         IEnumerable<CustomerCreateModel> GetAll();
         CustomerCreateModel GetById(int id);
-        Task<Address> SaveNewCustomerAddress(int customerId, Address address);
-
-       Task<IAddress> ValidateAddress(IAddress address);
+     
        
 
     }

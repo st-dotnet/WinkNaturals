@@ -2,6 +2,7 @@
 using Exigo.Api.Client;
 using Microsoft.AspNetCore.Mvc;
 using WinkNatural.Web.Services.Interfaces;
+using WinkNaturals.Infrastructure.Services.Interfaces;
 
 namespace WinkNaturals.Controllers
 {
@@ -14,10 +15,13 @@ namespace WinkNaturals.Controllers
 
         private readonly IPartyService _partyService;
         private readonly IMapper _mapper;
-        public PartyController(IPartyService partyService, IMapper mapper)
+        private readonly IAccountService _accountService;
+
+        public PartyController(IPartyService partyService, IMapper mapper, IAccountService accountService)
         {
             _partyService = partyService;
             _mapper = mapper;
+            _accountService = accountService;
         }
         // To Create Party
 
@@ -62,5 +66,10 @@ namespace WinkNaturals.Controllers
             return Ok(_partyService.UpdateGuest(updateGuestRequest));
 
         }
+        //[HttpPost("SaveAddress")]
+        //public IActionResult SaveAddress(int customerId, Address address)
+        //{
+        //    return Ok((_accountService.SaveAddress(customerId, address)));
+        //}
     }
 }

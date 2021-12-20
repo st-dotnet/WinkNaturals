@@ -98,9 +98,7 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService
             return base.GetHashCode();
         }
 
-        public static implicit operator Address(WinkNatural.Web.Services.DTO.Shopping.Address v)
-        {
-            throw new NotImplementedException();
-        }
+       
+
     }
 }

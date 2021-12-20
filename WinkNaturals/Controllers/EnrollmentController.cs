@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNatural.Web.Services.Utilities;
+
+using WinkNaturals.Infrastructure.Services.Interfaces;
 
 namespace WinkNaturals.Controllers
 {
@@ -18,11 +16,13 @@ namespace WinkNaturals.Controllers
     {
         private readonly IEnrollmentService _enrollmentService;
         private readonly IShoppingService _shoppingService;
+        private readonly IAccountService _accountService;
 
-        public EnrollmentController(IEnrollmentService enrollmentService, IShoppingService shoppingService)
+        public EnrollmentController(IEnrollmentService enrollmentService, IShoppingService shoppingService,IAccountService accountService)
         {
             _enrollmentService = enrollmentService;
             _shoppingService = shoppingService;
+            _accountService = accountService;
         }
         public string ClientIPAddr { get; private set; }
        
@@ -108,6 +108,6 @@ namespace WinkNaturals.Controllers
             return items;
         }
 
-
+     
     }
 }

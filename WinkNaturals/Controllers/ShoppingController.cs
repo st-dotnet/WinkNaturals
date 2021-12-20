@@ -855,5 +855,7 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_shoppingService.DeleteCustomerAddress(Identity.CustomerID, address));
         }
+
+       
     }
 }
