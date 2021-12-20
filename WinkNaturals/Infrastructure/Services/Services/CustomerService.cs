@@ -113,7 +113,7 @@ namespace WinkNatural.Web.Services.Services
 
             return response.Success;
         }
-        Task<VerifyAddressResponse> ICustomerService.VerifyAddress(Address address)
+       public Task<VerifyAddressResponse> VerifyAddress(Address address)
         {
             var result = new VerifyAddressResponse();
             result.OriginalAddress = address;
@@ -148,8 +148,8 @@ namespace WinkNatural.Web.Services.Services
             }
             catch
             {
-               //return result;
-                return null;
+               return result;
+               // return null;
             }
             //return result;
              return null;
