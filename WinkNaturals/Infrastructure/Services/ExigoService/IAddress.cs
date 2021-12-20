@@ -13,5 +13,7 @@
 
         string AddressDisplay { get; }
         bool IsComplete { get; }
+
+        
     }
 }

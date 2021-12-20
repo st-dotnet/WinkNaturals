@@ -11,14 +11,12 @@ using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNatural.Web.Services.Utilities;
-using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Models.ShipMethod;
 using WinkNaturals.Models.Shopping.Interfaces;
 using WinkNaturals.Models.Shopping.Interfaces.PointAccount;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
-using Address = WinkNatural.Web.Services.DTO.Shopping.Address;
 using AddressType = WinkNatural.Web.Services.DTO.Shopping.AddressType;
 using ShippingAddress = WinkNatural.Web.Services.DTO.Shopping.ShippingAddress;
 
@@ -274,9 +272,7 @@ namespace WinkNatural.Web.Services.Services
             productsResponse = null;
 
             return productsResponse;
-
         }
-  
         /// <summary>
         /// SubmitCheckout
         /// </summary>
@@ -301,7 +297,7 @@ namespace WinkNatural.Web.Services.Services
                     UpdateCustomerRequest updateCustomerRequest = new()
                     {
                         CustomerID = customerId,
-                        CustomerType = CustomerTypes.PreferredCustomer,
+                        CustomerType = CustomerTypes.RetailCustomer,
                         Field1 = hasAutoOrder ? "1" : string.Empty,
                         MainCountry = transactionRequest.CreateOrderRequest.Country,
                         MainState = transactionRequest.CreateOrderRequest.State,
@@ -315,11 +311,10 @@ namespace WinkNatural.Web.Services.Services
                 }
                 ChargeCreditCardTokenRequest chargeCreditCardTokenRequest = new()
                 {
-
                     CreditCardToken = "41X111UAXYE31111",//transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
                     BillingName = transactionRequest.ChargeCreditCardTokenRequest.BillingName,
                     BillingAddress = transactionRequest.ChargeCreditCardTokenRequest.BillingAddress,
-                    BillingAddress2 = null,//transactionRequest.ChargeCreditCardTokenRequest.BillingAddress2,
+                    BillingAddress2 = transactionRequest.ChargeCreditCardTokenRequest.BillingAddress2,
                     BillingCity = transactionRequest.ChargeCreditCardTokenRequest.BillingCity,
                     BillingZip = transactionRequest.ChargeCreditCardTokenRequest.BillingZip,
                     ExpirationMonth = transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth,
@@ -409,12 +404,18 @@ namespace WinkNatural.Web.Services.Services
                     CustomerID = customerId,
                     CreditCardAccountType = AccountCreditCardType.Primary,
                     CreditCardToken = "41X111UAXYE31111",//transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
-                    ExpirationMonth = Convert.ToInt32(transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth),
+                    ExpirationMonth = Convert.ToInt32(transactionRequest.SetAccountCreditCardTokenRequest.ExpirationMonth),
                     ExpirationYear = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationYear,
                     CreditCardType = 1,
-                    UseMainAddress = true,
-
-
+                    UseMainAddress = false,
+                    //latest added code
+                    BillingName = transactionRequest.SetAccountCreditCardTokenRequest.BillingName,
+                    BillingAddress = transactionRequest.SetAccountCreditCardTokenRequest.BillingAddress,
+                    BillingAddress2 = transactionRequest.SetAccountCreditCardTokenRequest.BillingAddress2,
+                    BillingCity = transactionRequest.SetAccountCreditCardTokenRequest.BillingCity,
+                    BillingZip = transactionRequest.SetAccountCreditCardTokenRequest.BillingZip,
+                    BillingCountry = transactionRequest.SetAccountCreditCardTokenRequest.BillingCountry,
+                    BillingState = transactionRequest.SetAccountCreditCardTokenRequest.BillingState,
                 };
                 request.TransactionRequests[4] = setAccountCreditCardTokenRequest;
 
@@ -422,7 +423,7 @@ namespace WinkNatural.Web.Services.Services
 
                // arraySize = Convert.ToInt32(request.TransactionRequests);
                 //TransactionRequest
-                response = await _exigoApiContext.GetContext(true).ProcessTransactionAsync(request);
+                response = await _exigoApiContext.GetContext(false).ProcessTransactionAsync(request);
             }
             catch (Exception ex)
             {
@@ -503,7 +504,7 @@ namespace WinkNatural.Web.Services.Services
 
                 req.CustomerKey = request.CustomerKey;//Unique alpha numeric identifier for customer record. Exeption will occur if CustomerID & CustomerKey are provided.
 
-                res = await _exigoApiContext.GetContext(true).CalculateOrderAsync(req);
+                res = await _exigoApiContext.GetContext(false).CalculateOrderAsync(req);
 
                 var Details = res.Details;
                 var Subtotal = res.SubTotal;
@@ -720,7 +721,7 @@ namespace WinkNatural.Web.Services.Services
 
                 //Send Request to Server and Get Response
 
-                res = await _exigoApiContext.GetContext(true).CreateOrderAsync(req);
+                res = await _exigoApiContext.GetContext(false).CreateOrderAsync(req);
 
 
 
@@ -829,7 +830,7 @@ namespace WinkNatural.Web.Services.Services
                 req.IsCommissionable = createOrderImport.IsCommissionable ? createOrderImport.IsCommissionable : true;
 
                 //Send Request to Server and Get Response
-                res = await _exigoApiContext.GetContext(true).CreateOrderImportAsync(req);
+                res = await _exigoApiContext.GetContext(false).CreateOrderImportAsync(req);
 
 
             }
@@ -964,7 +965,7 @@ namespace WinkNatural.Web.Services.Services
                                                             // req.ReplacementOrderKey = updateOrderRequest.ReplacementOrderKey;  //Unique alpha numeric identifier for transfer to order record. Exeption will occur if ReplacementOrderID & ReplacementOrderKey are provided.
                                                             //req.ParentOrderKey = updateOrderRequest.ParentOrderKey;       //Unique alpha numeric identifier for transfer to order record. Exeption will occur if ParentOrderID & ParentOrderKey are provided.
                 req.BackOrderFromKey = updateOrderRequest.BackOrderFromKey;
-                res = await _exigoApiContext.GetContext(true).UpdateOrderAsync(req);//
+                res = await _exigoApiContext.GetContext(false).UpdateOrderAsync(req);//
             }
             catch (Exception e)
             {
@@ -988,7 +989,7 @@ namespace WinkNatural.Web.Services.Services
                 var req = new ChangeOrderStatusRequest();
                 req.OrderStatus = changeOrderStatusRequest.OrderStatus;
                 req.OrderKey = changeOrderStatusRequest.OrderKey;
-                res = await _exigoApiContext.GetContext(true).ChangeOrderStatusAsync(req);
+                res = await _exigoApiContext.GetContext(false).ChangeOrderStatusAsync(req);
             }
             catch (Exception e)
             {
@@ -1023,7 +1024,7 @@ namespace WinkNatural.Web.Services.Services
                     }
                 }
                 req.Details = details.ToArray();
-                res = res = await _exigoApiContext.GetContext(true).ChangeOrderStatusBatchAsync(req);
+                res = res = await _exigoApiContext.GetContext(false).ChangeOrderStatusBatchAsync(req);
 
             }
             catch (Exception e)
@@ -1056,7 +1057,7 @@ namespace WinkNatural.Web.Services.Services
                 req.PaymentType = PaymentType.Cash;
                 req.OrderKey = createPaymentRequest.OrderKey;
                 //Send Request to Server and Get Response
-                res = await _exigoApiContext.GetContext(true).CreatePaymentAsync(req);
+                res = await _exigoApiContext.GetContext(false).CreatePaymentAsync(req);
 
             }
             catch (Exception e)
@@ -1116,7 +1117,7 @@ namespace WinkNatural.Web.Services.Services
 
                 //Send Request to Server and Get Response
 
-                res = await _exigoApiContext.GetContext(true).CreatePaymentCreditCardAsync(req);
+                res = await _exigoApiContext.GetContext(false).CreatePaymentCreditCardAsync(req);
             }
             catch (Exception e)
             {
@@ -1148,7 +1149,7 @@ namespace WinkNatural.Web.Services.Services
                 req.OrderKey = createPaymentWalletRequest.OrderKey;             //Unique alpha numeric identifier for order record. Exeption will occur if OrderID & OrderKey are provided.
 
                 //Send Request to Server and Get Response
-                res = await _exigoApiContext.GetContext(true).CreatePaymentWalletAsync(req);
+                res = await _exigoApiContext.GetContext(false).CreatePaymentWalletAsync(req);
             }
             catch (Exception e)
             {
@@ -1191,7 +1192,7 @@ namespace WinkNatural.Web.Services.Services
                 req.ClientIpAddress = creditCardTokenRequest.ClientIpAddress;      //Optional
 
                 //Send Request to Server and Get Response
-                res = await _exigoApiContext.GetContext(true).ValidateCreditCardTokenAsync(req);
+                res = await _exigoApiContext.GetContext(false).ValidateCreditCardTokenAsync(req);
             }
             catch (Exception e)
             {
@@ -1221,7 +1222,7 @@ namespace WinkNatural.Web.Services.Services
                 req.Amount = createPaymentPointAccountRequest.Amount;
                 req.OrderKey = createPaymentPointAccountRequest.OrderKey;             //Unique alpha numeric identifier for order record. Exeption will occur if OrderID & OrderKey are provided.
                                                                                       //Send Request to Server and Get Response
-                res = await _exigoApiContext.GetContext(true).CreatePaymentPointAccountAsync(req);
+                res = await _exigoApiContext.GetContext(false).CreatePaymentPointAccountAsync(req);
                 //Now examine the results:
                 //Console.WriteLine("PaymentID: {0}", res.PaymentID);
                 //Console.WriteLine("Message: {0}", res.Message);
@@ -1251,7 +1252,7 @@ namespace WinkNatural.Web.Services.Services
                 req.OrderKey = createPaymentCheckRequest.OrderKey;             //Unique alpha numeric identifier for order record. Exeption will occur if OrderID & OrderKey are provided.
                                                                                //Send Request to Server and Get Response
 
-                res = await _exigoApiContext.GetContext(true).CreatePaymentCheckAsync(req);
+                res = await _exigoApiContext.GetContext(false).CreatePaymentCheckAsync(req);
             }
             catch (Exception e)
             {
@@ -1282,7 +1283,7 @@ namespace WinkNatural.Web.Services.Services
                 req.OrderKey = chargeCreditCardTokenRequest.OrderKey;             //Unique alpha numeric identifier for order record. Exeption will occur if OrderID & OrderKey are provided.
                                                                                   //Send Request to Server and Get Response
 
-                res = await _exigoApiContext.GetContext(true).ChargeCreditCardTokenAsync(req);
+                res = await _exigoApiContext.GetContext(false).ChargeCreditCardTokenAsync(req);
             }
             catch (Exception e)
             {
@@ -1312,7 +1313,7 @@ namespace WinkNatural.Web.Services.Services
                 req.OrderKey = chargeCreditCardTokenOnFileRequest.OrderKey;             //Unique alpha numeric identifier for order record. Exeption will occur if OrderID & OrderKey are provided.
 
                 //Send Request to Server and Get Response
-                res = await _exigoApiContext.GetContext(true).ChargeCreditCardTokenOnFileAsync(req);
+                res = await _exigoApiContext.GetContext(false).ChargeCreditCardTokenOnFileAsync(req);
 
 
             }
@@ -1371,7 +1372,7 @@ namespace WinkNatural.Web.Services.Services
                 req.MasterOrderKey = chargeGroupOrderCredit.MasterOrderKey;       //Unique alpha numeric identifier for master order record. Exeption will occur if MasterOrderID & MasterOrderKey are provided.
                                                                                   //Send Request to Server and Get Response
 
-                chargeGroupOrderCreditCardTokenResponse = await _exigoApiContext.GetContext(true).ChargeGroupOrderCreditCardTokenAsync(req);
+                chargeGroupOrderCreditCardTokenResponse = await _exigoApiContext.GetContext(false).ChargeGroupOrderCreditCardTokenAsync(req);
             }
             catch (Exception e)
             {
@@ -1398,7 +1399,7 @@ namespace WinkNatural.Web.Services.Services
                 req.OrderKey = refundPriorCredit.OrderKey;             //Unique alpha numeric identifier for order record. Exeption will occur if OrderID & OrderKey are provided.
                                                                        //Send Request to Server and Get Response
 
-                refundPriorCreditCardChargeResponse = await _exigoApiContext.GetContext(true).RefundPriorCreditCardChargeAsync(req);
+                refundPriorCreditCardChargeResponse = await _exigoApiContext.GetContext(false).RefundPriorCreditCardChargeAsync(req);
             }
             catch (Exception e)
             {
@@ -1413,6 +1414,7 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 var req = new VerifyAddressRequest();
+
                 req.Address = addressRequest.Address;
                 req.State = addressRequest.State;
                 req.City = addressRequest.City;
@@ -1420,7 +1422,7 @@ namespace WinkNatural.Web.Services.Services
                 req.Country = addressRequest.Country;
                 //Send Request to Server and Get Response
 
-                verifyAddressResponse = await _exigoApiContext.GetContext(true).VerifyAddressAsync(req);
+                verifyAddressResponse = await _exigoApiContext.GetContext(false).VerifyAddressAsync(req);
             }
             catch (Exception e)
             {
@@ -1487,7 +1489,7 @@ namespace WinkNatural.Web.Services.Services
             if (saveAddress)
             {
 
-                await _exigoApiContext.GetContext(true).UpdateCustomerAsync(request);
+                await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
             }
 
             return address;
@@ -1609,7 +1611,7 @@ namespace WinkNatural.Web.Services.Services
             req.WarehouseId = warehousesRequest.WarehouseId;
             //Send Request to Server and Get Response
 
-            var res = await _exigoApiContext.GetContext(true).GetWarehousesAsync(req);
+            var res = await _exigoApiContext.GetContext(false).GetWarehousesAsync(req);
             return res;
         }
 
@@ -1624,7 +1626,7 @@ namespace WinkNatural.Web.Services.Services
             req.CurrencyCode = "usd";
             //Send Request to Server and Get Response
 
-            var res = await _exigoApiContext.GetContext(true).GetOrdersAsync(req);
+            var res = await _exigoApiContext.GetContext(false).GetOrdersAsync(req);
 
             return res;
         }
@@ -1750,7 +1752,7 @@ namespace WinkNatural.Web.Services.Services
                     if (saveAddress)
                     {
 
-                        await _exigoApiContext.GetContext(true).UpdateCustomerAsync(request);
+                        await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
                     }
                 }
                 return address;
@@ -2061,7 +2063,7 @@ namespace WinkNatural.Web.Services.Services
         {
             var req = new GetCustomersRequest();
             req.CustomerID = customerID;
-            var response = await _exigoApiContext.GetContext(true).GetCustomersAsync(req);
+            var response = await _exigoApiContext.GetContext(false).GetCustomersAsync(req);
             return response;
         }
 
@@ -2093,7 +2095,7 @@ namespace WinkNatural.Web.Services.Services
                 request.Phone = updateCustomerRequest.Phone;
                 request.MobilePhone = updateCustomerRequest.MobilePhone;
 
-                var response = await _exigoApiContext.GetContext(true).UpdateCustomerAsync(request);
+                var response = await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
                 return response;
             }
             catch (Exception ex)
@@ -2119,7 +2121,7 @@ namespace WinkNatural.Web.Services.Services
                 }).FirstOrDefault();
 
                 // Get Customer type from MemoryCache
-                int customerType = _exigoApiContext.GetContext(true).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId }).Result.Customers[0].CustomerType;
+                int customerType = _exigoApiContext.GetContext(false).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId }).Result.Customers[0].CustomerType;
                 if (coupon != null)
                 {
                     if (!string.IsNullOrEmpty(coupon.CustomerTypes))
@@ -2183,7 +2185,7 @@ namespace WinkNatural.Web.Services.Services
 
                 //Send Request to Server and Get Response
 
-                res = await _exigoApiContext.GetContext(true).CreateItemAsync(req);
+                res = await _exigoApiContext.GetContext(false).CreateItemAsync(req);
             }
             catch (Exception e)
             {
@@ -2244,7 +2246,7 @@ namespace WinkNatural.Web.Services.Services
 
                 //Send Request to Server and Get Response
 
-                res = await _exigoApiContext.GetContext(true).UpdateItemAsync(req);
+                res = await _exigoApiContext.GetContext(false).UpdateItemAsync(req);
             }
             catch (Exception e)
             {
@@ -2286,7 +2288,7 @@ namespace WinkNatural.Web.Services.Services
 
                 //Send Request to Server and Get Response
 
-                res = await _exigoApiContext.GetContext(true).SetItemPriceAsync(req);
+                res = await _exigoApiContext.GetContext(false).SetItemPriceAsync(req);
             }
             catch (Exception e)
             {
@@ -2316,7 +2318,7 @@ namespace WinkNatural.Web.Services.Services
 
                 //Send Request to Server and Get Response
 
-                res = await _exigoApiContext.GetContext(true).SetItemWarehouseAsync(req);
+                res = await _exigoApiContext.GetContext(false).SetItemWarehouseAsync(req);
             }
             catch (Exception e)
             {
@@ -2349,7 +2351,7 @@ namespace WinkNatural.Web.Services.Services
 
                 //Send Request to Server and Get Response
 
-                res = await _exigoApiContext.GetContext(true).SetItemCountryRegionAsync(req);
+                res = await _exigoApiContext.GetContext(false).SetItemCountryRegionAsync(req);
             }
             catch (Exception e)
             {
@@ -2373,7 +2375,7 @@ namespace WinkNatural.Web.Services.Services
                 req.Description = createWebCategoryRequest.Description;
 
                 // Send Request to Server and Get Response
-                res = await _exigoApiContext.GetContext(true).CreateWebCategoryAsync(req);
+                res = await _exigoApiContext.GetContext(false).CreateWebCategoryAsync(req);
             }
             catch (Exception e)
             {
@@ -2398,7 +2400,7 @@ namespace WinkNatural.Web.Services.Services
 
                 //Send Request to Server and Get Response
 
-                res = await _exigoApiContext.GetContext(true).UpdateWebCategoryAsync(req);
+                res = await _exigoApiContext.GetContext(false).UpdateWebCategoryAsync(req);
             }
             catch (Exception e)
             {
@@ -2421,7 +2423,7 @@ namespace WinkNatural.Web.Services.Services
                 req.CategoryID = deleteWebCategoryRequest.CategoryID;
 
                 // Send Request to Server and Get Response
-                res = await _exigoApiContext.GetContext(true).DeleteWebCategoryAsync(req);
+                res = await _exigoApiContext.GetContext(false).DeleteWebCategoryAsync(req);
             }
             catch (Exception e)
             {
@@ -2447,7 +2449,7 @@ namespace WinkNatural.Web.Services.Services
 
                 // Send Request to Server and Get Response
 
-                res = await _exigoApiContext.GetContext(true).AdjustInventoryAsync(req);
+                res = await _exigoApiContext.GetContext(false).AdjustInventoryAsync(req);
             }
             catch (Exception e)
             {
@@ -2472,7 +2474,7 @@ namespace WinkNatural.Web.Services.Services
 
                 // Send Request to Server and Get Response
 
-                res = await _exigoApiContext.GetContext(true).SetItemSubscriptionAsync(req);
+                res = await _exigoApiContext.GetContext(false).SetItemSubscriptionAsync(req);
             }
             catch (Exception e)
             {
@@ -2497,7 +2499,7 @@ namespace WinkNatural.Web.Services.Services
 
                 // Send Request to Server and Get Response
 
-                res = await _exigoApiContext.GetContext(true).SetItemPointAccountAsync(req);
+                res = await _exigoApiContext.GetContext(false).SetItemPointAccountAsync(req);
             }
             catch (Exception e)
             {
@@ -2510,7 +2512,7 @@ namespace WinkNatural.Web.Services.Services
         {
             var req = new GetPartiesRequest();
             req.PartyID = partyId;
-            var response = await _exigoApiContext.GetContext(true).GetPartiesAsync(req);
+            var response = await _exigoApiContext.GetContext(false).GetPartiesAsync(req);
             return response;
         }
 
@@ -2539,7 +2541,7 @@ namespace WinkNatural.Web.Services.Services
                 req.Field5 = "1";
                 // Send Request to Server and Get Response
 
-                res = await _exigoApiContext.GetContext(true).CreatePartyAsync(req);
+                res = await _exigoApiContext.GetContext(false).CreatePartyAsync(req);
             }
             catch (Exception e)
             {
@@ -2552,7 +2554,7 @@ namespace WinkNatural.Web.Services.Services
         {
             var req = new GetCustomersRequest();
             req.CustomerID = customerID;
-            var response = await _exigoApiContext.GetContext(true).GetCustomersAsync(req);
+            var response = await _exigoApiContext.GetContext(false).GetCustomersAsync(req);
             return response;
         }
 
@@ -2561,7 +2563,7 @@ namespace WinkNatural.Web.Services.Services
             var req = new GetOrdersRequest();
             req.CustomerID = customerId;
             req.OrderID = 268403;
-            var response = await _exigoApiContext.GetContext(true).GetOrdersAsync(req);
+            var response = await _exigoApiContext.GetContext(false).GetOrdersAsync(req);
            
             int shipMethodId=response.Orders[0].ShipMethodID;
 
@@ -2622,6 +2624,58 @@ namespace WinkNatural.Web.Services.Services
                 return pointAccount;
         }
 
-       
+        
+
+        /// <summary>
+        /// DeleteCustomerAddress
+        /// </summary>
+        /// <param name="customerID"></param>
+        /// <param name="type"></param>
+        public async Task<Address> DeleteCustomerAddress(int customerID, Address address)
+        {
+            var type = address.AddressType;
+            var deleteAddress = false;
+            var request = new UpdateCustomerRequest();
+            request.CustomerID = customerID;
+            // Main address
+            if (type == AddressType.Main)
+            {
+                deleteAddress = true;
+                request.MainAddress1 = string.Empty;
+                request.MainAddress2 = string.Empty;
+                request.MainCity = string.Empty;
+                request.MainState = string.Empty;
+                request.MainZip = string.Empty;
+                request.MainCountry = string.Empty;
+            }
+            // Mailing address
+            else if (type == AddressType.Mailing)
+            {
+                deleteAddress = true;
+                request.MailAddress1 = string.Empty;
+                request.MailAddress2 = string.Empty;
+                request.MailCity = string.Empty;
+                request.MailState = string.Empty;
+                request.MailZip = string.Empty;
+                request.MailCountry = string.Empty;
+            }
+            // Other address
+            else if (type == AddressType.Other)
+            {
+                deleteAddress = true;
+                request.OtherAddress1 = string.Empty;
+                request.OtherAddress2 = string.Empty;
+                request.OtherCity = string.Empty;
+                request.OtherState = string.Empty;
+                request.OtherZip = string.Empty;
+                request.OtherCountry = string.Empty;
+            }
+            if (deleteAddress)
+            {
+
+                await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
+            }
+            return address;
+        }
     }
 }

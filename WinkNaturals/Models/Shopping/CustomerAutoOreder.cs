@@ -42,7 +42,7 @@ namespace WinkNaturals.Models.Shopping
                 request.AutoOrderID = (int)autoOrderID;
             }
 
-            var aoResponse = _exigoApiContext.GetContext(true).GetAutoOrdersAsync(request);//WebService().GetAutoOrders(request);
+            var aoResponse = _exigoApiContext.GetContext(false).GetAutoOrdersAsync(request);//WebService().GetAutoOrders(request);
 
             if (aoResponse.Result.AutoOrders != null) return autoOrders;
 
@@ -130,7 +130,7 @@ namespace WinkNaturals.Models.Shopping
 
 
             // Get the customer's billing info
-            var billing = _exigoApiContext.GetContext(true).GetCustomerBillingAsync(new GetCustomerBillingRequest //DAL.WebService().GetCustomerBilling(new GetCustomerBillingRequest
+            var billing = _exigoApiContext.GetContext(false).GetCustomerBillingAsync(new GetCustomerBillingRequest //DAL.WebService().GetCustomerBilling(new GetCustomerBillingRequest
             {
                 CustomerID = request.CustomerID
             });

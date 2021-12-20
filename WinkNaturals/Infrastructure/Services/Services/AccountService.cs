@@ -6,10 +6,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.Interfaces;
+using WinkNaturals.Infrastructure.Services.ExigoService;
+using WinkNaturals.Infrastructure.Services.ExigoService.BankAccount;
+using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Models.ShipMethod;
+using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
 using WinkNaturals.Setting.Interfaces;
+using static WinkNaturals.Helpers.Constant;
+using BankAccountType = WinkNaturals.Helpers.Constant.BankAccountType;
 using PointTransactionType = WinkNaturals.Models.PointTransactionType;
 
 namespace WinkNaturals.Infrastructure.Services.Services
@@ -18,11 +24,15 @@ namespace WinkNaturals.Infrastructure.Services.Services
     {
         private readonly IShoppingService _shoppingService;
         private readonly IExigoApiContext _exigoApiContext;
+        private readonly IAuthenticateService _authenticateService;
+        private readonly ICustomerService _customerService;
 
-        public AccountService(IShoppingService shoppingService, IExigoApiContext exigoApiContext)
+        public AccountService(IShoppingService shoppingService, IExigoApiContext exigoApiContext,IAuthenticateService authenticateService)
         {
             _shoppingService = shoppingService;
             _exigoApiContext = exigoApiContext;
+            _authenticateService = authenticateService;
+            
         }
         public IEnumerable<PointTransaction> GetCustomerPointTransactions(int customerID, int pointAccountID)
         {
@@ -247,7 +257,7 @@ namespace WinkNaturals.Infrastructure.Services.Services
                 var req = new GetPointAccountRequest();
                 req.CustomerID = customerId;
                 req.PointAccountID = LoyaltyPointAccountId;
-                res = await _exigoApiContext.GetContext(true).GetPointAccountAsync(req);
+                res = await _exigoApiContext.GetContext(false).GetPointAccountAsync(req);
             }
             catch (Exception e)
             {
@@ -264,13 +274,147 @@ namespace WinkNaturals.Infrastructure.Services.Services
             {
                 var req = new GetOrdersRequest();
                 req.CustomerID = customerID;
-                res = await _exigoApiContext.GetContext(true).GetOrdersAsync(req);
+                res = await _exigoApiContext.GetContext(false).GetOrdersAsync(req);
             }
             catch (Exception e)
             {
                 e.Message.ToString();
             }
             return res;
+        }
+
+        public async Task<List<IPaymentMethod>> GetCustomerBilling(int customerId, GetAutoOrdersResponse autoOrders = null)
+        {
+            var methods = new List<IPaymentMethod>();
+            var req = new GetCustomerBillingRequest();
+            req.CustomerID = customerId;
+            var response = await _exigoApiContext.GetContext(false).GetCustomerBillingAsync(req);
+            if (autoOrders == null)
+            {
+                var request = new GetAutoOrdersRequest
+                {
+                    CustomerID = customerId,
+                    AutoOrderStatus = AutoOrderStatusType.Active
+                };
+                // Get the customer's auto orders
+                autoOrders = await _exigoApiContext.GetContext(false).GetAutoOrdersAsync(request);
+            }
+            methods.Add(new BankAccount(BankAccountType.Primary)
+            {
+                BankName = string.Empty,
+                NameOnAccount = response.BankAccount.BillingAddress,
+                AccountNumber = response.BankAccount.BankAccountNumberDisplay,
+                RoutingNumber = response.BankAccount.BankRoutingNumber,
+                AutoOrderIDs = autoOrders.AutoOrders.Where(c => c.PaymentType == AutoOrderPaymentType.CheckingAccount).Select(c => c.AutoOrderID).ToArray(),
+
+                BillingAddress = new Address()
+                {
+                    Address1 = response.BankAccount.NameOnAccount,
+                    City = response.BankAccount.BillingCity,
+                    State = response.BankAccount.BillingState,
+                    Zip = response.BankAccount.BillingZip,
+                    Country = response.BankAccount.BillingCountry
+                }
+            });
+            methods.Add(new CreditCard(CreditCardType.Primary)
+            {
+                NameOnCard = response.PrimaryCreditCard.BillingName,
+                CardNumber = response.PrimaryCreditCard.CreditCardNumberDisplay,
+                ExpirationMonth = response.PrimaryCreditCard.ExpirationMonth,
+                ExpirationYear = response.PrimaryCreditCard.ExpirationYear,
+                AutoOrderIDs = autoOrders.AutoOrders.Where(c => c.PaymentType == AutoOrderPaymentType.PrimaryCreditCard).Select(c => c.AutoOrderID).ToArray(),
+                BillingAddress = new Address()
+                {
+                    Address1 = response.PrimaryCreditCard.BillingAddress,
+                    City = response.PrimaryCreditCard.BillingCity,
+                    State = response.PrimaryCreditCard.BillingState,
+                    Zip = response.PrimaryCreditCard.BillingZip,
+                    Country = response.PrimaryCreditCard.BillingCountry
+                }
+
+            });
+            methods.Add(new CreditCard(CreditCardType.Secondary)
+            {
+                NameOnCard = response.SecondaryCreditCard.BillingName,
+                CardNumber = response.SecondaryCreditCard.CreditCardNumberDisplay,
+                ExpirationMonth = response.SecondaryCreditCard.ExpirationMonth,
+                ExpirationYear = response.SecondaryCreditCard.ExpirationYear,
+                AutoOrderIDs = autoOrders.AutoOrders.Where(c => c.PaymentType == AutoOrderPaymentType.SecondaryCreditCard).Select(c => c.AutoOrderID).ToArray(),
+                BillingAddress = new Address()
+                {
+                    Address1 = response.SecondaryCreditCard.BillingAddress,
+                    City = response.SecondaryCreditCard.BillingCity,
+                    State = response.SecondaryCreditCard.BillingState,
+                    Zip = response.SecondaryCreditCard.BillingZip,
+                    Country = response.SecondaryCreditCard.BillingCountry
+                }
+
+            });
+            return methods.ToList();
+        }
+
+        public async Task<Address> SaveAddress(int customerId,Address address)
+        {
+            var type = address.AddressType;
+            var saveAddress = false;
+            var request = new UpdateCustomerRequest();
+            request.CustomerID = customerId;
+
+            // Attempt to validate the user's entered address if US address
+            address =  await _authenticateService.ValidateAddress(address) as Address;
+
+            // New Addresses
+            if (type == AddressType.New)
+            {
+                return  await _authenticateService.SaveNewCustomerAddress(customerId, address);
+            }
+
+            // Main address
+            if (type == AddressType.Main)
+            {
+                saveAddress = true;
+                request.MainAddress1 = address.Address1;
+                request.MainAddress2 = address.Address2 ?? string.Empty;
+                request.MainCity = address.City;
+                request.MainState = address.State;
+                request.MainZip = address.Zip;
+                request.MainCountry = address.Country;
+            }
+
+            // Mailing address
+            if (type == AddressType.Mailing)
+            {
+                saveAddress = true;
+                request.MailAddress1 = address.Address1;
+                request.MailAddress2 = address.Address2 ?? string.Empty;
+                request.MailCity = address.City;
+                request.MailState = address.State;
+                request.MailZip = address.Zip;
+                request.MailCountry = address.Country;
+            }
+
+            // Other address
+            if (type == AddressType.Other)
+            {
+                saveAddress = true;
+                request.OtherAddress1 = address.Address1;
+                request.OtherAddress2 = address.Address2 ?? string.Empty;
+                request.OtherCity = address.City;
+                request.OtherState = address.State;
+                request.OtherZip = address.Zip;
+                request.OtherCountry = address.Country;
+            }
+
+            if (saveAddress)
+            {
+                await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
+            }
+
+            return address;
+        }
+        public Task<Address> SaveNewCustomerAddress(int customerId, Address address)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -184,27 +184,28 @@ namespace WinkNatural.Web.Services.Services
                     }
                     CreateCustomerRequest createCustomerRequest = new()
                     {
-                    LoginName = "abcd13",
-                    LoginPassword = "abcd13",
-                    FirstName = "abcd13",       
-                    LastName = "abcd13",          
-                    Company = "ACME, Inc.",    
+                    LoginName = transactionRequest.CreateCustomerRequest.LoginName,//"abcd13",
+                    LoginPassword = transactionRequest.CreateCustomerRequest.LoginPassword,//"abcd13",
+                    FirstName = transactionRequest.CreateCustomerRequest.FirstName,//"abcd13",       
+                    LastName = transactionRequest.CreateCustomerRequest.LastName,//"abcd13",          
+                    Company = transactionRequest.CreateCustomerRequest.Company,//"ACME, Inc.",    
                     CustomerType = CustomerTypes.Distributor2,          
                     CustomerStatus = 1,       
-                    Email = "joecool@me.com",
-                    Phone = "555-555-5555",
-                    MainAddress1 = "123 Some Street",
-                    MainCity = "Dallas",
-                    MainState = "TX",          
-                    MainZip = "75207",
-                    MailState = "TX",            
-                    MailCountry = "USA",        
-                    OtherState = "TX",         
-                    OtherCountry = "USA",         
-                    MiddleName = "ABCd13",         
-                    NameSuffix = "ABCd13",   
-                    MainCountry="US",
-                    MainCounty="US",
+                    Email = transactionRequest.CreateCustomerRequest.Email,//"joecool@me.com",
+                    Phone = transactionRequest.CreateCustomerRequest.Phone,//"555-555-5555",
+                    MainAddress1 = transactionRequest.CreateCustomerRequest.MainAddress1,//"123 Some Street",
+                    MainCity = transactionRequest.CreateCustomerRequest.MainCity,//"Dallas",
+                    MainState = transactionRequest.CreateCustomerRequest.MainState,//"TX",          
+                    MainZip = transactionRequest.CreateCustomerRequest.MainZip,//"75207",
+                    //Mailing Address
+                    MailState = transactionRequest.CreateCustomerRequest.MainState,//"TX",            
+                    MailCountry = transactionRequest.CreateCustomerRequest.MainCountry,//"USA",        
+                    OtherState = transactionRequest.CreateCustomerRequest.OtherState,//"TX",         
+                    OtherCountry = transactionRequest.CreateCustomerRequest.OtherCountry,//"USA",         
+                    MiddleName = transactionRequest.CreateCustomerRequest.MiddleName,// "ABCd13",         
+                    NameSuffix = transactionRequest.CreateCustomerRequest.NameSuffix,//"ABCd13",   
+                    MainCountry= transactionRequest.CreateCustomerRequest.MainCountry,//"US",
+                    MainCounty= transactionRequest.CreateCustomerRequest.MainCounty,//"US",
                     InsertEnrollerTree = true,
                     InsertUnilevelTree = true,
                     EnrollerID = 1,
@@ -300,17 +301,24 @@ namespace WinkNatural.Web.Services.Services
                     ExpirationYear = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationYear,
                     CreditCardType = 1,
                     UseMainAddress = true,
+                    //latest added code
+                    BillingName = transactionRequest.SetAccountCreditCardTokenRequest.BillingName,
+                    BillingAddress = transactionRequest.SetAccountCreditCardTokenRequest.BillingAddress,
+                    BillingAddress2 = transactionRequest.SetAccountCreditCardTokenRequest.BillingAddress2,
+                    BillingCity = transactionRequest.SetAccountCreditCardTokenRequest.BillingCity,
+                    BillingZip = transactionRequest.SetAccountCreditCardTokenRequest.BillingZip,
+                    BillingCountry = transactionRequest.SetAccountCreditCardTokenRequest.BillingCountry,
+                    BillingState = transactionRequest.SetAccountCreditCardTokenRequest.BillingState,
                 };
                 request.TransactionRequests[3] = setAccountCreditCardTokenRequest;
 
                 request.TransactionRequests = request.TransactionRequests.Where(x => x != null).ToArray();
 
                 //TransactionRequest
-                response = await _exigoApiContext.GetContext(true).ProcessTransactionAsync(request);
+                response = await _exigoApiContext.GetContext(false).ProcessTransactionAsync(request);
                 if (response.TransactionResponses.Length > 0)
                 {
                     await _customerService.SendEmailVerification(customerId, customerDetails.Result.Customers[0].Email);
-
                 }
             }
             catch (Exception ex)
