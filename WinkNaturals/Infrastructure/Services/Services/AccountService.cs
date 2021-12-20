@@ -353,68 +353,6 @@ namespace WinkNaturals.Infrastructure.Services.Services
             return methods.ToList();
         }
 
-        public async Task<Address> SaveAddress(int customerId,Address address)
-        {
-            var type = address.AddressType;
-            var saveAddress = false;
-            var request = new UpdateCustomerRequest();
-            request.CustomerID = customerId;
-
-            // Attempt to validate the user's entered address if US address
-            address =  await _authenticateService.ValidateAddress(address) as Address;
-
-            // New Addresses
-            if (type == AddressType.New)
-            {
-                return  await _authenticateService.SaveNewCustomerAddress(customerId, address);
-            }
-
-            // Main address
-            if (type == AddressType.Main)
-            {
-                saveAddress = true;
-                request.MainAddress1 = address.Address1;
-                request.MainAddress2 = address.Address2 ?? string.Empty;
-                request.MainCity = address.City;
-                request.MainState = address.State;
-                request.MainZip = address.Zip;
-                request.MainCountry = address.Country;
-            }
-
-            // Mailing address
-            if (type == AddressType.Mailing)
-            {
-                saveAddress = true;
-                request.MailAddress1 = address.Address1;
-                request.MailAddress2 = address.Address2 ?? string.Empty;
-                request.MailCity = address.City;
-                request.MailState = address.State;
-                request.MailZip = address.Zip;
-                request.MailCountry = address.Country;
-            }
-
-            // Other address
-            if (type == AddressType.Other)
-            {
-                saveAddress = true;
-                request.OtherAddress1 = address.Address1;
-                request.OtherAddress2 = address.Address2 ?? string.Empty;
-                request.OtherCity = address.City;
-                request.OtherState = address.State;
-                request.OtherZip = address.Zip;
-                request.OtherCountry = address.Country;
-            }
-
-            if (saveAddress)
-            {
-                await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
-            }
-
-            return address;
-        }
-        public Task<Address> SaveNewCustomerAddress(int customerId, Address address)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

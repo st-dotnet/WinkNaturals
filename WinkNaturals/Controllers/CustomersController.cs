@@ -1,15 +1,8 @@
-﻿using Dapper;
-using Exigo.Api.Client;
-using ExigoResourceSet.Providers.Resource;
+﻿using Exigo.Api.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Resources;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using WinkNaturals.Models;
 using WinkNaturals.Models.Shopping.Interfaces;

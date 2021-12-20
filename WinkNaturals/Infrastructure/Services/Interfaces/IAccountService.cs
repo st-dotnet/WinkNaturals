@@ -1,14 +1,11 @@
 ﻿
 using Exigo.Api.Client;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Models;
 using WinkNaturals.Models.ShipMethod;
 using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
-using WinkNaturals.Models.Shopping.Interfaces.PointAccount;
 
 namespace WinkNaturals.Infrastructure.Services.Interfaces
 {
@@ -22,8 +19,9 @@ namespace WinkNaturals.Infrastructure.Services.Interfaces
         Task<GetPointAccountResponse> CreatePointPayment(int customerId, int LoyaltyPointAccountId);
         Task<GetOrdersResponse> GetCustomerOrders_SQL(int customerID, int LoyaltyPointAccountId);
         Task<List<IPaymentMethod>> GetCustomerBilling(int customerId, GetAutoOrdersResponse autoOrders = null);
-        Task<Address> SaveAddress(int customerId, Address address);
-    //    Task<Address> SetCustomerAddressOnFile(int customerId, Address address);
+      
+       
+
 
     }
 }
