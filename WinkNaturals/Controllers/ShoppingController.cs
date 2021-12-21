@@ -44,11 +44,12 @@ namespace WinkNaturals.Controllers
         private readonly IExigoApiContext _exigoApiContext;
         private readonly IDistributedCache _distributedCache;
         private readonly IConfiguration _configuration;
+        private readonly ICustomerAutoOreder _customerAutoService;
 
         public IOrderConfiguration OrderConfiguration { get; set; }
         public IOrderConfiguration AutoOrderConfiguration { get; set; }
         public ShoppingController(IShoppingService shoppingService, IMapper mapper, IOptions<ConfigSettings> config, ISqlCacheService sqlCacheService, IPropertyBags propertyBagService, IPropertyBagItem propertyBagItem, IOrderConfiguration orderConfiguration, 
-            IGetCurrentMarket getCurrentMarket, IConfiguration configuration, ICustomerPointAccount customerPointAccount,IAutoOrders autoOrders, IDistributedCache distributedCache, IExigoApiContext exigoApiContext)
+            IGetCurrentMarket getCurrentMarket, IConfiguration configuration, ICustomerPointAccount customerPointAccount,IAutoOrders autoOrders, IDistributedCache distributedCache, IExigoApiContext exigoApiContext, ICustomerAutoOreder customerAutoService)
         {
             _shoppingService = shoppingService;
             _mapper = mapper;
@@ -63,6 +64,7 @@ namespace WinkNaturals.Controllers
             _exigoApiContext = exigoApiContext;
             _distributedCache = distributedCache;
             _configuration = configuration;
+            _customerAutoService = customerAutoService;
            
 
         }
@@ -856,6 +858,14 @@ namespace WinkNaturals.Controllers
             return Ok(_shoppingService.DeleteCustomerAddress(Identity.CustomerID, address));
         }
 
-       
+        /// <summary>
+        /// GetCustomerAutoOrders
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetCustomerAutoOrders")]
+        public IActionResult GetCustomerAutoOrders()
+        {
+            return Ok(_customerAutoService.GetCustomerAutoOrders(Identity.CustomerID));
+        }
     }
 }

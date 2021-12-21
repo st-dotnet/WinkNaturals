@@ -127,7 +127,6 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.CreditCard
             }
         }
 
-
     }
 
 }
