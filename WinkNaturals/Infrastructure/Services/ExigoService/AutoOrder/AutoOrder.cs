@@ -11,7 +11,7 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder
         public AutoOrder()
         {
             ShippingAddress = new ShippingAddress();
-            Details = new List<AutoOrderDetail>();
+            Details = new List<AutoOrderDetailResponse>();
         }
 
         public int AutoOrderID { get; set; }
@@ -39,7 +39,7 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder
 
         public IPaymentMethod PaymentMethod { get; set; }
 
-        public List<AutoOrderDetail> Details { get; set; }
+        public List<AutoOrderDetailResponse> Details { get; set; }
 
         public decimal Total { get; set; }
         public decimal Subtotal { get; set; }
@@ -130,10 +130,10 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder
         {
             get { return !IsActive; }
         }
-        public bool IsVirtualAutoOrder
-        {
-            get { return Details != null && Details.All(d => d.IsVirtual); }
-        }
+        //public bool IsVirtualAutoOrder
+        //{
+        //    get { return Details != null && Details.All(d => d.IsVirtual); }
+        //}
         public bool IsBackupAutoOrder
         {
             get { return AutoOrderProcessTypeID == 2; }
