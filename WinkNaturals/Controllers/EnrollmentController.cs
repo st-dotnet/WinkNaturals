@@ -76,7 +76,8 @@ namespace WinkNaturals.Controllers
         [HttpPost("SubmitCheckout")]
         public IActionResult SubmitCheckout(TransactionalRequestModel transactionRequests)
         {
-            return Ok(_enrollmentService.SubmitCheckout(transactionRequests, Identity.CustomerID));
+            // return Ok(_enrollmentService.SubmitCheckout(transactionRequests, Identity.CustomerID));
+             return Ok(_enrollmentService.SubmitCheckout(transactionRequests));
         }
         /// <summary>
         /// GetDistributors

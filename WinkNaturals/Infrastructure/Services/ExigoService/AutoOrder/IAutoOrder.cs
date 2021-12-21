@@ -30,7 +30,7 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder
 
         IPaymentMethod PaymentMethod { get; set; }
 
-        List<AutoOrderDetail> Details { get; set; }
+        List<AutoOrderDetailResponse> Details { get; set; }
 
         decimal Total { get; set; }
         decimal Subtotal { get; set; }

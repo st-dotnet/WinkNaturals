@@ -858,14 +858,14 @@ namespace WinkNaturals.Controllers
             return Ok(_shoppingService.DeleteCustomerAddress(Identity.CustomerID, address));
         }
 
-        /// <summary>
-        /// GetCustomerAutoOrders
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("GetCustomerAutoOrders")]
-        public IActionResult GetCustomerAutoOrders()
-        {
-            return Ok(_customerAutoService.GetCustomerAutoOrders(Identity.CustomerID));
-        }
+        ///// <summary>
+        ///// GetCustomerAutoOrders
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpGet("GetCustomerAutoOrders")]
+        //public IActionResult GetCustomerAutoOrders()
+        //{
+        //    return Ok(_customerAutoService.GetCustomerAutoOrders(Identity.CustomerID));
+        //}
     }
 }

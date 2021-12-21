@@ -150,7 +150,7 @@ namespace WinkNaturals.Models.Shopping.PointAccount
             if (autoOrders == null)
             {
                 // Get the customer's auto orders
-                autoOrders = _customerAutoOreder.GetCustomerAutoOrders(request.CustomerID, includePaymentMethods: false);  //_ExigoService.DAL.GetCustomerAutoOrders(request.CustomerID, includePaymentMethods: false);
+               // autoOrders = _customerAutoOreder.GetCustomerAutoOrders(request.CustomerID, includePaymentMethods: false);  //_ExigoService.DAL.GetCustomerAutoOrders(request.CustomerID, includePaymentMethods: false);
             }
 
 

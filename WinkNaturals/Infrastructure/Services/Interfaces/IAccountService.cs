@@ -20,7 +20,7 @@ namespace WinkNaturals.Infrastructure.Services.Interfaces
         Task<GetPointAccountResponse> CreatePointPayment(int customerId, int LoyaltyPointAccountId);
         Task<GetOrdersResponse> GetCustomerOrders_SQL(int customerID, int LoyaltyPointAccountId);
         Task<List<IPaymentMethod>> GetCustomerBilling(int customerId,GetAutoOrdersResponse autoOrders = null);
-        IEnumerable<AutoOrder> GetCustomerAutoOrders(int customerid, int? autoOrderID = null, bool includePaymentMethods = true);
+        Task<IEnumerable<AutoOrder>> GetCustomerAutoOrders(int customerid, int? autoOrderID = null, bool includePaymentMethods = true);
         Task<GetOrdersResponse> CancelledCustomerOrders_SQL(int customerID, int LoyaltyPointAccountId);
         Task<GetOrdersResponse> SeachOrderList(int customerID, int orderid);
         Task<GetOrdersResponse> DeclinedCustomerOrders_SQL(int customerID, int LoyaltyPointAccountId);

@@ -14,8 +14,8 @@ namespace WinkNatural.Web.Services.Interfaces
 
 
         //Process exigo payment
-        Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId);
-
+      //  Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId);
+        Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest);
         List<dynamic> GetDistributors(int customerId);
 
 
