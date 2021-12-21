@@ -361,104 +361,8 @@ namespace WinkNaturals.Infrastructure.Services.Services
             return methods.ToList();
         }
 
-       
-        //public async List<GetAutoOrdersResponse> GetCustomerAutoOrders(int customerid, int? autoOrderID = null, bool includePaymentMethods = true)
-        //{
-        //    var autoOrders = new List<AutoOrder>();
-        //    var detailItemCodes = new List<string>(); 
 
-        //    var request = new GetAutoOrdersRequest
-        //    {
-        //        CustomerID = customerid,
-        //        AutoOrderStatus = AutoOrderStatusType.Active
-        //    };
-
-        //    if (autoOrderID != null)
-        //    {
-        //        request.AutoOrderID = (int)autoOrderID;
-        //    }
-
-        //    var aoResponse =   await _exigoApiContext.GetContext(false).GetAutoOrdersAsync(request); // WebService().GetAutoOrders(request);
-
-        //    if (aoResponse.AutoOrders.Any())
-        //      //  return autoOrders;
-
-        //    foreach (var aor in aoResponse.AutoOrders)
-        //    {
-        //       // autoOrders.Add(aor);
-        //    }
-        //    // was getting all item  .Where(x => x.ParentItemCode == null)  maybe this is not needed?
-        //    detailItemCodes = autoOrders.SelectMany(a => a.Details.Select(d => d.ItemCode)).Distinct().ToList();
-
-        //    var autoOrderIds = autoOrders.Select(a => a.AutoOrderID).ToList();
-        //    var createdDateNodes = new List<AutoOrderCreatedDate>();
-        //    var aoDetailInfo = new List<AutoOrderDetailInfo>();
-
-        //    using (var context = DbConnection.Sql())
-        //    {
-        //        var nodeResults = context.QueryMultiple(@"
-        //            SELECT
-        //                AutoOrderID,
-        //                CreatedDate
-        //            FROM
-        //                AutoOrders
-        //            WHERE
-        //                AutoOrderID in @ids
-
-        //            SELECT
-        //                ItemCode,
-        //                SmallImageName,
-        //                IsVirtual
-        //            FROM Items
-        //            WHERE ItemCode in @itemcodes
-        //            ",
-        //            new
-        //            {
-        //                ids = autoOrderIds,
-        //                itemcodes = detailItemCodes
-        //            });
-
-        //        createdDateNodes = nodeResults.Read<AutoOrderCreatedDate>().ToList();
-        //        aoDetailInfo = nodeResults.Read<AutoOrderDetailInfo>().ToList();
-        //    }
-
-        //    foreach (var ao in autoOrders)
-        //    {
-        //        ao.CreatedDate = createdDateNodes.Where(n => n.AutoOrderID == ao.AutoOrderID).Select(n => n.CreatedDate).FirstOrDefault();
-
-        //        foreach (var detail in ao.Details)
-        //        {
-        //            var detailInfo = aoDetailInfo.Where(i => i.ItemCode == detail.ItemCode).FirstOrDefault();
-        //           // detail.ImageUrl = GetProductImagePath(detailInfo.ImageUrl);
-        //           // detail.IsVirtual = detailInfo.IsVirtual;
-        //        }
-        //    }
-        //    //if (includePaymentMethods)
-        //    //{
-        //    //    // Add payment methods
-        //    //    var paymentMethods = _exigoApiContext.GetContext(false).GetAutoOrdersAsync(new GetAutoOrdersRequest 
-        //    //    GetCustomerPaymentMethods(new GetCustomerPaymentMethodsRequest
-        //    //    {
-        //    //        CustomerID = customerid,
-        //    //    });
-
-        //    //    foreach (var autoOrder in autoOrders)
-        //    //    {
-        //    //        IPaymentMethod paymentMethod;
-        //    //        switch (autoOrder.AutoOrderPaymentTypeID)
-        //    //        {
-        //    //            case 1: paymentMethod = paymentMethodsAutoOrders.Where(c => c.PaymentType == AutoOrderPaymentType.PrimaryCreditCard).FirstOrDefault(); break;
-        //    //            // case 2: paymentMethod = paymentMethods.AutoOrders.Where(c => c is CreditCard && ((CreditCard)c).Type == CreditCardType.Secondary).FirstOrDefault(); break;
-        //    //            // case 3: paymentMethod = paymentMethods.AutoOrders.Where(c => c is BankAccount && ((BankAccount)c).Type == BankAccountType.Primary).FirstOrDefault(); break;
-        //    //            default:
-        //    //                paymentMethod = null;
-        //    //                break;
-        //    //        }
-        //    //        autoOrder.PaymentMethod = paymentMethod;
-        //    //    }
-        //    //}
-        //    return null;
-        //}
+        
 
         //private string GetProductImagePath(string productImage)
         //{
@@ -481,6 +385,154 @@ namespace WinkNaturals.Infrastructure.Services.Services
         //        return "/shopping/productimages/";
         //    }
         //}
+
+        /// <summary>
+        /// CancelledCustomerOrders_SQL
+        /// </summary>
+        /// <param name="customerID"></param>
+        /// <param name="LoyaltyPointAccountId"></param>
+        /// <returns></returns>
+        public async Task<GetOrdersResponse> CancelledCustomerOrders_SQL(int customerID, int LoyaltyPointAccountId)
+        {
+            //from order file
+            var res = new GetOrdersResponse();
+            try
+            {
+                var req = new GetOrdersRequest();
+                req.CustomerID = customerID;
+                req.OrderStatus = OrderStatusType.Canceled;
+
+
+                res = await _exigoApiContext.GetContext(false).GetOrdersAsync(req);
+            }
+            catch (Exception e)
+            {
+                e.Message.ToString();
+            }
+            return res;
+        }
+        /// <summary>
+        /// SeachOrderList
+        /// </summary>
+        /// <param name="customerID"></param>
+        /// <param name="orderid"></param>
+        /// <returns></returns>
+        public async Task<GetOrdersResponse> SeachOrderList(int customerID, int orderid)
+        {
+            //from order file
+            var res = new GetOrdersResponse();
+            try
+            {
+                var req = new GetOrdersRequest();
+                req.CustomerID = customerID;
+                req.OrderID = orderid;
+                res = await _exigoApiContext.GetContext(false).GetOrdersAsync(req);
+            }
+            catch (Exception e)
+            {
+                e.Message.ToString();
+            }
+            return res;
+        }
+        /// <summary>
+        /// DeclinedCustomerOrders_SQL
+        /// </summary>
+        /// <param name="customerID"></param>
+        /// <param name="LoyaltyPointAccountId"></param>
+        /// <returns></returns>
+        public async Task<GetOrdersResponse> DeclinedCustomerOrders_SQL(int customerID, int LoyaltyPointAccountId)
+        {
+            //from order file
+            var res = new GetOrdersResponse();
+            try
+            {
+                var req = new GetOrdersRequest();
+                req.CustomerID = customerID;
+                req.OrderStatus = OrderStatusType.CCDeclined;
+                res = await _exigoApiContext.GetContext(false).GetOrdersAsync(req);
+            }
+            catch (Exception e)
+            {
+                e.Message.ToString();
+            }
+            return res;
+        }
+        /// <summary>
+        /// ShippedCustomerOrders_SQL
+        /// </summary>
+        /// <param name="customerID"></param>
+        /// <param name="LoyaltyPointAccountId"></param>
+        /// <returns></returns>
+        public async Task<GetOrdersResponse> ShippedCustomerOrders_SQL(int customerID, int LoyaltyPointAccountId)
+        {
+            //from order file
+            var res = new GetOrdersResponse();
+            try
+            {
+                var req = new GetOrdersRequest();
+                req.CustomerID = customerID;
+                req.OrderStatus = OrderStatusType.Shipped;
+                res = await _exigoApiContext.GetContext(false).GetOrdersAsync(req);
+            }
+            catch (Exception e)
+            {
+                e.Message.ToString();
+            }
+            return res;
+        }
+        /// <summary>
+        /// GetOrderInvoice
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<GetOrderInvoiceResponse> GetOrderInvoice(GetOrderInvoiceRequest request)
+        {
+            //from order file
+            var res = new GetOrderInvoiceResponse();
+            try
+            {
+                var req = new GetOrderInvoiceRequest();
+                req.OrderID = request.OrderID;
+                req.OrderKey = request.OrderKey;
+                req.ReportlayoutID = request.ReportlayoutID;
+                req.Format = InvoiceRenderFormat.HTML;
+                res = await _exigoApiContext.GetContext(false).GetOrderInvoiceAsync(req);
+            }
+            catch (Exception e)
+            {
+                e.Message.ToString();
+            }
+            return res;
+        }
+
+        public IEnumerable<AutoOrder> GetCustomerAutoOrders(int customerid, int? autoOrderID = null, bool includePaymentMethods = true)
+        {
+            var autoOrders = new List<AutoOrder>();
+            var detailItemCodes = new List<string>();
+
+            var request = new GetAutoOrdersRequest
+            {
+                CustomerID = customerid,
+                AutoOrderStatus = AutoOrderStatusType.Active
+            };
+
+            if (autoOrderID != null)
+            {
+                request.AutoOrderID = (int)autoOrderID;
+            }
+
+            var aoResponse = _exigoApiContext.GetContext(false).GetAutoOrdersAsync(request); // WebService().GetAutoOrders(request);
+
+            if (aoResponse.Result.AutoOrders.Any())
+                return autoOrders;
+
+            foreach (var aor in aoResponse.Result.AutoOrders)
+            {
+               // autoOrders.Add(aor);
+            }
+
+            return null;
+        }
     }
 }
 

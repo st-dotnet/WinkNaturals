@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Exigo.Api.Client;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
@@ -21,8 +22,6 @@ namespace WinkNaturals.Controllers
             _accountService = accountService;
             _shoppingService = shoppingService;
             _customerAutoOreder = customerAutoOreder;
-
-
         }
         [HttpGet("Points")]
         public IActionResult Points()
@@ -71,22 +70,71 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_accountService.GetCustomerBilling(Identity.CustomerID));
         }
-
+        /// <summary>
+        /// SaveAddress
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("SaveAddress/{CustomerID:int}")]
         public IActionResult SaveAddress(int CustomerID, ShippingAddress address)
         {
             return Ok(_shoppingService.AddUpdateCustomerAddress(CustomerID, address));
         }
-        ///// <summary>
-        ///// GetCustomerAutoOrders
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpGet("GetCustomerAutoOrders")]
-        //public IActionResult GetCustomerAutoOrders()
-        //{
-        //    return Ok(_accountService.GetCustomerAutoOrders(Identity.CustomerID));
-        //}
 
+        /// <summary>
+        /// GetCustomerAutoOrders
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetCustomerAutoOrders")]
+        public IActionResult GetCustomerAutoOrders()
+        {
+            return Ok(_accountService.GetCustomerAutoOrders(Identity.CustomerID));
+        }
+
+        /// <summary>
+        /// CancelledCustomerOrders_SQL
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("CancelledCustomerOrders_SQL")]
+        public IActionResult CancelledCustomerOrders_SQL()
+        {
+            return Ok(_accountService.CancelledCustomerOrders_SQL(Identity.CustomerID, LoyaltyPointAccountId));
+        }
+        /// <summary>
+        /// SeachOrderList
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("SeachOrderList")]
+        public IActionResult SeachOrderList(int orderid)
+        {
+            return Ok(_accountService.SeachOrderList(Identity.CustomerID, orderid));
+        }
+        /// <summary>
+        /// DeclinedCustomerOrders_SQL
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("DeclinedCustomerOrders_SQL")]
+        public IActionResult DeclinedCustomerOrders_SQL()
+        {
+            return Ok(_accountService.DeclinedCustomerOrders_SQL(Identity.CustomerID, LoyaltyPointAccountId));
+        }
+        /// <summary>
+        /// ShippedCustomerOrders_SQL
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("ShippedCustomerOrders_SQL")]
+        public IActionResult ShippedCustomerOrders_SQL()
+        {
+            return Ok(_accountService.ShippedCustomerOrders_SQL(Identity.CustomerID, LoyaltyPointAccountId));
+        }
+        /// <summary>
+        /// GetOrderInvoice
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("GetOrderInvoice")]
+        public IActionResult GetOrderInvoice(GetOrderInvoiceRequest request)
+        {
+            return Ok(_accountService.GetOrderInvoice(request));
+        }
 
     }
 }
