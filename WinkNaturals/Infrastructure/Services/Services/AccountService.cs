@@ -487,7 +487,7 @@ namespace WinkNaturals.Infrastructure.Services.Services
 
             var request = new GetAutoOrdersRequest
             {
-                CustomerID = customerid,
+                CustomerID = 103266,
                 AutoOrderStatus = AutoOrderStatusType.Active
             };
 
@@ -498,7 +498,7 @@ namespace WinkNaturals.Infrastructure.Services.Services
 
             var aoResponse = await _exigoApiContext.GetContext(false).GetAutoOrdersAsync(request); // WebService().GetAutoOrders(request);
 
-            if (aoResponse.AutoOrders.Any())
+            if (aoResponse.AutoOrders==null)
                 return autoOrders;
 
             foreach (var autoOrder in aoResponse.AutoOrders)
