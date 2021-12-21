@@ -3,6 +3,7 @@ using System.Linq;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Infrastructure.Services.Interfaces;
+using WinkNaturals.Models.Shopping.Interfaces;
 
 namespace WinkNaturals.Controllers
 {
@@ -12,12 +13,16 @@ namespace WinkNaturals.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly IShoppingService _shoppingService;
+        private readonly ICustomerAutoOreder _customerAutoOreder;
 
         public int LoyaltyPointAccountId { get { return 1; } }
-        public AccountController(IAccountService accountService, IShoppingService shoppingService)
+        public AccountController(IAccountService accountService, IShoppingService shoppingService, ICustomerAutoOreder customerAutoOreder)
         {
             _accountService = accountService;
             _shoppingService = shoppingService;
+            _customerAutoOreder = customerAutoOreder;
+
+
         }
         [HttpGet("Points")]
         public IActionResult Points()
@@ -72,7 +77,16 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_shoppingService.AddUpdateCustomerAddress(CustomerID, address));
         }
+        ///// <summary>
+        ///// GetCustomerAutoOrders
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpGet("GetCustomerAutoOrders")]
+        //public IActionResult GetCustomerAutoOrders()
+        //{
+        //    return Ok(_accountService.GetCustomerAutoOrders(Identity.CustomerID));
+        //}
 
-      
+
     }
 }

@@ -5,6 +5,6 @@ namespace WinkNaturals.Models.Shopping.Interfaces
 {
     public interface ICustomerAutoOreder
     {
-        public IEnumerable<AutoOrder> GetCustomerAutoOrders(int customerid, int? autoOrderID = null, bool includePaymentMethods = true);
+         IEnumerable<AutoOrder> GetCustomerAutoOrders(int customerid, int? autoOrderID = null, bool includePaymentMethods = true);
     }
 }

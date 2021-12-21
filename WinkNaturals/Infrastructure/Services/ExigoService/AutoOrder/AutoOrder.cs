@@ -16,8 +16,10 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder
 
         public int AutoOrderID { get; set; }
         public int CustomerID { get; set; }
-
-        public string Description { get; set; }
+        public DateTime ModifiedDate { get; set; }
+        public string ModifiedBy { get; set; }
+        public string MiddleName { get; set; }
+        public string NameSuffix { get; set; }
         public int AutoOrderStatusID { get; set; }
         public int FrequencyTypeID { get; set; }
         public string CurrencyCode { get; set; }
@@ -44,7 +46,9 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder
         public decimal TaxTotal { get; set; }
         public decimal ShippingTotal { get; set; }
         public decimal DiscountTotal { get; set; }
-
+        public decimal BusinessVolumeTotal { get; set; }
+        public decimal CommissionableVolumeTotal { get; set; }
+        public string Description { get; set; }
         public decimal BVTotal { get; set; }
         public string FormattedBVTotal { get { return string.Format("{0:N0} {1}", BVTotal, "BV"); } }
 
@@ -60,30 +64,39 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder
         public string Other17 { get; set; }
         public string Other18 { get; set; }
         public string Other19 { get; set; }
-
-        public static explicit operator AutoOrder(AutoOrderResponse v)
-        {
-            throw new NotImplementedException();
-        }
-
         public string Other20 { get; set; }
-
-
 
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }
 
+        public int? SpecificDayInterval { get; set; }
 
-
-        public string GetDescription()
-        {
-            if (String.IsNullOrEmpty(Description)) return this.Description;
-            else
-            {
-                if (IsVirtualAutoOrder) return FrequencyTypeDescription + " Subscription Renewal";
-                else return FrequencyTypeDescription + " Auto-ship";
-            }
-        }
+        public AutoOrderStatusType AutoOrderStatus { get; set; }
+        public FrequencyType Frequency { get; set; }
+        public AutoOrderPaymentType PaymentType { get; set; }
+        public AutoOrderProcessType ProcessType { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Company { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string Address3 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Country { get; set; }
+        public string County { get; set; }
+        public string Email { get; set; }
+        public string CustomerKey { get; set; }
+        public int? CustomFrequencyTy { get; set; }
+        //public string GetDescription()
+        //{
+        //    if (String.IsNullOrEmpty(Description)) return this.Description;
+        //    else
+        //    {
+        //        if (IsVirtualAutoOrder) return FrequencyTypeDescription + " Subscription Renewal";
+        //        else return FrequencyTypeDescription + " Auto-ship";
+        //    }
+        //}
 
         public AutoOrderPaymentType GetAutoOrderPaymentType(CreditCard.CreditCard card)
         {
@@ -149,5 +162,7 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder
         {
             get { return ShippingAddress.IsComplete; }
         }
+
+ 
     }
 }

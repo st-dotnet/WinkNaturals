@@ -26,7 +26,7 @@ namespace WinkNaturals.Models.Shopping
         {
             _exigoApiContext = exigoApiContext;
         }
-        public IEnumerable<AutoOrder> GetCustomerAutoOrders(int customerid, int? autoOrderID = null, bool includePaymentMethods = true)
+        public  IEnumerable<AutoOrder> GetCustomerAutoOrders(int customerid, int? autoOrderID = null, bool includePaymentMethods = true)
         {
             var autoOrders = new List<AutoOrder>();
             var detailItemCodes = new List<string>();
@@ -42,13 +42,14 @@ namespace WinkNaturals.Models.Shopping
                 request.AutoOrderID = (int)autoOrderID;
             }
 
-            var aoResponse = _exigoApiContext.GetContext(false).GetAutoOrdersAsync(request);//WebService().GetAutoOrders(request);
+            var aoResponse =  _exigoApiContext.GetContext(false).GetAutoOrdersAsync(request); // WebService().GetAutoOrders(request);
 
-            if (aoResponse.Result.AutoOrders != null) return autoOrders;
+            if (aoResponse.Result.AutoOrders != null)
+                return autoOrders;
 
             foreach (var aor in aoResponse.Result.AutoOrders)
             {
-                autoOrders.Add((AutoOrder)aor);
+              //  autoOrders.Add((AutoOrder)aor);
             }
 
             // was getting all item  .Where(x => x.ParentItemCode == null)  maybe this is not needed?
