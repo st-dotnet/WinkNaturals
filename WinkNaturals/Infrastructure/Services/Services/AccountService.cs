@@ -635,104 +635,63 @@ namespace WinkNaturals.Infrastructure.Services.Services
             return autoOrders;
         }
 
-        //public async Task<IEnumerable<AutoOrder>> GetCustomerAutoOrders(int customerid, int? autoOrderID = null, bool includePaymentMethods = true)
-        //{
-        //    var autoOrders = new List<AutoOrder>();
-        //    var detailItemCodes = new List<string>();
-
-        //    var request = new GetAutoOrdersRequest
-        //    {
-        //        CustomerID = customerid,
-        //        AutoOrderStatus = AutoOrderStatusType.Active
-        //    };
-
-        //    if (autoOrderID != null)
-        //    {
-        //        request.AutoOrderID = (int)autoOrderID;
-        //    }
-
-        //    var aoResponse = await _exigoApiContext.GetContext(false).GetAutoOrdersAsync(request); // WebService().GetAutoOrders(request);
-
-        //    if (aoResponse.AutoOrders.Any())
-        //        return autoOrders;
-
-        //    foreach (var autoOrder in aoResponse.AutoOrders)
-        //    {
-        //        autoOrders.Add(new AutoOrder
-        //        {
-        //            Details = autoOrder.Details.ToList(),
-        //            Address1 =autoOrder.Address1 
-        //        });
-        //    }
-        //    // was getting all item.Where(x => x.ParentItemCode == null)  maybe this is not needed?
-        //    detailItemCodes = autoOrders.SelectMany(a => a.Details.Select(d => d.ItemCode)).Distinct().ToList();
+        public async Task DeleteCustomerAutoOrder(int customerID, int autoOrderID)
+        {
+            // Make sure the autoorder exists
+            if (!IsValidAutoOrderID(customerID, autoOrderID)) return;
 
 
-        //    var autoOrderIds = autoOrders.Select(a => a.AutoOrderID).ToList();
-        //    var createdDateNodes = new List<AutoOrderCreatedDate>();
-        //    var aoDetailInfo = new List<AutoOrderDetailInfo>();
-        //    using (var context = DbConnection.Sql())
-        //    {
-        //        var nodeResults = context.QueryMultiple(@"
-        //            SELECT
-        //                AutoOrderID,
-        //                CreatedDate
-        //            FROM
-        //                AutoOrders
-        //            WHERE
-        //                AutoOrderID in @ids
 
-        //            SELECT
-        //                ItemCode,
-        //                SmallImageName,
-        //                IsVirtual
-        //            FROM Items
-        //            WHERE ItemCode in @itemcodes
-        //            ",
-        //            new
-        //            {
-        //                ids = autoOrderIds,
-        //                itemcodes = detailItemCodes
-        //            });
+            var response = await _exigoApiContext.GetContext(false).ChangeAutoOrderStatusAsync(new ChangeAutoOrderStatusRequest
+            {
+                AutoOrderID = autoOrderID,
+                AutoOrderStatus = AutoOrderStatusType.Deleted
+            });
+        }
 
-        //        createdDateNodes = nodeResults.Read<AutoOrderCreatedDate>().ToList();
-        //        aoDetailInfo = nodeResults.Read<AutoOrderDetailInfo>().ToList();
-        //    }
-        //    foreach (var ao in autoOrders)
-        //    {
-        //        ao.CreatedDate = createdDateNodes.Where(n => n.AutoOrderID == ao.AutoOrderID).Select(n => n.CreatedDate).FirstOrDefault();
+        public static bool IsValidAutoOrderID(int customerID, int autoOrderID, bool showOnlyActiveAutoOrders = false)
+        {
+            var includeCancelled = "";
 
-        //        foreach (var detail in ao.Details)
-        //        {
-        //            var detailInfo = aoDetailInfo.Where(i => i.ItemCode == detail.ItemCode).FirstOrDefault();
-        //         // here I have added field with another refrence
-        //            detail.Reference1 = GetProductImagePath(detailInfo.ImageUrl);
-        //          //  detail.IsValid = detailInfo.IsVirtual;
-        //        }
-        //    }
-        //    if (includePaymentMethods)
-        //    {
-        //        // Add payment methods
-        //        var paymentMethods = _exigoApiContext.GetContext(false).GetAutoOrdersAsync(new GetAutoOrdersRequest
-        //        {
-        //            CustomerID = customerid,
-        //        });
-        //        foreach (var autoOrder in autoOrders)
-        //        {
-        //            IPaymentMethod paymentMethod;
-        //            switch (autoOrder.AutoOrderPaymentTypeID)
-        //            {
 
-        //                case 1: paymentMethod = paymentMethods.Result.AutoOrders.Where(c => c.PaymentType == AutoOrderPaymentType.PrimaryCreditCard).FirstOrDefault() as IPaymentMethod; break;
-        //                case 2: paymentMethod = paymentMethods.Result.AutoOrders.Where(c => c.PaymentType == AutoOrderPaymentType.SecondaryCreditCard).FirstOrDefault() as IPaymentMethod; break;
-        //                case 3: paymentMethod = paymentMethods.Result.AutoOrders.Where(c => c.PaymentType == AutoOrderPaymentType.CheckingAccount).FirstOrDefault() as IPaymentMethod; break;
-        //                default: paymentMethod = null; break;
-        //            }
-        //            autoOrder.PaymentMethod = paymentMethod;
-        //        }
-        //    }
-        //    return null;
-        //}
+
+            if (showOnlyActiveAutoOrders)
+            {
+                includeCancelled = "AND a.AutoOrderStatusID = 0";
+            }
+
+
+
+            dynamic autoOrder;
+
+            using (var context = DbConnection.Sql())
+            {
+                autoOrder = context.Query<dynamic>(@"
+                SELECT
+                a.AutoOrderID
+
+
+
+                FROM
+                AutoOrders a
+
+
+
+WHERE
+a.CustomerID = @customerid
+AND a.AutoOrderID = @autoorderid
+" + includeCancelled, new
+                {
+                    customerid = customerID,
+                    autoorderid = autoOrderID
+                }).FirstOrDefault();
+            }
+
+
+
+            return autoOrder != null;
+        }
+
         private string GetProductImagePath(string productImage)
         {
             productImage = productImage ?? string.Empty;
