@@ -76,7 +76,7 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("SaveAddress")]
-        public async Task<IActionResult> SaveAddress(Address address)
+        public async Task<IActionResult> SaveAddress(ShippingAddress address)
         {
             return Ok(await _shoppingService.AddUpdateCustomerAddress(Identity.CustomerID, address));
         }
