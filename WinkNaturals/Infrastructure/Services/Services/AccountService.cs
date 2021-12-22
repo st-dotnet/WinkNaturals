@@ -223,8 +223,44 @@ namespace WinkNaturals.Infrastructure.Services.Services
                         transaction.Balance = pointTransactions.Where(x => x.PointTransactionID <= transaction.PointTransactionID).Sum(x => x.Amount);
                     }
                 }
-                if (pointTransactions == null) 
-                    return pointTransactions;
+                else
+                {
+                    List<PointTransaction> points = new()
+                    {
+                        new()
+                        {
+                            PointTransactionID = 1,
+                            Amount = 20,
+                            Balance = 40,
+                            CustomerID = customerId,
+                            ExpirationDate = new DateTime(),
+                            PointTransactionType = new()
+                            {
+                                PointTransactionTypeID = 1,
+                                PointTransactionTypeDescription = "Adjustment"
+                            },
+                            OrderID = 5298,
+                            PointTransactionTypeID = 1,
+                        },
+                        new()
+                        {
+                            PointTransactionID = 2,
+                            Amount = 30,
+                            Balance = 50,
+                            CustomerID = customerId,
+                            ExpirationDate = new DateTime(),
+                            PointTransactionType = new()
+                            {
+                                PointTransactionTypeID = 2,
+                                PointTransactionTypeDescription = "Point Redemption"
+                            },
+                            OrderID = 5299,
+                            PointTransactionTypeID = 2,
+                        },
+
+                    };
+                    pointTransactions.AddRange(points);
+                }
                 return pointTransactions;
 
             }
@@ -499,7 +535,7 @@ namespace WinkNaturals.Infrastructure.Services.Services
 
             var aoResponse = await _exigoApiContext.GetContext(false).GetAutoOrdersAsync(request); // WebService().GetAutoOrders(request);
 
-            if (aoResponse.AutoOrders==null)
+            if (aoResponse.AutoOrders == null)
                 return autoOrders;
 
             foreach (var autoOrder in aoResponse.AutoOrders)
@@ -508,23 +544,23 @@ namespace WinkNaturals.Infrastructure.Services.Services
                 {
                     Details = autoOrder.Details.ToList(),
                     Address1 = autoOrder.Address1,
-                    AutoOrderID=autoOrder.AutoOrderID,
-                    ProcessType=autoOrder.ProcessType,
-                    BVTotal=autoOrder.BusinessVolumeTotal,
-                    CVTotal=autoOrder.CommissionableVolumeTotal,
-                    CreatedDate=autoOrder.CreatedDate,
-                    CurrencyCode=autoOrder.CurrencyCode,
-                    CustomerID=autoOrder.CustomerID,
-                    Description=autoOrder.Description,
-                    Frequency=autoOrder.Frequency,
-                    FrequencyTypeID= Convert.ToInt32(autoOrder.CustomFrequencyTy),
-                    ShipMethodID=autoOrder.ShipMethodID,
-                    Total=autoOrder.Total,
-                    Subtotal=autoOrder.SubTotal,
-                    TaxTotal=autoOrder.TaxTotal,
-                    WarehouseID=autoOrder.WarehouseID,
-                    AutoOrderPaymentTypeID= (int)autoOrder.PaymentType,
-                    AutoOrderProcessTypeID= (int)autoOrder.ProcessType
+                    AutoOrderID = autoOrder.AutoOrderID,
+                    ProcessType = autoOrder.ProcessType,
+                    BVTotal = autoOrder.BusinessVolumeTotal,
+                    CVTotal = autoOrder.CommissionableVolumeTotal,
+                    CreatedDate = autoOrder.CreatedDate,
+                    CurrencyCode = autoOrder.CurrencyCode,
+                    CustomerID = autoOrder.CustomerID,
+                    Description = autoOrder.Description,
+                    Frequency = autoOrder.Frequency,
+                    FrequencyTypeID = Convert.ToInt32(autoOrder.CustomFrequencyTy),
+                    ShipMethodID = autoOrder.ShipMethodID,
+                    Total = autoOrder.Total,
+                    Subtotal = autoOrder.SubTotal,
+                    TaxTotal = autoOrder.TaxTotal,
+                    WarehouseID = autoOrder.WarehouseID,
+                    AutoOrderPaymentTypeID = (int)autoOrder.PaymentType,
+                    AutoOrderProcessTypeID = (int)autoOrder.ProcessType
                 });
             }
             // was getting all item.Where(x => x.ParentItemCode == null)  maybe this is not needed?
