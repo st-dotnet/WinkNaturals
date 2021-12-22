@@ -1,6 +1,7 @@
 ﻿using Exigo.Api.Client;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Infrastructure.Services.Interfaces;
@@ -75,9 +76,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("SaveAddress")]
-        public IActionResult SaveAddress(Address address)
+        public async Task<IActionResult> SaveAddress(Address address)
         {
-            return Ok(_shoppingService.AddUpdateCustomerAddress(Identity.CustomerID, address));
+            return Ok(await _shoppingService.AddUpdateCustomerAddress(Identity.CustomerID, address));
         }
 
         /// <summary>
