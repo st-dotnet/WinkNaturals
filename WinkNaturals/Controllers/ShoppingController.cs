@@ -408,20 +408,16 @@ namespace WinkNaturals.Controllers
         }
 
         [HttpGet]
-        [Route("GetshippingAddress/{CustomerID:int}")]
-        public IActionResult GetCustomerAddress(int CustomerID)
+        [Route("GetshippingAddress")]
+        public IActionResult GetCustomerAddress()
         {
-            return Ok(_shoppingService.GetCustomerAddress(CustomerID));
+            return Ok(_shoppingService.GetCustomerAddress(Identity.CustomerID));
         }
 
-        [HttpPost("AddUpdateCustomerAddress/{CustomerID:int}")]
-        public IActionResult AddUpdateCustomerAddress(int CustomerID, ShippingAddress address)
+        [HttpPost("AddUpdateCustomerAddress")]
+        public IActionResult AddUpdateCustomerAddress(ShippingAddress address)
         {
-            //if ( Address.AddressType == AddressType.New)
-            //{
-            //    DAL.SetCustomerAddressOnFile(Identity.Customer.CustomerID, address as Address);
-            //}
-            return Ok(_shoppingService.AddUpdateCustomerAddress(CustomerID, address));
+            return Ok(_shoppingService.AddUpdateCustomerAddress(Identity.CustomerID, address));
 
         }
 
@@ -443,11 +439,11 @@ namespace WinkNaturals.Controllers
             return Ok(_shoppingService.GetSpecialItem());
         }
 
-        [HttpGet("GetCustomerRealTime/{customerID:int}")]
+        [HttpGet("GetCustomerRealTime")]
         //To Get customer detail for editing.
-        public IActionResult GetCustomerRealTime(int customerID)
+        public IActionResult GetCustomerRealTime()
         {
-            return Ok(_shoppingService.GetCustomerRealTime(customerID));
+            return Ok(_shoppingService.GetCustomerRealTime(Identity.CustomerID));
         }
 
         //To update customer detail
@@ -826,7 +822,7 @@ namespace WinkNaturals.Controllers
         }
 
         [HttpGet("GetReviewOrder")]
-        public IActionResult GetReviewOrder(int customerId,int OrderId)
+        public IActionResult GetReviewOrder(int OrderId)
         {
             return Ok(_shoppingService.GetCustomerReviewOrder(Identity.CustomerID, OrderId));
         }

@@ -136,10 +136,10 @@ namespace WinkNaturals.Controllers
             return Ok(_accountService.GetOrderInvoice(request));
         }
 
-        ////[HttpPost("DeleteAutoOrder")]
-        ////public IActionResult DeleteAutoOrder(int id)
-        ////{
-        ////    return Ok(_accountService.DeleteCustomerAutoOrder(103082, id));
-        ////}
+        [HttpPost("DeleteAutoOrder")]
+        public IActionResult DeleteAutoOrder(int id)
+        {
+            return Ok(_accountService.DeleteCustomerAutoOrder(103082, id));
+        }
     }
 }

@@ -27,5 +27,6 @@ namespace WinkNaturals.Infrastructure.Services.Interfaces
         Task<GetOrdersResponse> DeclinedCustomerOrders_SQL(int customerID, int LoyaltyPointAccountId);
         Task<GetOrdersResponse> ShippedCustomerOrders_SQL(int customerID, int LoyaltyPointAccountId);
         Task<GetOrderInvoiceResponse> GetOrderInvoice(GetOrderInvoiceRequest request);
+        Task DeleteCustomerAutoOrder(int customerID, int autoOrderID);
     }
 }
