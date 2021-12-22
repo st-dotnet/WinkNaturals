@@ -653,14 +653,10 @@ namespace WinkNaturals.Infrastructure.Services.Services
         {
             var includeCancelled = "";
 
-
-
             if (showOnlyActiveAutoOrders)
             {
                 includeCancelled = "AND a.AutoOrderStatusID = 0";
             }
-
-
 
             dynamic autoOrder;
 
@@ -669,25 +665,17 @@ namespace WinkNaturals.Infrastructure.Services.Services
                 autoOrder = context.Query<dynamic>(@"
                 SELECT
                 a.AutoOrderID
-
-
-
                 FROM
                 AutoOrders a
-
-
-
-WHERE
-a.CustomerID = @customerid
-AND a.AutoOrderID = @autoorderid
-" + includeCancelled, new
+                  WHERE
+                a.CustomerID = @customerid
+                AND a.AutoOrderID = @autoorderid
+                " + includeCancelled, new
                 {
                     customerid = customerID,
                     autoorderid = autoOrderID
                 }).FirstOrDefault();
             }
-
-
 
             return autoOrder != null;
         }
