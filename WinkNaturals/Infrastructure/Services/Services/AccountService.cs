@@ -233,7 +233,8 @@ namespace WinkNaturals.Infrastructure.Services.Services
                             Amount = 20,
                             Balance = 40,
                             CustomerID = customerId,
-                            ExpirationDate = new DateTime(),
+                            ExpirationDate = DateTime.Now.AddDays(10),
+                            TransactionDate = DateTime.Now,
                             PointTransactionType = new()
                             {
                                 PointTransactionTypeID = 1,
@@ -248,7 +249,8 @@ namespace WinkNaturals.Infrastructure.Services.Services
                             Amount = 30,
                             Balance = 50,
                             CustomerID = customerId,
-                            ExpirationDate = new DateTime(),
+                            ExpirationDate = DateTime.Now.AddDays(15),
+                            TransactionDate=DateTime.Now,
                             PointTransactionType = new()
                             {
                                 PointTransactionTypeID = 2,
