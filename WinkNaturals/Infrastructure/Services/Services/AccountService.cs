@@ -223,7 +223,8 @@ namespace WinkNaturals.Infrastructure.Services.Services
                         transaction.Balance = pointTransactions.Where(x => x.PointTransactionID <= transaction.PointTransactionID).Sum(x => x.Amount);
                     }
                 }
-                if (pointTransactions == null) return null;
+                if (pointTransactions == null) 
+                    return pointTransactions;
                 return pointTransactions;
 
             }
@@ -506,7 +507,24 @@ namespace WinkNaturals.Infrastructure.Services.Services
                 autoOrders.Add(new AutoOrder
                 {
                     Details = autoOrder.Details.ToList(),
-                    Address1 = autoOrder.Address1
+                    Address1 = autoOrder.Address1,
+                    AutoOrderID=autoOrder.AutoOrderID,
+                    ProcessType=autoOrder.ProcessType,
+                    BVTotal=autoOrder.BusinessVolumeTotal,
+                    CVTotal=autoOrder.CommissionableVolumeTotal,
+                    CreatedDate=autoOrder.CreatedDate,
+                    CurrencyCode=autoOrder.CurrencyCode,
+                    CustomerID=autoOrder.CustomerID,
+                    Description=autoOrder.Description,
+                    Frequency=autoOrder.Frequency,
+                    FrequencyTypeID= Convert.ToInt32(autoOrder.CustomFrequencyTy),
+                    ShipMethodID=autoOrder.ShipMethodID,
+                    Total=autoOrder.Total,
+                    Subtotal=autoOrder.SubTotal,
+                    TaxTotal=autoOrder.TaxTotal,
+                    WarehouseID=autoOrder.WarehouseID,
+                    AutoOrderPaymentTypeID= (int)autoOrder.PaymentType,
+                    AutoOrderProcessTypeID= (int)autoOrder.ProcessType
                 });
             }
             // was getting all item.Where(x => x.ParentItemCode == null)  maybe this is not needed?
@@ -576,7 +594,7 @@ namespace WinkNaturals.Infrastructure.Services.Services
                     autoOrder.PaymentMethod = paymentMethod;
                 }
             }
-            return null;
+            return autoOrders;
         }
 
         //public async Task<IEnumerable<AutoOrder>> GetCustomerAutoOrders(int customerid, int? autoOrderID = null, bool includePaymentMethods = true)

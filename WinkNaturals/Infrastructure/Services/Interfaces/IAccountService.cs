@@ -1,5 +1,6 @@
 ﻿
 using Exigo.Api.Client;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WinkNaturals.Infrastructure.Services.ExigoService;
@@ -12,7 +13,7 @@ namespace WinkNaturals.Infrastructure.Services.Interfaces
 {
     public interface IAccountService
     {
-        IEnumerable<PointTransaction> LoyaltyPointsService(int customerId,int LoyaltyPointAccountId);
+        IEnumerable<PointTransaction> LoyaltyPointsService(int customerId, int LoyaltyPointAccountId);
         List<ShipMethodsResponse> GetShipMethodsRequest();
         IEnumerable<PointTransaction> GetCustomerPointTransactions(int customerID, int pointAccountID);
         IEnumerable<PointTransaction> GetCustomerPointTransactions(int customerID, List<int> pointAccountIDs);
