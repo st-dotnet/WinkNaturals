@@ -1698,7 +1698,7 @@ namespace WinkNatural.Web.Services.Services
         [System.Web.Http.NonAction]
         public async Task<Address> SaveNewCustomerAddress(int customerID, Address address)
         {
-            var addressesOnFile = GetCustomerAddress1(customerID).Where(c => c.IsComplete);
+            var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
 
             try
             {
@@ -1767,113 +1767,113 @@ namespace WinkNatural.Web.Services.Services
 
         }
 
-        public static List<Address> GetCustomerAddress1(int customerID)
-        {
-            // Address address = new Address();
-            // address = DAL.GetCustomerAddresses(Identity.Customer.CustomerID)
-            //.Where(c => c.IsComplete)
-            //.Select(c => c as ShippingAddress);
-            using (var context = Common.Utils.DbConnection.Sql())
-            {
-                var addresses = new List<Address>();
-                try
-                {
-                    var model = context.Query(@"
-                            select 
-                                c.FirstName,
-                                c.LastName,
-                                c.Email,
-                                c.Phone,
+        //public static List<Address> GetCustomerAddress1(int customerID)
+        //{
+        //    // Address address = new Address();
+        //    // address = DAL.GetCustomerAddresses(Identity.Customer.CustomerID)
+        //    //.Where(c => c.IsComplete)
+        //    //.Select(c => c as ShippingAddress);
+        //    using (var context = Common.Utils.DbConnection.Sql())
+        //    {
+        //        var addresses = new List<Address>();
+        //        try
+        //        {
+        //            var model = context.Query(@"
+        //                    select 
+        //                        c.FirstName,
+        //                        c.LastName,
+        //                        c.Email,
+        //                        c.Phone,
 
-                                c.MainAddress1,
-                                c.MainAddress2,
-                                c.MainCity,
-                                c.MainState,
-                                c.MainZip,
-                                c.MainCountry,
+        //                        c.MainAddress1,
+        //                        c.MainAddress2,
+        //                        c.MainCity,
+        //                        c.MainState,
+        //                        c.MainZip,
+        //                        c.MainCountry,
 
-                                c.MailAddress1,
-                                c.MailAddress2,
-                                c.MailCity,
-                                c.MailState,
-                                c.MailZip,
-                                c.MailCountry,
+        //                        c.MailAddress1,
+        //                        c.MailAddress2,
+        //                        c.MailCity,
+        //                        c.MailState,
+        //                        c.MailZip,
+        //                        c.MailCountry,
 
-                                c.OtherAddress1,
-                                c.OtherAddress2,
-                                c.OtherCity,
-                                c.OtherState,
-                                c.OtherZip,
-                                c.OtherCountry
+        //                        c.OtherAddress1,
+        //                        c.OtherAddress2,
+        //                        c.OtherCity,
+        //                        c.OtherState,
+        //                        c.OtherZip,
+        //                        c.OtherCountry
 
-                            from Customers c
-                            where c.CustomerID = @customerID
-                            ", new { customerID }).FirstOrDefault();
+        //                    from Customers c
+        //                    where c.CustomerID = @customerID
+        //                    ", new { customerID }).FirstOrDefault();
 
-                    addresses.Add(new ShippingAddress()
-                    {
-                        AddressType = AddressType.Main,
-                        FirstName = model.FirstName,
-                        LastName = model.LastName,
-                        Email = model.Email,
-                        Phone = model.Phone,
-                        Address1 = model.MainAddress1,
-                        Address2 = model.MainAddress2,
-                        City = model.MainCity,
-                        State = model.MainState,
-                        Zip = model.MainZip,
-                        Country = model.MainCountry
-                    });
+        //            addresses.Add(new ShippingAddress()
+        //            {
+        //                AddressType = AddressType.Main,
+        //                FirstName = model.FirstName,
+        //                LastName = model.LastName,
+        //                Email = model.Email,
+        //                Phone = model.Phone,
+        //                Address1 = model.MainAddress1,
+        //                Address2 = model.MainAddress2,
+        //                City = model.MainCity,
+        //                State = model.MainState,
+        //                Zip = model.MainZip,
+        //                Country = model.MainCountry
+        //            });
 
-                    addresses.Add(new ShippingAddress()
-                    {
-                        AddressType = AddressType.Mailing,
-                        FirstName = model.FirstName,
-                        LastName = model.LastName,
-                        Email = model.Email,
-                        Phone = model.Phone,
-                        Address1 = model.MailAddress1,
-                        Address2 = model.MailAddress2,
-                        City = model.MailCity,
-                        State = model.MailState,
-                        Zip = model.MailZip,
-                        Country = model.MailCountry
-                    });
+        //            addresses.Add(new ShippingAddress()
+        //            {
+        //                AddressType = AddressType.Mailing,
+        //                FirstName = model.FirstName,
+        //                LastName = model.LastName,
+        //                Email = model.Email,
+        //                Phone = model.Phone,
+        //                Address1 = model.MailAddress1,
+        //                Address2 = model.MailAddress2,
+        //                City = model.MailCity,
+        //                State = model.MailState,
+        //                Zip = model.MailZip,
+        //                Country = model.MailCountry
+        //            });
 
-                    addresses.Add(new ShippingAddress()
-                    {
-                        AddressType = AddressType.Other,
-                        FirstName = model.FirstName,
-                        LastName = model.LastName,
-                        Email = model.Email,
-                        Phone = model.Phone,
-                        Address1 = model.OtherAddress1,
-                        Address2 = model.OtherAddress2,
-                        City = model.OtherCity,
-                        State = model.OtherState,
-                        Zip = model.OtherZip,
-                        Country = model.OtherCountry
-                    });
+        //            addresses.Add(new ShippingAddress()
+        //            {
+        //                AddressType = AddressType.Other,
+        //                FirstName = model.FirstName,
+        //                LastName = model.LastName,
+        //                Email = model.Email,
+        //                Phone = model.Phone,
+        //                Address1 = model.OtherAddress1,
+        //                Address2 = model.OtherAddress2,
+        //                City = model.OtherCity,
+        //                State = model.OtherState,
+        //                Zip = model.OtherZip,
+        //                Country = model.OtherCountry
+        //            });
 
-                }
-                catch
-                {
+        //        }
+        //        catch
+        //        {
 
-                }
-                return addresses;
+        //        }
+        //        return addresses;
 
-                //return addresses;
-                //var response = context.Query<Address>(QueryUtility.getUserAddress_Query, new
-                //{
-                //    warehouse = 1,
-                //    currencyCode = "usd",
-                //    languageID = 0,
-                //    priceTypeID = 1,
-                //    itemCodes = itemCodes
-                //}).ToList();
-                //return response[0];
-            }
-        }
+        //        //return addresses;
+        //        //var response = context.Query<Address>(QueryUtility.getUserAddress_Query, new
+        //        //{
+        //        //    warehouse = 1,
+        //        //    currencyCode = "usd",
+        //        //    languageID = 0,
+        //        //    priceTypeID = 1,
+        //        //    itemCodes = itemCodes
+        //        //}).ToList();
+        //        //return response[0];
+        //    }
+        //}
 
         [System.Web.Http.NonAction]
         public IEnumerable<ShopProductsResponse> GetItems(GetItemListRequest request, bool includeItemDescriptions = true)
