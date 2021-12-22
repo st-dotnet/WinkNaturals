@@ -74,10 +74,10 @@ namespace WinkNaturals.Controllers
         /// SaveAddress
         /// </summary>
         /// <returns></returns>
-        [HttpPost("SaveAddress/{CustomerID:int}")]
-        public IActionResult SaveAddress(int CustomerID, ShippingAddress address)
+        [HttpPost("SaveAddress")]
+        public IActionResult SaveAddress(ShippingAddress address)
         {
-            return Ok(_shoppingService.AddUpdateCustomerAddress(CustomerID, address));
+            return Ok(_shoppingService.AddUpdateCustomerAddress(Identity.CustomerID, address));
         }
 
         /// <summary>
@@ -136,5 +136,10 @@ namespace WinkNaturals.Controllers
             return Ok(_accountService.GetOrderInvoice(request));
         }
 
+        ////[HttpPost("DeleteAutoOrder")]
+        ////public IActionResult DeleteAutoOrder(int id)
+        ////{
+        ////    return Ok(_accountService.DeleteCustomerAutoOrder(103082, id));
+        ////}
     }
 }
