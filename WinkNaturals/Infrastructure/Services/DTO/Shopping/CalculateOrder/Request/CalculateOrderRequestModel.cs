@@ -59,7 +59,7 @@ namespace WinkNatural.Web.Services.DTO.Shopping
         public ShippingAddress() { }
         public ShippingAddress(Address address)
         {
-            //AddressType = address.AddressType;
+            AddressType = address.AddressType;
             Address1 = address.Address1;
             Address2 = address.Address2;
             City = address.City;
