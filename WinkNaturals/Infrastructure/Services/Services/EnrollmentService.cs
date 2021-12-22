@@ -317,6 +317,8 @@ namespace WinkNatural.Web.Services.Services
 
                 if (response.TransactionResponses.Length > 0)
                 {
+                   // var newCustomerId= response.TransactionResponses
+                    
                     var getCustomerRequest = new GetCustomersRequest { Email = transactionRequest.CreateCustomerRequest.Email };
                     var customer = await _exigoApiContext.GetContext(false).GetCustomersAsync(getCustomerRequest);
                     await _customerService.SendEmailVerification(customer.Customers[0].CustomerID, customer.Customers[0].Email);
@@ -395,8 +397,6 @@ namespace WinkNatural.Web.Services.Services
                 return nodeDataRecords;
             }
         }
-
-
         public class SearchResult
         {
             public int CustomerID { get; set; }
