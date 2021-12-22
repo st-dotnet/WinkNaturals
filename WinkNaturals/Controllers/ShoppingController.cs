@@ -414,12 +414,11 @@ namespace WinkNaturals.Controllers
             return Ok(_shoppingService.GetCustomerAddress(Identity.CustomerID));
         }
 
-        [HttpPost("AddUpdateCustomerAddress")]
-        public IActionResult AddUpdateCustomerAddress(ShippingAddress address)
-        {
-            return Ok(_shoppingService.AddUpdateCustomerAddress(Identity.CustomerID, address));
-
-        }
+        //[HttpPost("AddUpdateCustomerAddress")]
+        //public IActionResult AddUpdateCustomerAddress(ShippingAddress address)
+        //{
+        //    return Ok(_shoppingService.AddUpdateCustomerAddress(Identity.CustomerID, address));
+        //}
 
         [HttpPost("GetWarehouses")]
         public IActionResult GetWarehouses(GetWarehousesRequest warehousesRequest)
@@ -854,14 +853,10 @@ namespace WinkNaturals.Controllers
             return Ok(_shoppingService.DeleteCustomerAddress(Identity.CustomerID, address));
         }
 
-        ///// <summary>
-        ///// GetCustomerAutoOrders
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpGet("GetCustomerAutoOrders")]
-        //public IActionResult GetCustomerAutoOrders()
-        //{
-        //    return Ok(_customerAutoService.GetCustomerAutoOrders(Identity.CustomerID));
-        //}
+        [HttpPost("AddUpdateCustomerAddress")]
+        public IActionResult AddUpdateCustomerAddress(ShippingAddress address)
+        { 
+            return Ok(_shoppingService.AddUpdateCustomerAddress(Identity.CustomerID, address));
+        }
     }
 }

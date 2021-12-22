@@ -71,15 +71,15 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_accountService.GetCustomerBilling(Identity.CustomerID));
         }
-        /// <summary>
-        /// SaveAddress
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost("SaveAddress")]
-        public async Task<IActionResult> SaveAddress(Address address)
-        {
-            return Ok(await _shoppingService.AddUpdateCustomerAddress(Identity.CustomerID, address));
-        }
+        ///// <summary>
+        ///// SaveAddress
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpPost("SaveAddress")]
+        //public async Task<IActionResult> SaveAddress(Address address)
+        //{
+        //    return Ok(await _shoppingService.AddUpdateCustomerAddress(Identity.CustomerID, address));
+        //}
 
         /// <summary>
         /// GetCustomerAutoOrders
@@ -136,11 +136,25 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_accountService.GetOrderInvoice(request));
         }
-
         [HttpPost("DeleteAutoOrder")]
         public IActionResult DeleteAutoOrder(int id)
         {
             return Ok(_accountService.DeleteCustomerAutoOrder(103082, id));
+        }
+        [HttpPost("SetPrimaryAddress")]
+        public IActionResult SetPrimaryAddress(AddressType type)
+        {
+            return Ok(_shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, type));
+        }
+        [HttpPost("SaveAddress")]
+        public async Task<IActionResult> SaveAddress(Address address, bool? makePrimary)
+        {
+            address = await _shoppingService.SetCustomerAddressOnFile(Identity.CustomerID, address);
+            if (makePrimary != null && makePrimary == true)
+            {
+               await _shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, address.AddressType);
+            }
+            return Ok();
         }
     }
 }
