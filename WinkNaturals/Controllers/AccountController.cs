@@ -75,7 +75,7 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("SaveAddress")]
-        public IActionResult SaveAddress(ShippingAddress address)
+        public IActionResult SaveAddress(Address address)
         {
             return Ok(_shoppingService.AddUpdateCustomerAddress(Identity.CustomerID, address));
         }
