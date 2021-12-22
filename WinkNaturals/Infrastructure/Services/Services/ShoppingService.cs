@@ -1431,69 +1431,7 @@ namespace WinkNatural.Web.Services.Services
             return verifyAddressResponse;
         }
 
-        // Controller Action Method to Add or Update the Customer Address
-        public async Task<Address> AddUpdateCustomerAddress(int customerID, Address address)
-        {
-            var type = address.AddressType;
-            var saveAddress = false;
-            var request = new UpdateCustomerRequest();
-            request.CustomerID = customerID;
-
-            // Attempt to validate the user's entered address if US address
-            //address = GlobalUtilities.ValidateAddress(address) as Address;
-            //exigoApiClient
-
-
-            // New Addresses
-            if (type == AddressType.New)
-            {
-                return await SaveNewCustomerAddress(customerID, address);
-            }
-
-            // Main address
-            if (type == AddressType.Main)
-            {
-                saveAddress = true;
-                request.MainAddress1 = address.Address1;
-                request.MainAddress2 = address.Address2 ?? string.Empty;
-                request.MainCity = address.City;
-                request.MainState = address.State;
-                request.MainZip = address.Zip;
-                request.MainCountry = address.Country;
-            }
-
-            // Mailing address
-            if (type == AddressType.Mailing)
-            {
-                saveAddress = true;
-                request.MailAddress1 = address.Address1;
-                request.MailAddress2 = address.Address2 ?? string.Empty;
-                request.MailCity = address.City;
-                request.MailState = address.State;
-                request.MailZip = address.Zip;
-                request.MailCountry = address.Country;
-            }
-
-            // Other address
-            if (type == AddressType.Other)
-            {
-                saveAddress = true;
-                request.OtherAddress1 = address.Address1;
-                request.OtherAddress2 = address.Address2 ?? string.Empty;
-                request.OtherCity = address.City;
-                request.OtherState = address.State;
-                request.OtherZip = address.Zip;
-                request.OtherCountry = address.Country;
-            }
-
-            if (saveAddress)
-            {
-
-                await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
-            }
-
-            return address;
-        }
+        
 
         public List<Address> GetCustomerAddress(int customerID)
         {
@@ -1751,8 +1689,7 @@ namespace WinkNatural.Web.Services.Services
 
                     if (saveAddress)
                     {
-
-                        await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
+                       await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
                     }
                 }
                 return address;
@@ -2677,6 +2614,136 @@ namespace WinkNatural.Web.Services.Services
             }
             return address;
         }
-        
+      
+        public async Task<Address> SetCustomerAddressOnFile(int customerID, Address address)
+        {
+            return await SetCustomerAddressOnFile(customerID, address, address.AddressType);
+        }
+        public async Task<Address> SetCustomerAddressOnFile(int customerID, Address address, AddressType type)
+        {
+            var saveAddress = false;
+            var request = new UpdateCustomerRequest();
+            request.CustomerID = customerID; // Attempt to validate the user's entered address if US address
+           // address = await _authenticateService.ValidateAddress(address) as Address; // New Addresses
+            if (type == AddressType.New)
+            {
+                return await SaveNewCustomerAddress(customerID, address);
+            } // Main address
+            if (type == AddressType.Main)
+            {
+                saveAddress = true;
+                request.MainAddress1 = address.Address1;
+                request.MainAddress2 = address.Address2 ?? string.Empty;
+                request.MainCity = address.City;
+                request.MainState = address.State;
+                request.MainZip = address.Zip;
+                request.MainCountry = address.Country;
+            } // Mailing address
+            if (type == AddressType.Mailing)
+            {
+                saveAddress = true;
+                request.MailAddress1 = address.Address1;
+                request.MailAddress2 = address.Address2 ?? string.Empty;
+                request.MailCity = address.City;
+                request.MailState = address.State;
+                request.MailZip = address.Zip;
+                request.MailCountry = address.Country;
+            } // Other address
+            if (type == AddressType.Other)
+            {
+                saveAddress = true;
+                request.OtherAddress1 = address.Address1;
+                request.OtherAddress2 = address.Address2 ?? string.Empty;
+                request.OtherCity = address.City;
+                request.OtherState = address.State;
+                request.OtherZip = address.Zip;
+                request.OtherCountry = address.Country;
+            }
+            if (saveAddress)
+            {
+                await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
+            }
+            return address;
+        }
+        public async Task SetCustomerPrimaryAddress(int customerID, AddressType type)
+        {
+            if (type == AddressType.Main || type == AddressType.New) return; var addressesOnFile = GetCustomerAddress(customerID)
+            .Where(c => c.IsComplete); var oldPrimaryAddress = addressesOnFile
+            .Where(c => c.AddressType == AddressType.Main)
+            .FirstOrDefault(); var newPrimaryAddress = addressesOnFile
+            .Where(c => c.AddressType == type)
+            .FirstOrDefault(); if (oldPrimaryAddress == null || newPrimaryAddress == null) return; // Swap the addresses
+            await SetCustomerAddressOnFile(customerID, (Address)newPrimaryAddress, AddressType.Main);
+            await SetCustomerAddressOnFile(customerID, (Address)oldPrimaryAddress, type);
+        }
+        public async Task<Address> AddUpdateCustomerAddress(int customerID, Address address)
+        {
+            var type = address.AddressType;
+            var saveAddress = false;
+            var request = new UpdateCustomerRequest();
+            request.CustomerID = customerID;
+
+
+
+            // Attempt to validate the user's entered address if US address
+            //address = GlobalUtilities.ValidateAddress(address) as Address;
+            //exigoApiClient
+
+
+
+
+            // New Addresses
+            if (type == AddressType.New)
+            {
+                return await SaveNewCustomerAddress(customerID, address);
+            }
+
+
+
+            // Main address
+            if (type == AddressType.Main)
+            {
+                saveAddress = true;
+                request.MainAddress1 = address.Address1;
+                request.MainAddress2 = address.Address2 ?? string.Empty;
+                request.MainCity = address.City;
+                request.MainState = address.State;
+                request.MainZip = address.Zip;
+                request.MainCountry = address.Country;
+            }
+
+
+
+            // Mailing address
+            if (type == AddressType.Mailing)
+            {
+                saveAddress = true;
+                request.MailAddress1 = address.Address1;
+                request.MailAddress2 = address.Address2 ?? string.Empty;
+                request.MailCity = address.City;
+                request.MailState = address.State;
+                request.MailZip = address.Zip;
+                request.MailCountry = address.Country;
+            }
+
+
+
+            // Other address
+            if (type == AddressType.Other)
+            {
+                saveAddress = true;
+                request.OtherAddress1 = address.Address1;
+                request.OtherAddress2 = address.Address2 ?? string.Empty;
+                request.OtherCity = address.City;
+                request.OtherState = address.State;
+                request.OtherZip = address.Zip;
+                request.OtherCountry = address.Country;
+            }
+            if (saveAddress)
+            {
+                await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
+            }
+            return address;
+        }
     }
 }

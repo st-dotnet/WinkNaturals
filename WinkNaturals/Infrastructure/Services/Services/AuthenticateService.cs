@@ -293,10 +293,6 @@ namespace WinkNatural.Web.Services.Services
             return tokenHandler.WriteToken(token);
         }
 
-        
-       
-      
-
         #endregion
     }
 }
