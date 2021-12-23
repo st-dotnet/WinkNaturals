@@ -409,7 +409,7 @@ namespace WinkNaturals.Controllers
 
         [HttpGet]
         [Route("GetshippingAddress/{CustomerID:int}")]
-        public IActionResult GetCustomerAddress(int CustomerID)
+        public IActionResult GetshippingAddress(int CustomerID)
         {
             return Ok(_shoppingService.GetCustomerAddress(CustomerID));
         }
