@@ -643,52 +643,6 @@ namespace WinkNaturals.Infrastructure.Services.Services
             }
             return autoOrders;
         }
-
-        public async Task DeleteCustomerAutoOrder(int customerID, int autoOrderID)
-        {
-            // Make sure the autoorder exists
-            if (!IsValidAutoOrderID(customerID, autoOrderID)) return;
-
-
-
-            var response = await _exigoApiContext.GetContext(false).ChangeAutoOrderStatusAsync(new ChangeAutoOrderStatusRequest
-            {
-                AutoOrderID = autoOrderID,
-                AutoOrderStatus = AutoOrderStatusType.Deleted
-            });
-        }
-
-        public static bool IsValidAutoOrderID(int customerID, int autoOrderID, bool showOnlyActiveAutoOrders = false)
-        {
-            var includeCancelled = "";
-
-            if (showOnlyActiveAutoOrders)
-            {
-                includeCancelled = "AND a.AutoOrderStatusID = 0";
-            }
-
-            dynamic autoOrder;
-
-            using (var context = DbConnection.Sql())
-            {
-                autoOrder = context.Query<dynamic>(@"
-                SELECT
-                a.AutoOrderID
-                FROM
-                AutoOrders a
-                  WHERE
-                a.CustomerID = @customerid
-                AND a.AutoOrderID = @autoorderid
-                " + includeCancelled, new
-                {
-                    customerid = customerID,
-                    autoorderid = autoOrderID
-                }).FirstOrDefault();
-            }
-
-            return autoOrder != null;
-        }
-
         private string GetProductImagePath(string productImage)
         {
             productImage = productImage ?? string.Empty;
@@ -711,14 +665,8 @@ namespace WinkNaturals.Infrastructure.Services.Services
         {
             return "/shopping/productimages/";
         }
-
-      
-
-
-      
-
-
-
+       
+        
     }
 }
 
