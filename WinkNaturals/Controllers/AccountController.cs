@@ -8,7 +8,7 @@ using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models.Shopping.Interfaces;
 using static WinkNaturals.Helpers.Constant;
-
+using CreditCard = WinkNaturals.Infrastructure.Services.ExigoService.CreditCard.CreditCard;
 namespace WinkNaturals.Controllers
 {
     [Route("api/[controller]")]
@@ -138,11 +138,7 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_accountService.GetOrderInvoice(request));
         }
-        [HttpDelete("DeleteAutoOrder")]
-        public IActionResult DeleteAutoOrder(int id)
-        {
-            return Ok(_accountService.DeleteCustomerAutoOrder(Identity.CustomerID, id));
-        }
+       
         [HttpPost("SetPrimaryAddress")]
         public IActionResult SetPrimaryAddress(AddressType type)
         {

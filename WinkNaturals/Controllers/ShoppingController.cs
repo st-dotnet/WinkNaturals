@@ -24,6 +24,8 @@ using WinkNaturals.Helpers;
 using WinkNaturals.Utilities.WebDrip;
 using ShippingAddress = WinkNatural.Web.Services.DTO.Shopping.ShippingAddress;
 using WinkNaturals.Infrastructure.Services.Interfaces;
+using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
+using static WinkNaturals.Helpers.Constant;
 
 namespace WinkNaturals.Controllers
 {
@@ -45,11 +47,12 @@ namespace WinkNaturals.Controllers
         private readonly IDistributedCache _distributedCache;
         private readonly IConfiguration _configuration;
         private readonly ICustomerAutoOreder _customerAutoService;
+        private readonly IEnrollmentService _enrollmentService;
 
         public IOrderConfiguration OrderConfiguration { get; set; }
         public IOrderConfiguration AutoOrderConfiguration { get; set; }
         public ShoppingController(IShoppingService shoppingService, IMapper mapper, IOptions<ConfigSettings> config, ISqlCacheService sqlCacheService, IPropertyBags propertyBagService, IPropertyBagItem propertyBagItem, IOrderConfiguration orderConfiguration, 
-            IGetCurrentMarket getCurrentMarket, IConfiguration configuration, ICustomerPointAccount customerPointAccount,IAutoOrders autoOrders, IDistributedCache distributedCache, IExigoApiContext exigoApiContext, ICustomerAutoOreder customerAutoService)
+            IGetCurrentMarket getCurrentMarket, IConfiguration configuration, ICustomerPointAccount customerPointAccount,IAutoOrders autoOrders, IDistributedCache distributedCache, IExigoApiContext exigoApiContext, ICustomerAutoOreder customerAutoService,IEnrollmentService enrollmentService)
         {
             _shoppingService = shoppingService;
             _mapper = mapper;
@@ -65,7 +68,9 @@ namespace WinkNaturals.Controllers
             _distributedCache = distributedCache;
             _configuration = configuration;
             _customerAutoService = customerAutoService;
-           
+            _enrollmentService = enrollmentService;
+
+
 
         }
                 
@@ -859,7 +864,7 @@ namespace WinkNaturals.Controllers
             return Ok(_shoppingService.AddUpdateCustomerAddress(CustomerID, address));
 
         }
-
+       
 
     }
 }

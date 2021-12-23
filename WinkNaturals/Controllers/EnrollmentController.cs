@@ -5,9 +5,7 @@ using System.Linq;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNatural.Web.Services.Utilities;
-
 using WinkNaturals.Infrastructure.Services.Interfaces;
-
 namespace WinkNaturals.Controllers
 {
     [Route("api/[controller]")]
@@ -108,7 +106,6 @@ namespace WinkNaturals.Controllers
             items = _shoppingService.GetItems(itemsRequest, false).OrderBy(c => c.SortOrder).ToList();
             return items;
         }
-
-     
+        
     }
 }

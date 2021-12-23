@@ -1,18 +1,17 @@
-﻿using Exigo.Api.Client;
-using Microsoft.Extensions.Configuration;
+﻿using Dapper;
+using Exigo.Api.Client;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
-using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Helpers;
 using WinkNaturals.Infrastructure.Services.DTO;
 using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;
-using WinkNaturals.Models.Shopping.Interfaces;
 using WinkNaturals.Models.Shopping.Orders;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
@@ -28,13 +27,13 @@ namespace WinkNatural.Web.Services.Services
         private readonly IExigoApiContext _exigoApiContext;
         private readonly IOptions<ConfigSettings> _config;
         private readonly IEmailService _emailService;
+
         public CustomerService(IOptions<ConfigSettings> config, IEmailService emailService, IExigoApiContext exigoApiContext)
         {
             _emailService = emailService;
             _exigoApiContext = exigoApiContext;
             _config = config;
         }
-
         #region public methods
 
         public async Task<GetCustomersResponse> GetCustomer(int customerId)
@@ -194,7 +193,7 @@ namespace WinkNatural.Web.Services.Services
         //                CustomerID = customerID,
         //                Field1 = "1"
         //            };
-        //            var transactionResponse =_shoppingService.UpdateCustomer(updateCustomerRequest);
+        //            var transactionResponse = _shoppingService.UpdateCustomer(updateCustomerRequest);
         //        }
         //        else
         //        {
@@ -236,7 +235,7 @@ namespace WinkNatural.Web.Services.Services
         //public object SaveNewCustomerCreditCard(int customerID, CreditCard card)
         //{
         //    // Get the credit cards on file
-        //    var creditCardsOnFile =_accountService.GetCustomerBilling(customerID);
+        //    var creditCardsOnFile = _accountService.GetCustomerBilling(customerID);
 
         //    // If no autoOrder-free slots exist, don't save it.
         //    return card;
@@ -252,8 +251,6 @@ namespace WinkNatural.Web.Services.Services
         //    {
         //        return (CreditCard)SaveNewCustomerCreditCard(customerID, card);
         //    }
-
-
         //    // Save the credit card
         //    var request = new SetAccountCreditCardTokenRequest
         //    {
@@ -273,30 +270,64 @@ namespace WinkNatural.Web.Services.Services
         //    return card;
         //}
 
-        //public async Task DeleteCustomerCreditCard(int customerID, CreditCardType type)
-        //{
-        //    // If this is a new credit card, don't delete it - we have nothing to delete
-        //    if (type == CreditCardType.New) return;
+        public async Task DeleteCustomerCreditCard(int customerID, CreditCardType type)
+        {
+            // If this is a new credit card, don't delete it - we have nothing to delete
+            if (type == CreditCardType.New) return;
+            // Save the a blank copy of the credit card
+            // Passing a blank token will do the trick
+            var request = new SetAccountCreditCardTokenRequest
+            {
+                CustomerID = customerID,
+                CreditCardAccountType = (type == CreditCardType.Primary) ? AccountCreditCardType.Primary : AccountCreditCardType.Secondary,
+                CreditCardToken = string.Empty,
+                ExpirationMonth = 1,
+                ExpirationYear = DateTime.Now.Year + 1,
+                BillingName = string.Empty,
+                BillingAddress = string.Empty,
+                BillingCity = string.Empty,
+                BillingState = string.Empty,
+                BillingZip = string.Empty,
+                BillingCountry = string.Empty
+            };
+            var response = await _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);
+        }
 
-        //    // Save the a blank copy of the credit card
-        //    // Passing a blank token will do the trick
-        //    var request = new SetAccountCreditCardTokenRequest
-        //    {
-        //        CustomerID = customerID,
-        //        CreditCardAccountType = (type == CreditCardType.Primary) ? AccountCreditCardType.Primary : AccountCreditCardType.Secondary,
-        //        CreditCardToken = string.Empty,
-        //        ExpirationMonth = 1,
-        //        ExpirationYear = DateTime.Now.Year + 1,
-        //        BillingName = string.Empty,
-        //        BillingAddress = string.Empty,
-        //        BillingCity = string.Empty,
-        //        BillingState = string.Empty,
-        //        BillingZip = string.Empty,
-        //        BillingCountry = string.Empty
-        //    };
-        //    var response = await _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);
-        //}
-
-
+        public async Task DeleteCustomerAutoOrder(int customerID, int autoOrderID)
+        {
+            // Make sure the autoorder exists
+            if (!IsValidAutoOrderID(customerID, autoOrderID)) return;
+            var response = await _exigoApiContext.GetContext(false).ChangeAutoOrderStatusAsync(new ChangeAutoOrderStatusRequest
+            {
+                AutoOrderID = autoOrderID,
+                AutoOrderStatus = AutoOrderStatusType.Deleted
+            });
+        }
+        private bool IsValidAutoOrderID(int customerID, int autoOrderID, bool showOnlyActiveAutoOrders = false)
+        {
+            var includeCancelled = "";
+            if (showOnlyActiveAutoOrders)
+            {
+                includeCancelled = "AND a.AutoOrderStatusID = 0";
+            }
+            dynamic autoOrder;
+            using (var context = Common.Utils.DbConnection.Sql())
+            {
+                autoOrder = context.Query<dynamic>(@"
+                        SELECT
+                        a.AutoOrderID
+                        FROM
+                        AutoOrders a
+                        WHERE
+                        a.CustomerID = @customerid
+                        AND a.AutoOrderID = @autoorderid
+                        " + includeCancelled, new
+                        {
+                            customerid = customerID,
+                            autoorderid = autoOrderID
+                        }).FirstOrDefault();
+            }
+            return autoOrder != null;
+        }
     }
 }
