@@ -136,7 +136,7 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_accountService.GetOrderInvoice(request));
         }
-        [HttpPost("DeleteAutoOrder")]
+        [HttpDelete("DeleteAutoOrder")]
         public IActionResult DeleteAutoOrder(int id)
         {
             return Ok(_accountService.DeleteCustomerAutoOrder(Identity.CustomerID, id));
