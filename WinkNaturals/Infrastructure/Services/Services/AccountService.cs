@@ -7,14 +7,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.Interfaces;
+using WinkNaturals.Infrastructure.Services.DTO;
 using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder;
 using WinkNaturals.Infrastructure.Services.ExigoService.BankAccount;
 using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
+using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard.Interfaces;
 using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Models.ShipMethod;
 using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
+using WinkNaturals.Models.Shopping.Interfaces;
+using WinkNaturals.Models.Shopping.Orders;
+using WinkNaturals.Models.Shopping.PointAccount.Request;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
 using WinkNaturals.Utilities.Common;
@@ -31,13 +36,15 @@ namespace WinkNaturals.Infrastructure.Services.Services
         private readonly IExigoApiContext _exigoApiContext;
         private readonly IAuthenticateService _authenticateService;
         private readonly IOptions<ConfigSettings> _config;
+        private readonly ICustomerAutoOreder _customerAutoOrder;
 
-        public AccountService(IShoppingService shoppingService, IExigoApiContext exigoApiContext, IAuthenticateService authenticateService,IOptions<ConfigSettings> config)
+        public AccountService(IShoppingService shoppingService, IExigoApiContext exigoApiContext, IAuthenticateService authenticateService,IOptions<ConfigSettings> config, ICustomerAutoOreder customerAutoOrder)
         {
             _shoppingService = shoppingService;
             _exigoApiContext = exigoApiContext;
             _authenticateService = authenticateService;
             _config = config;
+            _customerAutoOrder = customerAutoOrder;
         }
         public IEnumerable<PointTransaction> GetCustomerPointTransactions(int customerID, int pointAccountID)
         {
@@ -704,6 +711,12 @@ namespace WinkNaturals.Infrastructure.Services.Services
         {
             return "/shopping/productimages/";
         }
+
+      
+
+
+      
+
 
 
     }
