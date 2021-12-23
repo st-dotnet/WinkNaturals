@@ -139,7 +139,7 @@ namespace WinkNaturals.Controllers
         [HttpPost("DeleteAutoOrder")]
         public IActionResult DeleteAutoOrder(int id)
         {
-            return Ok(_accountService.DeleteCustomerAutoOrder(103082, id));
+            return Ok(_accountService.DeleteCustomerAutoOrder(Identity.CustomerID, id));
         }
         [HttpPost("SetPrimaryAddress")]
         public IActionResult SetPrimaryAddress(AddressType type)

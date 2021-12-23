@@ -1638,84 +1638,66 @@ namespace WinkNatural.Web.Services.Services
         {
             var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
 
-          //  try
-          //  {
+            try
+            {
                 // Do any of the addresses on file match the one we are using?
                 // If not, save this address to the next available slot
-                //if (!addressesOnFile.Any(c => c.Equals(address)))
-                //{
-                //    var saveAddress = false;
-                var request = new UpdateCustomerRequest();
-                request.CustomerID = customerID;
-                address.AddressType = AddressType.New;
-                request.OtherAddress1 = address.Address1;
-                request.OtherAddress2 = address.Address2;
-                request.OtherCity = address.City;
-                request.OtherState = address.State;
-                request.OtherZip = address.Zip;
-                request.OtherCountry = address.Country;
-                // }
+                if (!addressesOnFile.Any(c => c.Equals(address)))
+                {
+                    var saveAddress = false;
+                    var request = new UpdateCustomerRequest();
+                    request.CustomerID = customerID;
 
-                // if (saveAddress)
-                // {
-                await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
-            //}
-            return address;
-           
-            //    // Main address
-            //    if (!addressesOnFile.Any(c => c.AddressType == AddressType.Main))
-            //    {
-            //        saveAddress = true;
-            //        address.AddressType = AddressType.Main;
-            //        request.MainAddress1 = address.Address1;
-            //        request.MainAddress2 = address.Address2;
-            //        request.MainCity = address.City;
-            //        request.MainState = address.State;
-            //        request.MainZip = address.Zip;
-            //        request.MainCountry = address.Country;
-            //    }
+                    // Main address
+                    if (!addressesOnFile.Any(c => c.AddressType == AddressType.Main))
+                    {
+                        saveAddress = true;
+                        address.AddressType = AddressType.Main;
+                        request.MainAddress1 = address.Address1;
+                        request.MainAddress2 = address.Address2;
+                        request.MainCity = address.City;
+                        request.MainState = address.State;
+                        request.MainZip = address.Zip;
+                        request.MainCountry = address.Country;
+                    }
 
-            //    // Mailing address
-            //    else if (!addressesOnFile.Any(c => c.AddressType == AddressType.Mailing))
-            //    {
-            //        saveAddress = true;
-            //        address.AddressType = AddressType.Mailing;
-            //        request.MailAddress1 = address.Address1;
-            //        request.MailAddress2 = address.Address2;
-            //        request.MailCity = address.City;
-            //        request.MailState = address.State;
-            //        request.MailZip = address.Zip;
-            //        request.MailCountry = address.Country;
-            //    }
+                    // Mailing address
+                    else if (!addressesOnFile.Any(c => c.AddressType == AddressType.Mailing))
+                    {
+                        saveAddress = true;
+                        address.AddressType = AddressType.Mailing;
+                        request.MailAddress1 = address.Address1;
+                        request.MailAddress2 = address.Address2;
+                        request.MailCity = address.City;
+                        request.MailState = address.State;
+                        request.MailZip = address.Zip;
+                        request.MailCountry = address.Country;
+                    }
 
-            // Other address
-            //  else
-            // {
-            //  saveAddress = true;
-            //        address.AddressType = AddressType.New;
-            //        request.OtherAddress1 = address.Address1;
-            //        request.OtherAddress2 = address.Address2;
-            //        request.OtherCity = address.City;
-            //        request.OtherState = address.State;
-            //        request.OtherZip = address.Zip;
-            //        request.OtherCountry = address.Country;
-            //   // }
-
-            //   // if (saveAddress)
-            //   // {
-            //       await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
-            //    //}
-            //}
-            //return address;
-            //}
-            //catch (Exception e)
-            //{
-
-            //    e.Message.ToString();
-            //    throw;
-            //}
-
-
+                    // Other address
+                    else
+                    {
+                        saveAddress = true;
+                        address.AddressType = AddressType.Other;
+                        request.OtherAddress1 = address.Address1;
+                        request.OtherAddress2 = address.Address2;
+                        request.OtherCity = address.City;
+                        request.OtherState = address.State;
+                        request.OtherZip = address.Zip;
+                        request.OtherCountry = address.Country;
+                    }
+                    if (saveAddress)
+                    {
+                       await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
+                    }
+                }
+                return address;
+            }
+            catch (Exception e)
+            { 
+                e.Message.ToString();
+                throw;
+            }
         }
 
         //public static List<Address> GetCustomerAddress1(int customerID)
@@ -2697,23 +2679,14 @@ namespace WinkNatural.Web.Services.Services
             var request = new UpdateCustomerRequest();
             request.CustomerID = customerID;
 
-
-
             // Attempt to validate the user's entered address if US address
             //address = GlobalUtilities.ValidateAddress(address) as Address;
             //exigoApiClient
-
-
-
-
             // New Addresses
             if (type == AddressType.New)
             {
                 return await SaveNewCustomerAddress(customerID, address);
             }
-
-
-
             // Main address
             if (type == AddressType.Main)
             {
@@ -2725,9 +2698,6 @@ namespace WinkNatural.Web.Services.Services
                 request.MainZip = address.Zip;
                 request.MainCountry = address.Country;
             }
-
-
-
             // Mailing address
             if (type == AddressType.Mailing)
             {
