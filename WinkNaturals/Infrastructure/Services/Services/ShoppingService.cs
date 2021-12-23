@@ -28,25 +28,15 @@ namespace WinkNatural.Web.Services.Services
         // private readonly ExigoApiClient exigoApiClient = new ExigoApiClient(ExigoConfig.Instance.CompanyKey, ExigoConfig.Instance.LoginName, ExigoConfig.Instance.Password);
         private readonly IExigoApiContext _exigoApiContext;
         private readonly IOptions<ConfigSettings> _config;
-        
-        public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext)
-        {
-            _config = config;
-            _exigoApiContext = exigoApiContext;
-        }
         private readonly ICustomerAutoOreder _customerAuto;
-        private readonly IOrderConfiguration _orderConfiguration;
-    
-
+        private readonly IOrderConfiguration _orderConfiguration;        
         public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext, ICustomerAutoOreder customerAuto,IOrderConfiguration orderConfiguration)
         {
             _config = config;
             _exigoApiContext = exigoApiContext;
             _customerAuto = customerAuto;
             _orderConfiguration = orderConfiguration;
-          
         }
-
         /// <summary>
         /// GetItemCategory
         /// </summary>

@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Models.Shopping.Interfaces;
 using WinkNaturals.Setting.Interfaces;
+using static WinkNaturals.Helpers.Constant;
 
 namespace WinkNaturals.Controllers
 {
@@ -18,12 +20,14 @@ namespace WinkNaturals.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly IExigoApiContext _exigoApiContext;
         private readonly IOrderConfiguration _orderConfiguration;
+     
 
-        public CustomersController(IWebHostEnvironment env, IExigoApiContext exigoApiContext, IOrderConfiguration orderConfiguration)
+        public CustomersController(IWebHostEnvironment env, IExigoApiContext exigoApiContext, IOrderConfiguration orderConfiguration )
         {
             _env = env;
             _exigoApiContext = exigoApiContext;
             _orderConfiguration = orderConfiguration;
+           
         }
 
         [HttpPost("GetCustomer")]
@@ -202,6 +206,14 @@ namespace WinkNaturals.Controllers
                 throw new Exception(ex.ToString());
             }
         }
+
+        //[HttpDelete("DeleteCreditCard")]
+        //public async Task<IActionResult>  DeleteCreditCard(CreditCardType type)
+        //{
+        //   await _customerService.DeleteCustomerCreditCard(Identity.CustomerID, type);
+
+        //    return Ok();
+        //}
 
     }
 }
