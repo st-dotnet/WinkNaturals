@@ -27,7 +27,6 @@ namespace WinkNatural.Web.Services.Services
         private readonly IExigoApiContext _exigoApiContext;
         private readonly IOptions<ConfigSettings> _configSettings;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        #region constructor
         private List<CustomerCreateModel> _users;
         public AuthenticateService(IConfiguration config, ICustomerService customerService, IExigoApiContext exigoApiContext, IOptions<ConfigSettings> configSettings,
             IWebHostEnvironment hostingEnvironment)
@@ -39,7 +38,6 @@ namespace WinkNatural.Web.Services.Services
             _hostingEnvironment = hostingEnvironment;
         }
 
-        #endregion
 
         #region public methods
 
