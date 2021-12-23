@@ -154,7 +154,7 @@ namespace WinkNaturals.Controllers
             {
                await _shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, address.AddressType);
             }
-            return Ok();
+            return Ok(address);
         }
     }
 }
