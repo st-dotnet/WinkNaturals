@@ -408,10 +408,10 @@ namespace WinkNaturals.Controllers
         }
 
         [HttpGet]
-        [Route("GetshippingAddress")]
-        public IActionResult GetCustomerAddress()
+        [Route("GetshippingAddress/{CustomerID:int}")]
+        public IActionResult GetCustomerAddress(int CustomerID)
         {
-            return Ok(_shoppingService.GetCustomerAddress(Identity.CustomerID));
+            return Ok(_shoppingService.GetCustomerAddress(CustomerID));
         }
 
         //[HttpPost("AddUpdateCustomerAddress")]
