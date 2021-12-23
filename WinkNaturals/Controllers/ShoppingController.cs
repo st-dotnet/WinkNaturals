@@ -853,10 +853,13 @@ namespace WinkNaturals.Controllers
             return Ok(_shoppingService.DeleteCustomerAddress(Identity.CustomerID, address));
         }
 
-        [HttpPost("AddUpdateCustomerAddress")]
-        public IActionResult AddUpdateCustomerAddress(ShippingAddress address)
-        { 
-            return Ok(_shoppingService.AddUpdateCustomerAddress(Identity.CustomerID, address));
+        [HttpPost("AddUpdateCustomerAddress/{CustomerID:int}")]
+        public IActionResult AddUpdateCustomerAddress(int CustomerID, ShippingAddress address)
+        {
+            return Ok(_shoppingService.AddUpdateCustomerAddress(CustomerID, address));
+
         }
+
+
     }
 }

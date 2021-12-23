@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Shopping;
+using WinkNaturals.Infrastructure.Services.DTO;
 using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
 using WinkNaturals.Models.Shopping.Interfaces.PointAccount;
 using Address = WinkNatural.Web.Services.DTO.Shopping.Address;
@@ -78,5 +79,6 @@ namespace WinkNatural.Web.Services.Interfaces
         Task<Address> SaveNewCustomerAddress(int customerID, Address address);
         Task<Address> SetCustomerAddressOnFile(int customerID, Address address);
         Task SetCustomerPrimaryAddress(int customerID, AddressType type);
+       
     }
 }

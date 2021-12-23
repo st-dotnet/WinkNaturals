@@ -3,11 +3,14 @@ using Exigo.Api.Client;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WinkNaturals.Infrastructure.Services.DTO;
 using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder;
+using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 using WinkNaturals.Models;
 using WinkNaturals.Models.ShipMethod;
 using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
+using WinkNaturals.Models.Shopping.PointAccount.Request;
 
 namespace WinkNaturals.Infrastructure.Services.Interfaces
 {
@@ -28,5 +31,9 @@ namespace WinkNaturals.Infrastructure.Services.Interfaces
         Task<GetOrdersResponse> ShippedCustomerOrders_SQL(int customerID, int LoyaltyPointAccountId);
         Task<GetOrderInvoiceResponse> GetOrderInvoice(GetOrderInvoiceRequest request);
         Task DeleteCustomerAutoOrder(int customerID, int autoOrderID);
+
+      
+
+
     }
 }

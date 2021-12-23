@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
+using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models.Shopping.Interfaces;
+using static WinkNaturals.Helpers.Constant;
 
 namespace WinkNaturals.Controllers
 {
@@ -152,9 +154,10 @@ namespace WinkNaturals.Controllers
             address = await _shoppingService.SetCustomerAddressOnFile(Identity.CustomerID, address);
             if (makePrimary != null && makePrimary == true)
             {
-               await _shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, address.AddressType);
+                await _shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, address.AddressType);
             }
             return Ok(address);
         }
+        
     }
 }
