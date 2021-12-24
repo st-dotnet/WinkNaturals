@@ -18,13 +18,15 @@ namespace WinkNaturals.Controllers
         private readonly IAccountService _accountService;
         private readonly IShoppingService _shoppingService;
         private readonly ICustomerAutoOreder _customerAutoOreder;
+        private readonly ICustomerService _customerService;
 
         public int LoyaltyPointAccountId { get { return 1; } }
-        public AccountController(IAccountService accountService, IShoppingService shoppingService, ICustomerAutoOreder customerAutoOreder)
+        public AccountController(IAccountService accountService, IShoppingService shoppingService, ICustomerAutoOreder customerAutoOreder, ICustomerService customerService)
         {
             _accountService = accountService;
             _shoppingService = shoppingService;
             _customerAutoOreder = customerAutoOreder;
+            _customerService = customerService;
         }
         [HttpGet("Points")]
         public IActionResult Points()
@@ -154,6 +156,14 @@ namespace WinkNaturals.Controllers
             }
             return Ok(address);
         }
-        
+        /// <summary>
+        /// EditCreditCard
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("EditCreditCard")]
+        public IActionResult EditCreditCard(CreditCardType type)
+        {
+            return Ok(_accountService.GetCustomerBilling(Identity.CustomerID).Result.Where(c => c is CreditCard && ((CreditCard)c).Type == type).FirstOrDefault());
+        }
     }
 }
