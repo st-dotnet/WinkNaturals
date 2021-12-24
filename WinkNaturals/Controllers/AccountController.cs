@@ -49,9 +49,9 @@ namespace WinkNaturals.Controllers
         //    return Ok(_accountService.CreatePointPayment(Identity.CustomerID, LoyaltyPointAccountId));
         //}
         [HttpGet("GetCustomerOrders_SQL")]
-        public IActionResult GetCustomerOrders_SQL()
+        public async Task<IActionResult> GetCustomerOrders_SQL()
         {
-            return Ok(_accountService.GetCustomerOrders_SQL(Identity.CustomerID, LoyaltyPointAccountId));
+            return Ok(await _accountService.GetCustomerOrders_SQL(Identity.CustomerID, LoyaltyPointAccountId));
         }
         [HttpGet("AddressList")]
         public IActionResult AddressList()
@@ -69,9 +69,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetCustomerBilling")]///{itemCode:string}
-        public IActionResult GetCustomerBilling()
+        public async Task<IActionResult> GetCustomerBilling()
         {
-            return Ok(_accountService.GetCustomerBilling(Identity.CustomerID));
+            return Ok(await _accountService.GetCustomerBilling(Identity.CustomerID));
         }
         ///// <summary>
         ///// SaveAddress
@@ -88,9 +88,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetCustomerAutoOrders")]
-        public IActionResult GetCustomerAutoOrders()
+        public async Task<IActionResult> GetCustomerAutoOrders()
         {
-            return Ok(_accountService.GetCustomerAutoOrders(Identity.CustomerID));
+            return Ok(await _accountService.GetCustomerAutoOrders(Identity.CustomerID));
         }
 
         /// <summary>
@@ -98,45 +98,45 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("CancelledCustomerOrders_SQL")]
-        public IActionResult CancelledCustomerOrders_SQL()
+        public async Task<IActionResult> CancelledCustomerOrders_SQL()
         {
-            return Ok(_accountService.CancelledCustomerOrders_SQL(Identity.CustomerID, LoyaltyPointAccountId));
+            return Ok(await _accountService.CancelledCustomerOrders_SQL(Identity.CustomerID, LoyaltyPointAccountId));
         }
         /// <summary>
         /// SeachOrderList
         /// </summary>
         /// <returns></returns>
         [HttpGet("SeachOrderList")]
-        public IActionResult SeachOrderList(int orderid)
+        public async Task<IActionResult> SeachOrderList(int orderid)
         {
-            return Ok(_accountService.SeachOrderList(Identity.CustomerID, orderid));
+            return Ok(await _accountService.SeachOrderList(Identity.CustomerID, orderid));
         }
         /// <summary>
         /// DeclinedCustomerOrders_SQL
         /// </summary>
         /// <returns></returns>
         [HttpGet("DeclinedCustomerOrders_SQL")]
-        public IActionResult DeclinedCustomerOrders_SQL()
+        public async Task<IActionResult> DeclinedCustomerOrders_SQL()
         {
-            return Ok(_accountService.DeclinedCustomerOrders_SQL(Identity.CustomerID, LoyaltyPointAccountId));
+            return Ok(await _accountService.DeclinedCustomerOrders_SQL(Identity.CustomerID, LoyaltyPointAccountId));
         }
         /// <summary>
         /// ShippedCustomerOrders_SQL
         /// </summary>
         /// <returns></returns>
         [HttpGet("ShippedCustomerOrders_SQL")]
-        public IActionResult ShippedCustomerOrders_SQL()
+        public async Task<IActionResult> ShippedCustomerOrders_SQL()
         {
-            return Ok(_accountService.ShippedCustomerOrders_SQL(Identity.CustomerID, LoyaltyPointAccountId));
+            return Ok(await _accountService.ShippedCustomerOrders_SQL(Identity.CustomerID, LoyaltyPointAccountId));
         }
         /// <summary>
         /// GetOrderInvoice
         /// </summary>
         /// <returns></returns>
         [HttpPost("GetOrderInvoice")]
-        public IActionResult GetOrderInvoice(GetOrderInvoiceRequest request)
+        public async Task<IActionResult> GetOrderInvoice(GetOrderInvoiceRequest request)
         {
-            return Ok(_accountService.GetOrderInvoice(request));
+            return Ok(await _accountService.GetOrderInvoice(request));
         }
        
         [HttpPost("SetPrimaryAddress")]

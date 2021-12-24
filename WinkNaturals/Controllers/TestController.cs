@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Threading.Tasks;
+using WinkNatural.Web.Services.Interfaces;
 
 namespace WinkNaturals.Controllers
 {
@@ -11,9 +13,12 @@ namespace WinkNaturals.Controllers
     {
 
         private readonly IDistributedCache _distributedCache;
-        public TestController(IDistributedCache distributedCache)
+        private readonly IEnrollmentService _enrollmentService;
+
+        public TestController(IDistributedCache distributedCache, IEnrollmentService enrollmentService)
         {
             _distributedCache = distributedCache;
+            _enrollmentService = enrollmentService;
         }
 
         [Route("add-cache-no-time-options")]
@@ -53,5 +58,6 @@ namespace WinkNaturals.Controllers
             await _distributedCache.RemoveAsync(key);
             return Ok();
         }
+      
     }
 }

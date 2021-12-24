@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Models.BraintreeService;
@@ -37,9 +38,9 @@ namespace WinkNaturals.Controllers
         }
 
         [HttpPost("CreateCustomerProfile")]
-        public IActionResult CreateCustomerProfile(GetPaymentRequest model)
+        public async Task<IActionResult> CreateCustomerProfile(GetPaymentRequest model)
         {
-            return Ok(_paymentService.CreateCustomerProfile(model));
+            return Ok(await _paymentService.CreateCustomerProfile(model));
         }
 
         // This code is for make payment using propay account

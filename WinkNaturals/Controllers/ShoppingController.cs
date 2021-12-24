@@ -116,7 +116,7 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetProductList/{categoryID:int}/{sortBy:int}")]
-        public IActionResult GetProductList(int categoryID, int sortBy)
+        public async Task<IActionResult> GetProductList(int categoryID, int sortBy)
         {
             return Ok(_shoppingService.GetShopProducts(categoryID, sortBy));
         }
@@ -236,9 +236,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("SubmitCheckout")]
-        public IActionResult SubmitCheckout(TransactionalRequestModel transactionRequests)
+        public async Task<IActionResult> SubmitCheckout(TransactionalRequestModel transactionRequests)
         {          
-            return Ok(_shoppingService.SubmitCheckout(transactionRequests, Identity.CustomerID, Identity.Email));
+            return Ok(await _shoppingService.SubmitCheckout(transactionRequests, Identity.CustomerID, Identity.Email));
         }
 
 
@@ -247,9 +247,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("CalculateOrder")]
-        public IActionResult CalculateOrder(CalculateOrderRequest calculateOrderReq, int shipMethodID = 0)
+        public async Task<IActionResult> CalculateOrder(CalculateOrderRequest calculateOrderReq, int shipMethodID = 0)
         {
-            return Ok(_shoppingService.CalculateOrder(calculateOrderReq));
+            return Ok(await _shoppingService.CalculateOrder(calculateOrderReq));
         }
 
         /// <summary>
@@ -257,9 +257,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("CreateOrder")]
-        public IActionResult CreateOrder(CreateOrderRequest createOrderRequest)
+        public async Task<IActionResult> CreateOrder(CreateOrderRequest createOrderRequest)
         {
-            return Ok(_shoppingService.CreateOrder(createOrderRequest));
+            return Ok(await _shoppingService.CreateOrder(createOrderRequest));
         }
 
         /// <summary>
@@ -267,9 +267,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("CreateOrderImport")]
-        public IActionResult CreateOrderImport(CreateOrderImportRequest createOrderImportRequest)
+        public async Task<IActionResult> CreateOrderImport(CreateOrderImportRequest createOrderImportRequest)
         {
-            return Ok(_shoppingService.CreateOrderImport(createOrderImportRequest));
+            return Ok(await _shoppingService.CreateOrderImport(createOrderImportRequest));
         }
 
         /// <summary>
@@ -277,9 +277,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("UpdateOrder")]
-        public IActionResult UpdateOrder(UpdateOrderRequest updateOrderRequest)
+        public async Task<IActionResult> UpdateOrder(UpdateOrderRequest updateOrderRequest)
         {
-            return Ok(_shoppingService.UpdateOrder(updateOrderRequest));
+            return Ok(await _shoppingService.UpdateOrder(updateOrderRequest));
         }
 
         /// <summary>
@@ -287,9 +287,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("ChangeOrderStatus")]
-        public IActionResult ChangeOrderStatus(ChangeOrderStatusRequest changeOrderStatusRequest)
+        public async Task<IActionResult> ChangeOrderStatus(ChangeOrderStatusRequest changeOrderStatusRequest)
         {
-            return Ok(_shoppingService.ChangeOrderStatus(changeOrderStatusRequest));
+            return Ok(await _shoppingService.ChangeOrderStatus(changeOrderStatusRequest));
         }
 
         /// <summary>
@@ -297,9 +297,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("ChangeOrderStatusBatch")]
-        public IActionResult ChangeOrderStatusBatch(ChangeOrderStatusBatchRequest changeOrderStatusBatchRequest)
+        public async Task<IActionResult> ChangeOrderStatusBatch(ChangeOrderStatusBatchRequest changeOrderStatusBatchRequest)
         {
-            return Ok(_shoppingService.ChangeOrderStatusBatch(changeOrderStatusBatchRequest));
+            return Ok(await _shoppingService.ChangeOrderStatusBatch(changeOrderStatusBatchRequest));
         }
 
         /// <summary>
@@ -307,9 +307,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("ValidateCreditCardToken")]
-        public IActionResult ValidateCreditCardToken(ValidateCreditCardTokenRequest creditCardTokenRequest)
+        public async Task<IActionResult> ValidateCreditCardToken(ValidateCreditCardTokenRequest creditCardTokenRequest)
         {
-            return Ok(_shoppingService.ValidateCreditCardToken(creditCardTokenRequest));
+            return Ok(await _shoppingService.ValidateCreditCardToken(creditCardTokenRequest));
         }
 
         /// <summary>
@@ -317,9 +317,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("CreatePayment")]
-        public IActionResult CreatePayment(CreatePaymentRequest createPaymentRequest)
+        public async Task<IActionResult> CreatePayment(CreatePaymentRequest createPaymentRequest)
         {
-            return Ok(_shoppingService.CreatePayment(createPaymentRequest));
+            return Ok(await _shoppingService.CreatePayment(createPaymentRequest));
         }
 
         /// <summary>
@@ -327,9 +327,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("CreatePaymentCreditCard")]
-        public IActionResult CreatePaymentCreditCard(CreatePaymentCreditCardRequest createPaymentCreditCardRequest)
+        public async Task<IActionResult> CreatePaymentCreditCard(CreatePaymentCreditCardRequest createPaymentCreditCardRequest)
         {
-            return Ok(_shoppingService.CreatePaymentCreditCard(createPaymentCreditCardRequest));
+            return Ok(await _shoppingService.CreatePaymentCreditCard(createPaymentCreditCardRequest));
         }
 
         /// <summary>
@@ -337,9 +337,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("CreatePaymentWallet")]
-        public IActionResult CreatePaymentWallet(CreatePaymentWalletRequest createPaymentWalletRequest)
+        public async Task<IActionResult> CreatePaymentWallet(CreatePaymentWalletRequest createPaymentWalletRequest)
         {
-            return Ok(_shoppingService.CreatePaymentWallet(createPaymentWalletRequest));
+            return Ok(await _shoppingService.CreatePaymentWallet(createPaymentWalletRequest));
         }
 
         /// <summary>
@@ -347,9 +347,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("CreatePaymentPointAccount")]
-        public IActionResult CreatePaymentPointAccount(CreatePaymentPointAccountRequest createPaymentPointAccountRequest)
+        public async Task<IActionResult> CreatePaymentPointAccount(CreatePaymentPointAccountRequest createPaymentPointAccountRequest)
         {
-            return Ok(_shoppingService.CreatePaymentPointAccount(createPaymentPointAccountRequest));
+            return Ok( await _shoppingService.CreatePaymentPointAccount(createPaymentPointAccountRequest));
         }
 
         /// <summary>
@@ -357,9 +357,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("CreatePaymentCheck")]
-        public IActionResult CreatePaymentCheck(CreatePaymentCheckRequest createPaymentCheckRequest)
+        public async Task<IActionResult> CreatePaymentCheck(CreatePaymentCheckRequest createPaymentCheckRequest)
         {
-            return Ok(_shoppingService.CreatePaymentCheck(createPaymentCheckRequest));
+            return Ok( await _shoppingService.CreatePaymentCheck(createPaymentCheckRequest));
         }
 
         /// <summary>
@@ -367,9 +367,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("ChargeCreditCardToken")]
-        public IActionResult ChargeCreditCardToken(ChargeCreditCardTokenRequest chargeCreditCardTokenRequest)
+        public async Task<IActionResult> ChargeCreditCardToken(ChargeCreditCardTokenRequest chargeCreditCardTokenRequest)
         {
-            return Ok(_shoppingService.ChargeCreditCardToken(chargeCreditCardTokenRequest));
+            return Ok(await _shoppingService.ChargeCreditCardToken(chargeCreditCardTokenRequest));
         }
 
         /// <summary>
@@ -377,9 +377,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("ChargeCreditCardTokenOnFile")]
-        public IActionResult ChargeCreditCardTokenOnFile(ChargeCreditCardTokenOnFileRequest chargeCreditCardTokenOnFileRequest)
+        public async Task<IActionResult> ChargeCreditCardTokenOnFile(ChargeCreditCardTokenOnFileRequest chargeCreditCardTokenOnFileRequest)
         {
-            return Ok(_shoppingService.ChargeCreditCardTokenOnFile(chargeCreditCardTokenOnFileRequest));
+            return Ok(await _shoppingService.ChargeCreditCardTokenOnFile(chargeCreditCardTokenOnFileRequest));
         }
 
         /// <summary>
@@ -387,9 +387,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("ChargeGroupOrderCreditCardToken")]
-        public IActionResult ChargeGroupOrderCreditCardToken(ChargeGroupOrderCreditCardTokenRequest chargeGroupOrderCredit)
+        public async Task<IActionResult> ChargeGroupOrderCreditCardToken(ChargeGroupOrderCreditCardTokenRequest chargeGroupOrderCredit)
         {
-            return Ok(_shoppingService.ChargeGroupOrderCreditCardToken(chargeGroupOrderCredit));
+            return Ok(await _shoppingService.ChargeGroupOrderCreditCardToken(chargeGroupOrderCredit));
         }
 
         /// <summary>
@@ -397,9 +397,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("RefundPriorCreditCardCharge")]
-        public IActionResult RefundPriorCreditCardCharge(RefundPriorCreditCardChargeRequest refundPriorCredit)
+        public async Task<IActionResult> RefundPriorCreditCardCharge(RefundPriorCreditCardChargeRequest refundPriorCredit)
         {
-            return Ok(_shoppingService.RefundPriorCreditCardCharge(refundPriorCredit));
+            return Ok(await _shoppingService.RefundPriorCreditCardCharge(refundPriorCredit));
         }
         /// <summary>
         /// RefundPriorCreditCardCharge
@@ -407,9 +407,9 @@ namespace WinkNaturals.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("checkout/shipping")]
-        public IActionResult Shipping(VerifyAddressRequest addressRequest)
+        public async Task<IActionResult> Shipping(VerifyAddressRequest addressRequest)
         {
-            return Ok(_shoppingService.Shipping(addressRequest));
+            return Ok(await _shoppingService.Shipping(addressRequest));
         }
 
         [HttpGet]
@@ -426,9 +426,9 @@ namespace WinkNaturals.Controllers
         //}
 
         [HttpPost("GetWarehouses")]
-        public IActionResult GetWarehouses(GetWarehousesRequest warehousesRequest)
+        public async Task<IActionResult> GetWarehouses(GetWarehousesRequest warehousesRequest)
         {
-            return Ok(_shoppingService.GetWarehouses(warehousesRequest));
+            return Ok(await _shoppingService.GetWarehouses(warehousesRequest));
         }
         [HttpGet("SearchProducts/{query}")]
         public IActionResult SearchProducts(string query)
@@ -445,16 +445,16 @@ namespace WinkNaturals.Controllers
 
         [HttpGet("GetCustomerRealTime")]
         //To Get customer detail for editing.
-        public IActionResult GetCustomerRealTime()
+        public async Task<IActionResult> GetCustomerRealTime()
         {
-            return Ok(_shoppingService.GetCustomerRealTime(Identity.CustomerID));
+            return Ok(await _shoppingService.GetCustomerRealTime(Identity.CustomerID));
         }
 
         //To update customer detail
         [HttpPost("UpdateCustomer")]
-        public IActionResult UpdateCustomer(UpdateCustomerRequest updateCustomerRequest)
+        public async Task<IActionResult> UpdateCustomer(UpdateCustomerRequest updateCustomerRequest)
         {
-            return Ok(_shoppingService.UpdateCustomer(updateCustomerRequest));
+            return Ok(await  _shoppingService.UpdateCustomer(updateCustomerRequest));
         }
 
         //Apply promocode
@@ -469,9 +469,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("CreateItem")]
-        public IActionResult CreateItem(CreateItemRequest createItemRequest)
+        public async Task<IActionResult> CreateItem(CreateItemRequest createItemRequest)
         {
-            return Ok(_shoppingService.CreateItem(createItemRequest));
+            return Ok(await _shoppingService.CreateItem(createItemRequest));
         }
 
         /// <summary>
@@ -480,9 +480,9 @@ namespace WinkNaturals.Controllers
         /// <returns></returns>
 
         [HttpPost("UpdateItem")]
-        public IActionResult UpdateItem(UpdateItemRequest updateItemRequest)
+        public async Task<IActionResult> UpdateItem(UpdateItemRequest updateItemRequest)
         {
-            return Ok(_shoppingService.UpdateItem(updateItemRequest));
+            return Ok(await _shoppingService.UpdateItem(updateItemRequest));
         }
 
         /// <summary>
@@ -491,9 +491,9 @@ namespace WinkNaturals.Controllers
         /// <returns></returns>
 
         [HttpPost("SetItemPrice")]
-        public IActionResult SetItemPrice(SetItemPriceRequest setItemPriceRequest)
+        public async Task<IActionResult> SetItemPrice(SetItemPriceRequest setItemPriceRequest)
         {
-            return Ok(_shoppingService.SetItemPrice(setItemPriceRequest));
+            return Ok(await _shoppingService.SetItemPrice(setItemPriceRequest));
         }
 
         /// <summary>
@@ -501,9 +501,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("SetItemWarehouse")]
-        public IActionResult SetItemWarehouse(SetItemWarehouseRequest setItemWarehouseRequest)
+        public async Task<IActionResult> SetItemWarehouse(SetItemWarehouseRequest setItemWarehouseRequest)
         {
-            return Ok(_shoppingService.SetItemWarehouse(setItemWarehouseRequest));
+            return Ok(await _shoppingService.SetItemWarehouse(setItemWarehouseRequest));
         }
 
         /// <summary>
@@ -511,9 +511,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("SetItemCountryRegion")]
-        public IActionResult SetItemCountryRegion(SetItemCountryRegionRequest setItemWarehouseRequest)
+        public async Task<IActionResult> SetItemCountryRegion(SetItemCountryRegionRequest setItemWarehouseRequest)
         {
-            return Ok(_shoppingService.SetItemCountryRegion(setItemWarehouseRequest));
+            return Ok(await _shoppingService.SetItemCountryRegion(setItemWarehouseRequest));
         }
 
         /// <summary>
@@ -521,9 +521,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("CreateWebCategory")]
-        public IActionResult CreateWebCategory(CreateWebCategoryRequest createWebCategoryRequest)
+        public async Task<IActionResult> CreateWebCategory(CreateWebCategoryRequest createWebCategoryRequest)
         {
-            return Ok(_shoppingService.CreateWebCategory(createWebCategoryRequest));
+            return Ok(await _shoppingService.CreateWebCategory(createWebCategoryRequest));
         }
 
         /// <summary>
@@ -531,37 +531,37 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("UpdateWebCategory")]
-        public IActionResult UpdateWebCategory(UpdateWebCategoryRequest updateWebCategoryRequest)
+        public async Task<IActionResult> UpdateWebCategory(UpdateWebCategoryRequest updateWebCategoryRequest)
         {
-            return Ok(_shoppingService.UpdateWebCategory(updateWebCategoryRequest));
+            return Ok(await _shoppingService.UpdateWebCategory(updateWebCategoryRequest));
         }
 
         // To Delete WebCategory
         [HttpPost("DeleteWebCategory")]
-        public IActionResult DeleteWebCategory(DeleteWebCategoryRequest deleteWebCategoryRequest)
+        public async Task<IActionResult> DeleteWebCategory(DeleteWebCategoryRequest deleteWebCategoryRequest)
         {
-            return Ok(_shoppingService.DeleteWebCategory(deleteWebCategoryRequest));
+            return Ok(await _shoppingService.DeleteWebCategory(deleteWebCategoryRequest));
         }
 
         // To adjust inventory
         [HttpPost("AdjustInventory")]
-        public IActionResult AdjustInventory(AdjustInventoryRequest adjustInventoryRequest)
+        public async Task<IActionResult> AdjustInventory(AdjustInventoryRequest adjustInventoryRequest)
         {
-            return Ok(_shoppingService.AdjustInventory(adjustInventoryRequest));
+            return Ok(await _shoppingService.AdjustInventory(adjustInventoryRequest));
         }
 
         // To set Item subscription
         [HttpPost("SetItemSubscription")]
-        public IActionResult SetItemSubscription(SetItemSubscriptionRequest setItemSubscriptionRequest)
+        public async Task<IActionResult> SetItemSubscription(SetItemSubscriptionRequest setItemSubscriptionRequest)
         {
-            return Ok(_shoppingService.SetItemSubscription(setItemSubscriptionRequest));
+            return Ok(await _shoppingService.SetItemSubscription(setItemSubscriptionRequest));
         }
 
         // To Set Item Point Account
         [HttpPost("SetItemPointAccount")]
-        public IActionResult SetItemPointAccount(SetItemPointAccountRequest setItemPointAccountRequest)
+        public async Task<IActionResult> SetItemPointAccount(SetItemPointAccountRequest setItemPointAccountRequest)
         {
-            return Ok(_shoppingService.SetItemPointAccount(setItemPointAccountRequest));
+            return Ok(await _shoppingService.SetItemPointAccount(setItemPointAccountRequest));
         }
 
         [HttpPost("AddSpecialItemToCart")]
@@ -814,26 +814,26 @@ namespace WinkNaturals.Controllers
 
         // To Set Item CreateParty
         [HttpPost("CreateParty")]
-        public IActionResult CreateParty(CreatePartyRequest createPartyRequest)
+        public async Task<IActionResult> CreateParty(CreatePartyRequest createPartyRequest)
         {
-            return Ok(_shoppingService.CreateParty(createPartyRequest));
+            return Ok(await _shoppingService.CreateParty(createPartyRequest));
         }
 
         [HttpGet("GetPartyAccountId")]
-        public IActionResult GetPartyAccountId(int partyId)
+        public async Task<IActionResult> GetPartyAccountId(int partyId)
         {
-            return Ok(_shoppingService.GetParty(partyId));
+            return Ok(await _shoppingService.GetParty(partyId));
         }
 
         [HttpGet("GetReviewOrder")]
-        public IActionResult GetReviewOrder(int OrderId)
+        public async Task<IActionResult> GetReviewOrder(int OrderId)
         {
-            return Ok(_shoppingService.GetCustomerReviewOrder(Identity.CustomerID, OrderId));
+            return Ok(await _shoppingService.GetCustomerReviewOrder(Identity.CustomerID, OrderId));
         }
         [HttpGet("GetCustomer")]
-        public IActionResult GetCustomer(int partyId)
+        public async Task<IActionResult> GetCustomer(int partyId)
         {
-            return Ok(_shoppingService.GetCustomer(partyId));
+            return Ok(await _shoppingService.GetCustomer(partyId));
         }
         /// <summary>
         /// GetProductDetailById by itemCode
@@ -853,15 +853,15 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("DeleteCustomer")]
-        public IActionResult DeleteCustomer(ShippingAddress address)
+        public async Task<IActionResult> DeleteCustomer(ShippingAddress address)
         {
-            return Ok(_shoppingService.DeleteCustomerAddress(Identity.CustomerID, address));
+            return Ok(await _shoppingService.DeleteCustomerAddress(Identity.CustomerID, address));
         }
 
         [HttpPost("AddUpdateCustomerAddress/{CustomerID:int}")]
-        public IActionResult AddUpdateCustomerAddress(int CustomerID, ShippingAddress address)
+        public async Task<IActionResult> AddUpdateCustomerAddress(int CustomerID, ShippingAddress address)
         {
-            return Ok(_shoppingService.AddUpdateCustomerAddress(CustomerID, address));
+            return Ok(await _shoppingService.AddUpdateCustomerAddress(CustomerID, address));
 
         }
        

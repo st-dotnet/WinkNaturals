@@ -93,8 +93,6 @@ namespace WinkNatural.Web.Services.Services
 
             return finalResponse;
         }
-
-
         public AddCardResponse PaymentUsingAuthorizeNet(AddPaymentModel addPaymentModel)
         {
             var finalResponse = new AddCardResponse();
@@ -127,7 +125,7 @@ namespace WinkNatural.Web.Services.Services
             var request = new AuthorizeNet.Api.Contracts.V1.createTransactionRequest { transactionRequest = transactionRequest }; // instantiate the controller that will call the service
             var controller = new createTransactionController(request);
             controller.Execute(); // get the response from the service (errors contained if any)
-            var response = controller.GetApiResponse(); // validate response
+            var response =   controller.GetApiResponse(); // validate response
             if (response != null)
             {
                 if (response.messages.resultCode == AuthorizeNet.Api.Contracts.V1.messageTypeEnum.Ok)

@@ -51,7 +51,7 @@ namespace WinkNaturals.Infrastructure.Services.Services
             var pointTransactions = new List<PointTransaction>();
             using (var context = DbConnection.Sql())
             {
-                pointTransactions = context.Query<PointTransaction>(@"
+                pointTransactions =   context.Query<PointTransaction>(@"
                     select
 	                    pt.PointTransactionID,
 	                    pt.CustomerID,
@@ -77,8 +77,8 @@ namespace WinkNaturals.Infrastructure.Services.Services
             // in the other methods.
             if (pointTransactions.Any())
             {
-                var accounts = GetLoyaltyPointAccounts().ToList();
-                var types = GetPointTransactionTypes().ToList();
+                var accounts =   GetLoyaltyPointAccounts().ToList();
+                var types =   GetPointTransactionTypes().ToList();
 
                 foreach (var transaction in pointTransactions)
                 {
@@ -665,8 +665,8 @@ namespace WinkNaturals.Infrastructure.Services.Services
         {
             return "/shopping/productimages/";
         }
-       
-        
+
+      
     }
 }
 
