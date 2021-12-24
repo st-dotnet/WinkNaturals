@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Exigo.Api.Client;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.Interfaces;
+using WinkNaturals.Infrastructure.Services;
 using WinkNaturals.Models.BraintreeService;
 using WinkNaturals.Setting;
+using static WinkNaturals.Helpers.Constant;
 
 namespace WinkNaturals.Controllers
 {
@@ -15,14 +18,18 @@ namespace WinkNaturals.Controllers
         private readonly IOptions<ConfigSettings> _config;
         private readonly IPaymentService _paymentService;
         private readonly ICustomerService _customerService;
+        private readonly IEnrollmentService _enrollmentService;
+        private readonly IShoppingService _shoppingService;
 
         public PaymentController(IOptions<ConfigSettings> config,
             IPaymentService paymentService,
-            ICustomerService customerService)
+            ICustomerService customerService,IEnrollmentService enrollmentService, IShoppingService shoppingService)
         {
             _config = config;
             _paymentService = paymentService;
             _customerService = customerService;
+            _enrollmentService = enrollmentService;
+            _shoppingService = shoppingService;
         }
 
         //   [HttpGet("GenerateCreditCardToken/{cardNumber}")]
@@ -66,6 +73,34 @@ namespace WinkNaturals.Controllers
                 token = paypalClientToken
             });
         }
-
+        /// <summary>
+        /// SaveCreditCard
+        /// </summary>
+        /// <returns></returns>
+        /// 
+        [HttpPost("SaveCreditCard")]
+        public ActionResult SaveCreditCard(GetCreditCardRequest card)
+        {
+            card = _enrollmentService.SetCustomerCreditCard(Identity.CustomerID, card);
+            if (card.Type == CreditCardType.Primary)
+            {
+                var updateCustomerRequest = new UpdateCustomerRequest
+                {
+                    CustomerID = Identity.CustomerID,
+                    Field1 = "1"
+                };
+                var transactionResponse = _shoppingService.UpdateCustomer(updateCustomerRequest);
+            }
+            else
+            {
+                var updateCustomerRequest = new UpdateCustomerRequest
+                {
+                    CustomerID = Identity.CustomerID,
+                    Field2 = "1"
+                };
+                var transactionResponse = _shoppingService.UpdateCustomer(updateCustomerRequest);
+            }
+            return Ok();
+        }
     }
 }

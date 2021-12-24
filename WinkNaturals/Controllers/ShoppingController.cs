@@ -69,9 +69,6 @@ namespace WinkNaturals.Controllers
             _configuration = configuration;
             _customerAutoService = customerAutoService;
             _enrollmentService = enrollmentService;
-
-
-
         }
                 
         public ShoppingCartItemsPropertyBag ShoppingCart
@@ -411,7 +408,6 @@ namespace WinkNaturals.Controllers
         {
             return Ok(await _shoppingService.Shipping(addressRequest));
         }
-
         [HttpGet]
         [Route("GetshippingAddress/{CustomerID:int}")]
         public IActionResult GetshippingAddress(int CustomerID)

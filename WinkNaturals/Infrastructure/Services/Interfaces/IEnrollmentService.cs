@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.DTO.Shopping;
+using WinkNaturals.Infrastructure.Services;
 using CreditCard = WinkNaturals.Infrastructure.Services.ExigoService.CreditCard.CreditCard;
 
 namespace WinkNatural.Web.Services.Interfaces
@@ -17,7 +18,7 @@ namespace WinkNatural.Web.Services.Interfaces
       //  Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId);
         Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest);
         List<dynamic> GetDistributors(int customerId);
-        object SaveNewCustomerCreditCard(int customerID, CreditCard card);
-        CreditCard SetCustomerCreditCard(int customerID, CreditCard card);
+        object SaveNewCustomerCreditCard(int customerID, GetCreditCardRequest card);
+        GetCreditCardRequest SetCustomerCreditCard(int customerID, GetCreditCardRequest card);
     }
 }

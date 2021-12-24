@@ -3,13 +3,11 @@ using Exigo.Api.Client;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Helpers;
 using WinkNaturals.Infrastructure.Services.DTO;
-using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Models.Shopping.Orders;
@@ -270,10 +268,14 @@ namespace WinkNatural.Web.Services.Services
         //    return card;
         //}
 
-        public async Task DeleteCustomerCreditCard(int customerID, CreditCardType type)
+        public async Task<SetAccountResponse> DeleteCustomerCreditCard(int customerID, CreditCardType type)
         {
+            var res = new SetAccountResponse();
+
+
+
             // If this is a new credit card, don't delete it - we have nothing to delete
-            if (type == CreditCardType.New) return;
+            if (type == CreditCardType.New) return res;
             // Save the a blank copy of the credit card
             // Passing a blank token will do the trick
             var request = new SetAccountCreditCardTokenRequest
@@ -290,7 +292,8 @@ namespace WinkNatural.Web.Services.Services
                 BillingZip = string.Empty,
                 BillingCountry = string.Empty
             };
-            var response = await _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);
+            res = await _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);
+            return res;
         }
 
         public async Task DeleteCustomerAutoOrder(int customerID, int autoOrderID)
@@ -329,5 +332,6 @@ namespace WinkNatural.Web.Services.Services
             }
             return autoOrder != null;
         }
+        }
     }
-}
+

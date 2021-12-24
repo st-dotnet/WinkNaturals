@@ -666,7 +666,6 @@ namespace WinkNaturals.Infrastructure.Services.Services
             return "/shopping/productimages/";
         }
 
-      
+       
+        }
     }
-}
-

@@ -422,8 +422,6 @@ namespace WinkNatural.Web.Services.Services
             }
             return response;
         }
-
-       
         /// <summary>
         /// CalculateOrder
         /// </summary>

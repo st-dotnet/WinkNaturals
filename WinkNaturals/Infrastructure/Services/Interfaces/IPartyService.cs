@@ -1,6 +1,6 @@
 ﻿using Exigo.Api.Client;
 using System.Threading.Tasks;
-
+using WinkNaturals.Infrastructure.Services.DTO;
 
 namespace WinkNatural.Web.Services.Interfaces
 {
@@ -12,6 +12,6 @@ namespace WinkNatural.Web.Services.Interfaces
         Task<GetPartyGuestsResponse> GetPartyGuests(GetPartyGuestsRequest getPartyGuestsRequest);
         Task<CreateGuestResponse> CreateGuest(CreateGuestRequest createGuestRequest);
         Task<UpdateGuestResponse> UpdateGuest(UpdateGuestRequest updateGuestRequest);
-
+        Task<TransactionalResponse> ManageAutoOrder(ManageAutoOrderViewModel autoOrderViewModel, int id);
     }
 }

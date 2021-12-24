@@ -17,7 +17,7 @@ namespace WinkNaturals.Controllers
     {
         private readonly IExigoApiContext _exigoApiContext;
         private readonly ICustomerService _customerService;
-        public CustomersController(IExigoApiContext exigoApiContext,ICustomerService customerService)
+        public CustomersController(IExigoApiContext exigoApiContext, ICustomerService customerService)
         {
             _exigoApiContext = exigoApiContext;
             _customerService = customerService;
@@ -54,11 +54,12 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_customerService.DeleteCustomerAutoOrder(Identity.CustomerID, id));
         }
+
         [HttpPost("DeleteCreditCard")]
         public async Task<IActionResult> DeleteCreditCard(CreditCardType type)
         {
-             await _customerService.DeleteCustomerCreditCard(Identity.CustomerID, type);
-            return Ok();
+            return Ok(await _customerService.DeleteCustomerCreditCard(Identity.CustomerID, type));
+
         }
     }
 }
