@@ -146,7 +146,7 @@ namespace WinkNatural.Web.Services.Services
                            itemCodes = request.ItemCodes,
                        }).ToList();
 
-                    return apiItems;
+                    return  apiItems;
                 }
             }
             catch (Exception ex)
@@ -442,6 +442,8 @@ namespace WinkNatural.Web.Services.Services
             var response = _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);//DAL.WebService().SetAccountCreditCardToken(request);
             return card;
         }
+
+  
 
         public class SearchResult
         {

@@ -40,7 +40,7 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 // Yotpo api url
-                var url = $"{_configSettings.Value.YotPo.APIUrl}{_configSettings.Value.YotPo.ApiKey}/{_configSettings.Value.YotPo.HomePageEndpoints}";
+                var url =   $"{_configSettings.Value.YotPo.APIUrl}{_configSettings.Value.YotPo.ApiKey}/{_configSettings.Value.YotPo.HomePageEndpoints}";
                 var client = new RestClient(url);
                 #region Request
 

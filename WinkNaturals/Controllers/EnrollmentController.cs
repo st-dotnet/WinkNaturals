@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNatural.Web.Services.Utilities;
@@ -72,10 +73,10 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("SubmitCheckout")]
-        public IActionResult SubmitCheckout(TransactionalRequestModel transactionRequests)
+        public async Task<IActionResult> SubmitCheckout(TransactionalRequestModel transactionRequests)
         {
             // return Ok(_enrollmentService.SubmitCheckout(transactionRequests, Identity.CustomerID));
-             return Ok(_enrollmentService.SubmitCheckout(transactionRequests));
+             return Ok( await _enrollmentService.SubmitCheckout(transactionRequests));
         }
         /// <summary>
         /// GetDistributors

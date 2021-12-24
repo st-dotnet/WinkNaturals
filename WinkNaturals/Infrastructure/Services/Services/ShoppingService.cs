@@ -1833,7 +1833,7 @@ namespace WinkNatural.Web.Services.Services
 
                 using (var context = Common.Utils.DbConnection.Sql())
                 {
-                    categoryItemCodes = context.Query<string>(QueryUtility.categoryItemCodesList_Query, new
+                    categoryItemCodes =  context.Query<string>(QueryUtility.categoryItemCodesList_Query, new
                     {
                         webid = 1,
                         webcategoryids = categoryIDs
@@ -1868,7 +1868,7 @@ namespace WinkNatural.Web.Services.Services
             // get the item information             
             var priceTypeID = request.PriceTypeID;
 
-            var items = GetItemInformation(request, priceTypeID);  //: GetItemList(request, priceTypeID);
+            var items =   GetItemInformation(request, priceTypeID);  //: GetItemList(request, priceTypeID);
 
             // Populate the group members and dynamic kits
             if (items.Any())
