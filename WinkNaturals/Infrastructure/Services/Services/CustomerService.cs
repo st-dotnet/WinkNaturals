@@ -268,20 +268,66 @@ namespace WinkNatural.Web.Services.Services
         //    return card;
         //}
 
-        public async Task<SetAccountResponse> DeleteCustomerCreditCard(int customerID, CreditCardType type)
+        //public async Task<SetAccountResponse> DeleteCustomerCreditCard(int customerID, CreditCardType type)
+        //{
+        //    var res = new SetAccountResponse();
+
+        //    // If this is a new credit card, don't delete it - we have nothing to delete
+        //    if (type == CreditCardType.New) return res;
+        //    // Save the a blank copy of the credit card
+        //    // Passing a blank token will do the trick
+        //    var request = new SetAccountCreditCardTokenRequest
+        //    {
+        //        CustomerID = customerID,
+        //        CreditCardAccountType = (type == CreditCardType.Primary) ? AccountCreditCardType.Primary : AccountCreditCardType.Secondary,
+        //        CreditCardToken = string.Empty,
+        //        ExpirationMonth = 1,
+        //        ExpirationYear = DateTime.Now.Year + 1,
+        //        BillingName = string.Empty,
+        //        BillingAddress = string.Empty,
+        //        BillingCity = string.Empty,
+        //        BillingState = string.Empty,
+        //        BillingZip = string.Empty,
+        //        BillingCountry = string.Empty
+        //    };
+        //    res = await _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);
+        //    return res;
+        //}
+        //public async Task<SetAccountResponse> DeleteCustomerCreditCard(int customerID, CreditCardType type)
+        //{
+        //    var res = new SetAccountResponse();
+        //    // If this is a new credit card, don't delete it - we have nothing to delete
+        //    if (type == CreditCardType.New) return res;
+        //    // Save the a blank copy of the credit card
+        //    // Passing a blank token will do the trick
+        //    var request = new SetAccountCreditCardTokenRequest
+        //    {
+        //        CustomerID = customerID,
+        //        CreditCardAccountType = (type == CreditCardType.Primary) ? AccountCreditCardType.Primary : AccountCreditCardType.Secondary,
+        //        CreditCardToken = string.Empty,
+        //        ExpirationMonth = 1,
+        //        ExpirationYear = DateTime.Now.Year + 1,
+        //        BillingName = string.Empty,
+        //        BillingAddress = string.Empty,
+        //        BillingCity = string.Empty,
+        //        BillingState = string.Empty,
+        //        BillingZip = string.Empty,
+        //        BillingCountry = string.Empty
+        //    };
+        //    res = await _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);
+        //    return res;
+        //}
+        public async Task<SetAccountResponse> DeleteCustomerCreditCard(int customerID, string type)
         {
             var res = new SetAccountResponse();
-
-
-
             // If this is a new credit card, don't delete it - we have nothing to delete
-            if (type == CreditCardType.New) return res;
+            if (type ==CreditCardType.New.ToString()) return res;
             // Save the a blank copy of the credit card
             // Passing a blank token will do the trick
             var request = new SetAccountCreditCardTokenRequest
             {
                 CustomerID = customerID,
-                CreditCardAccountType = (type == CreditCardType.Primary) ? AccountCreditCardType.Primary : AccountCreditCardType.Secondary,
+                CreditCardAccountType = (type == CreditCardType.Primary.ToString()) ? AccountCreditCardType.Primary : AccountCreditCardType.Secondary,
                 CreditCardToken = string.Empty,
                 ExpirationMonth = 1,
                 ExpirationYear = DateTime.Now.Year + 1,
@@ -295,7 +341,6 @@ namespace WinkNatural.Web.Services.Services
             res = await _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);
             return res;
         }
-
         public async Task DeleteCustomerAutoOrder(int customerID, int autoOrderID)
         {
             // Make sure the autoorder exists
@@ -333,5 +378,6 @@ namespace WinkNatural.Web.Services.Services
             return autoOrder != null;
         }
         }
+
     }
 
