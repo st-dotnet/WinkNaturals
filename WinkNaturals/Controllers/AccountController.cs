@@ -1,6 +1,7 @@
 ﻿using Exigo.Api.Client;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
@@ -136,11 +137,12 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("GetOrderInvoice")]
-        public async Task<IActionResult> GetOrderInvoice(GetOrderInvoiceRequest request)
+        public IActionResult GetOrderInvoice(GetOrderInvoiceRequest request)
         {
-            return Ok(await _accountService.GetOrderInvoice(request));
+            string result = JsonSerializer.Serialize(_accountService.GetOrderInvoice(request));
+
+            return Ok(result);
         }
-       
         [HttpPost("SetPrimaryAddress")]
         public IActionResult SetPrimaryAddress(AddressType type)
         {
