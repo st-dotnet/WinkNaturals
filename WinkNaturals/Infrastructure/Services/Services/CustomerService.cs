@@ -377,7 +377,6 @@ namespace WinkNatural.Web.Services.Services
             }
             return autoOrder != null;
         }
-        }
-
     }
+}
 

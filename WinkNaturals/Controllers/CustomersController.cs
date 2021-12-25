@@ -62,7 +62,7 @@ namespace WinkNaturals.Controllers
 
         //}
 
-        [HttpPost("DeleteCreditCard")]
+        [HttpDelete("DeleteCreditCard")]
         public async Task<IActionResult> DeleteCreditCard(string type)
         {
             return Ok(await _customerService.DeleteCustomerCreditCard(Identity.CustomerID, type));
