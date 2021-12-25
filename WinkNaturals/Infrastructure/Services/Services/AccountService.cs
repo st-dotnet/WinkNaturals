@@ -4,6 +4,8 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.Interfaces;
@@ -519,6 +521,9 @@ namespace WinkNaturals.Infrastructure.Services.Services
                 req.OrderKey = request.OrderKey;
                 req.ReportlayoutID = request.ReportlayoutID;
                 req.Format = InvoiceRenderFormat.HTML;
+
+               
+              
                 res = await _exigoApiContext.GetContext(false).GetOrderInvoiceAsync(req);
             }
             catch (Exception e)

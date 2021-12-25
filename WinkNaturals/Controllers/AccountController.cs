@@ -1,11 +1,10 @@
 ﻿using Exigo.Api.Client;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using System.Text.Json;
+using System.Text;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
-using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models.Shopping.Interfaces;
 using static WinkNaturals.Helpers.Constant;
@@ -137,11 +136,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("GetOrderInvoice")]
-        public IActionResult GetOrderInvoice(GetOrderInvoiceRequest request)
+        public async Task<IActionResult> GetOrderInvoice(GetOrderInvoiceRequest request)
         {
-            string result = JsonSerializer.Serialize(_accountService.GetOrderInvoice(request));
-
-            return Ok(result);
+            return Ok(await _accountService.GetOrderInvoice(request));
         }
         [HttpPost("SetPrimaryAddress")]
         public IActionResult SetPrimaryAddress(AddressType type)
