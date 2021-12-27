@@ -404,44 +404,60 @@ namespace WinkNatural.Web.Services.Services
                 return nodeDataRecords;
             }
         }
-        public object SaveNewCustomerCreditCard(int customerID, GetCreditCardRequest card)
+        //public object SaveNewCustomerCreditCard(int customerID, GetCreditCardRequest card)
+        //{
+        //    // Get the credit cards on file
+        //    var creditCardsOnFile = _accountService.GetCustomerBilling(customerID);
+        //    // If no autoOrder-free slots exist, don't save it.
+        //    return card;
+        //}
+        //public GetCreditCardRequest SetCustomerCreditCard(int customerID, GetCreditCardRequest card)
+        //{
+        //    return SetCustomerCreditCard(customerID, card, card.Type);
+        //}
+        //public GetCreditCardRequest SetCustomerCreditCard(int customerID, GetCreditCardRequest card, CreditCardType type)
+        //{
+        //    // New credit cards
+        //    if (type == CreditCardType.New)
+        //    {
+        //        return (GetCreditCardRequest)SaveNewCustomerCreditCard(customerID, card);
+        //    }
+        //    // Validate that we have a token
+        //    var token = card.Token; //card.GetToken();
+        //    if (String.IsNullOrEmpty(token)) return card;
+        //    // Save the credit card
+        //    var request = new SetAccountCreditCardTokenRequest
+        //    {
+        //        CustomerID = customerID,
+        //        CreditCardAccountType = (card.Type == CreditCardType.Primary) ? AccountCreditCardType.Primary : AccountCreditCardType.Secondary,
+        //        CreditCardToken = token,
+        //        ExpirationMonth = card.ExpirationMonth,
+        //        ExpirationYear = card.ExpirationYear,
+        //        BillingName = card.NameOnCard,
+        //        //BillingAddress = card.BillingAddress.AddressDisplay,
+        //        //BillingCity = card.BillingAddress.City,
+        //        //BillingState = card.BillingAddress.State,
+        //        //BillingZip = card.BillingAddress.Zip,
+        //        //BillingCountry = card.BillingAddress.Country
+        //    };
+        //    var response = _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);//DAL.WebService().SetAccountCreditCardToken(request);
+        //    return card;
+        //}
+
+        public async Task<SetAccountResponse> SetCustomerCreditCard(SetAccountCreditCardTokenRequest setAccountCredit, int customerID)
         {
-            // Get the credit cards on file
-            var creditCardsOnFile = _accountService.GetCustomerBilling(customerID);
-            // If no autoOrder-free slots exist, don't save it.
-            return card;
-        }
-        public GetCreditCardRequest SetCustomerCreditCard(int customerID, GetCreditCardRequest card)
-        {
-            return SetCustomerCreditCard(customerID, card, card.Type);
-        }
-        public GetCreditCardRequest SetCustomerCreditCard(int customerID, GetCreditCardRequest card, CreditCardType type)
-        {
-            // New credit cards
-            if (type == CreditCardType.New)
-            {
-                return (GetCreditCardRequest)SaveNewCustomerCreditCard(customerID, card);
-            }
-            // Validate that we have a token
-            var token = card.Token; //card.GetToken();
-            if (String.IsNullOrEmpty(token)) return card;
-            // Save the credit card
-            var request = new SetAccountCreditCardTokenRequest
-            {
-                CustomerID = customerID,
-                CreditCardAccountType = (card.Type == CreditCardType.Primary) ? AccountCreditCardType.Primary : AccountCreditCardType.Secondary,
-                CreditCardToken = token,
-                ExpirationMonth = card.ExpirationMonth,
-                ExpirationYear = card.ExpirationYear,
-                BillingName = card.NameOnCard,
-                //BillingAddress = card.BillingAddress.AddressDisplay,
-                //BillingCity = card.BillingAddress.City,
-                //BillingState = card.BillingAddress.State,
-                //BillingZip = card.BillingAddress.Zip,
-                //BillingCountry = card.BillingAddress.Country
-            };
-            var response = _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);//DAL.WebService().SetAccountCreditCardToken(request);
-            return card;
+            var req = new SetAccountCreditCardTokenRequest();
+            req.CustomerID = customerID;
+            req.CreditCardAccountType = AccountCreditCardType.Primary;  
+            req.CreditCardToken = setAccountCredit.TokenType.ToString();
+            req.ExpirationMonth = setAccountCredit.ExpirationMonth;  
+            req.ExpirationYear = setAccountCredit.ExpirationYear;   
+            req.CreditCardType = setAccountCredit.CreditCardType;    
+            req.UseMainAddress = true;  
+            //Send Request to Server and Get Response
+
+            var res = await _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(req);
+            return res;
         }
         public class SearchResult
         {
