@@ -1,5 +1,6 @@
 ﻿using iText.Html2pdf;
 using iText.Html2pdf.Resolver.Font;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -141,10 +142,10 @@ namespace WinkNaturals.Controllers
         /// GetOrderInvoice
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("GetOrderInvoice/{orderId}")]
         public async Task<IActionResult> GetOrderInvoice(int orderId)
         {
-            
             var invoiceHtmlResponse = await  _accountService.GetOrderInvoice(orderId);
             var htmlString = System.Text.Encoding.Default.GetString(invoiceHtmlResponse.InvoiceData); 
             return HtmlToPdf(htmlString);
@@ -177,13 +178,15 @@ namespace WinkNaturals.Controllers
 
 
         [HttpGet]
-        public ActionResult HtmlToPdf(string data)
+        private ActionResult HtmlToPdf(string data)
         {
-            var url = @"assets\slip.html";
-            System.IO.File.WriteAllText(url, data);
+            var newFileGuid = Guid.NewGuid();
+            var url = $"{newFileGuid}.html";
+            //System.IO.File.WriteAllText(url, data);
             string webRootPath = _webHostEnvironment.WebRootPath;
             var path = Path.Combine(webRootPath, url);
-            var fileName = $"Pdf\\{Guid.NewGuid()}.pdf";
+            System.IO.File.WriteAllText(path, data);
+            var fileName = $"{Guid.NewGuid()}.pdf";
             var outputPath = Path.Combine(webRootPath, fileName);
             try
             {
@@ -200,9 +203,9 @@ namespace WinkNaturals.Controllers
                // _logger.LogDebug(1, ex.ToString());
             }
 
-
-
             var stream = System.IO.File.OpenRead(outputPath);
+            System.IO.File.Delete(path);
+
             return new FileStreamResult(stream, "application/pdf");
         }
     }
