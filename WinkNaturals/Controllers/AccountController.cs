@@ -138,7 +138,9 @@ namespace WinkNaturals.Controllers
         [HttpPost("GetOrderInvoice")]
         public async Task<IActionResult> GetOrderInvoice(GetOrderInvoiceRequest request)
         {
-            return Ok(await _accountService.GetOrderInvoice(request));
+            
+            var GetOrderInvoiceResponse = await  _accountService.GetOrderInvoice(request);
+            return File(GetOrderInvoiceResponse.InvoiceData, "application/pdf", "invoice.pdf");
         }
         [HttpPost("SetPrimaryAddress")]
         public IActionResult SetPrimaryAddress(AddressType type)
