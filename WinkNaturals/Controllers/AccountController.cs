@@ -1,6 +1,7 @@
 ﻿using Exigo.Api.Client;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Shopping;
@@ -140,8 +141,13 @@ namespace WinkNaturals.Controllers
         {
             
             var invoiceHtmlResponse = await  _accountService.GetOrderInvoice(request);
-
-            return Ok(invoiceHtmlResponse);
+            var html = System.Text.Encoding.UTF8.GetString(invoiceHtmlResponse.InvoiceData);
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = html
+            };
         }
 
         [HttpPost("SetPrimaryAddress")]
