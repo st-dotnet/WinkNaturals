@@ -1,12 +1,10 @@
-﻿using Exigo.Api.Client;
-using iText.Html2pdf;
+﻿using iText.Html2pdf;
 using iText.Html2pdf.Resolver.Font;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;

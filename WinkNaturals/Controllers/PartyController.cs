@@ -2,6 +2,7 @@
 using Exigo.Api.Client;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Infrastructure.Services.DTO;
 using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
@@ -68,11 +69,19 @@ namespace WinkNaturals.Controllers
         }
 
         //// To ManageAutoOrder
-        //[HttpPost("ManageAutoOrder")]
+        //[HttpPost("ManageAutoOrder/{autoOrderViewModel}/{autoOrderId:int}")]
         //public async Task<IActionResult> ManageAutoOrder(ManageAutoOrderViewModel autoOrderViewModel, int autoOrderId)
         //{
         //    return Ok(await _partyService.ManageAutoOrder(autoOrderViewModel, autoOrderId));
         //}
-
+        /// <summary>
+        /// ManageAutoOrder
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("ManageAutoOrder")]
+        public async Task<IActionResult> ManageAutoOrder(TransactionalRequestModel transactionRequests,int AutoOrderId)
+        {
+            return Ok(await _partyService.ManageAutoOrder(transactionRequests, Identity.CustomerID, Identity.Email, AutoOrderId));
+        }
     }
 }

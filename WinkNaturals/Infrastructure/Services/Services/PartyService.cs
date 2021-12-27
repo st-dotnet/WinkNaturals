@@ -3,13 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WinkNatural.Web.Common;
 using WinkNatural.Web.Common.Utils;
+using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Helpers;
 using WinkNaturals.Infrastructure.Services.DTO;
 using WinkNaturals.Infrastructure.Services.Interfaces;
+using WinkNaturals.Models;
+using WinkNaturals.Models.Shopping.Interfaces;
 using WinkNaturals.Models.Shopping.Orders;
 using WinkNaturals.Setting.Interfaces;
+using WinkNaturals.Utilities;
 
 namespace WinkNatural.Web.Services.Services
 {
@@ -19,12 +24,13 @@ namespace WinkNatural.Web.Services.Services
         private readonly IShoppingService _shoppingService;
         private readonly IExigoApiContext _exigoApiContext;
         private readonly IAccountService _accountService;
-
-        public PartyService(IShoppingService shoppingService, IExigoApiContext exigoApiContext, IAccountService accountService)
+        private readonly IOrderConfiguration _orderConfiguration;
+        public PartyService(IShoppingService shoppingService, IExigoApiContext exigoApiContext, IAccountService accountService, IOrderConfiguration orderConfiguration)
         {
             _shoppingService = shoppingService;
             _exigoApiContext = exigoApiContext;
             _accountService = accountService;
+            _orderConfiguration = orderConfiguration;
         }
 
         /// <summary>
@@ -241,9 +247,124 @@ namespace WinkNatural.Web.Services.Services
             return res;
         }
 
-        public async Task<TransactionalResponse> ManageAutoOrder(ManageAutoOrderViewModel autoOrderViewModel, int id)
+        //public async Task<TransactionalResponse> ManageAutoOrder(ManageAutoOrderViewModel autoOrderViewModel, int id)
+        //{
+        //    int arraySize = 4;
+        //    Exigo.Api.Client.TransactionalResponse response = new();
+        //    Exigo.Api.Client.TransactionalRequest request = new()
+        //    {
+        //        TransactionRequests = new ITransactionMember[arraySize]
+        //    };
+        //    try
+        //    {
+        //        var customerID = id;
+        //        var customer = _shoppingService.GetCustomer(customerID);
+        //        var market = "US";
+        //        var configuration = "US";
+        //        var warehouseID = 1;
+        //        var isExistingAutoOrder = id != 0;
+        //        var paymentMethods = _accountService.GetCustomerBilling(id);
+
+        //        autoOrderViewModel.AutoOrder.StartDate = autoOrderViewModel.AutoOrder.StartDate < DateTime.Now.ToCST() ? DateTime.Now.ToCST() : autoOrderViewModel.AutoOrder.StartDate;
+        //        autoOrderViewModel.AutoOrder.Details = autoOrderViewModel.AutoOrder.Details.Where(d => d.Quantity > 0).ToList();
+        //        if (!autoOrderViewModel.AutoOrder.Details.Any())
+        //        {
+        //        }
+        //        //autoOrderViewModel.AvailableProducts = _shoppingService.GetItems(new GetItemsRequestAutoOrder()
+        //        //{
+        //        //    Configuration = "DS",
+        //        //    LanguageID = _orderConfiguration.LanguageID,
+        //        //    ItemCodes = autoOrderViewModel.AutoOrder.Details.Select(x => x.ItemCode).ToArray(),
+        //        //}).OrderBy(c => c.SortOrder).ToList();
+        //        foreach (var x in autoOrderViewModel.AutoOrder.Details)
+        //        {
+        //            if (!isExistingAutoOrder)
+        //            {
+        //                x.PriceEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.Price).FirstOrDefault();
+        //                x.TaxableEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.Price).FirstOrDefault();
+        //                x.ShippingPriceEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.Price).FirstOrDefault();
+        //                x.BusinessVolumeEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.BV).FirstOrDefault();
+        //                x.CommissionableVolumeEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.CV).FirstOrDefault();
+        //            }
+        //            else if (x.PriceEachOverride == null)
+        //            {
+        //                x.PriceEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.Price).FirstOrDefault();
+        //                x.TaxableEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.Price).FirstOrDefault();
+        //                x.ShippingPriceEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.Price).FirstOrDefault();
+        //                x.BusinessVolumeEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.BV).FirstOrDefault();
+        //                x.CommissionableVolumeEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.CV).FirstOrDefault();
+        //            }
+        //        }
+        //        // Save New Credit Card
+        //        var isUsingNewCard = autoOrderViewModel.AutoOrder.AutoOrderPaymentTypeID == 0;
+        //        var hasPrimaryCard = paymentMethods.Result.Where(v => v.IsComplete).Count() > 0;
+        //        if (isUsingNewCard)
+        //        {
+        //            var saveCCRequest = new SetAccountCreditCardTokenRequest();
+
+        //            // If there is one or more available payment type, save the card in the secondary card slot
+        //            if (hasPrimaryCard)
+        //            {
+        //                saveCCRequest.CreditCardAccountType = AccountCreditCardType.Secondary;
+        //                autoOrderViewModel.AutoOrder.AutoOrderPaymentTypeID = AutoOrderPaymentTypes.SecondaryCreditCardOnFile;
+        //            }
+        //            else
+        //            {
+        //                autoOrderViewModel.AutoOrder.AutoOrderPaymentTypeID = AutoOrderPaymentTypes.PrimaryCreditCardOnFile;
+        //            }
+        //            saveCCRequest.CustomerID = customerID;
+        //            request.TransactionRequests[3] = saveCCRequest;
+        //        }
+        //        // ToDo:  Joshua Remove after all users converted to TokenEx
+        //        if (!hasPrimaryCard)
+        //        {
+        //            var updateCustomerRequest = new UpdateCustomerRequest
+        //            {
+        //                CustomerID = customerID,
+        //                Field1 = "1"
+        //            };
+        //            var transactionResponse = _shoppingService.UpdateCustomer(updateCustomerRequest);
+        //        }
+        //        else
+        //        {
+        //            var updateCustomerRequest = new UpdateCustomerRequest
+        //            {
+        //                CustomerID = customerID,
+        //                Field2 = "1"
+        //            };
+        //            var transactionResponse = _shoppingService.UpdateCustomer(updateCustomerRequest);
+        //        }
+        //        // Prepare the auto order
+        //        var autoOrder = autoOrderViewModel.AutoOrder;
+        //        var createAutoOrderRequest = new CreateAutoOrderRequest()
+        //        {
+        //            PriceType = 1,
+        //            WarehouseID = warehouseID,
+        //            Notes = !string.IsNullOrEmpty(autoOrder.Notes)
+        //                            ? autoOrder.Notes
+        //                            : string.Format("Created with the API Auto-Delivery manager at \"{0}\" on {1:u} at IP {2} using {3} {4} ({5}).",
+        //                                DateTime.Now.ToUniversalTime()
+        //                              ),
+        //            CustomerID = customerID
+        //        };
+        //        request.TransactionRequests[2] = createAutoOrderRequest;
+
+        //        request.TransactionRequests = request.TransactionRequests.Where(x => x != null).ToArray();
+
+        //        // arraySize = Convert.ToInt32(request.TransactionRequests);
+        //        //TransactionRequest
+        //        response = await _exigoApiContext.GetContext(false).ProcessTransactionAsync(request);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ex.Message.ToString();
+        //    }
+        //    return response;
+        //}
+
+        public async Task<TransactionalResponse> ManageAutoOrder(TransactionalRequestModel transactionRequest, int customerId, string email, int AutoOrderId)
         {
-            int arraySize = 4;
+            int arraySize = 3;
             Exigo.Api.Client.TransactionalResponse response = new();
             Exigo.Api.Client.TransactionalRequest request = new()
             {
@@ -251,97 +372,84 @@ namespace WinkNatural.Web.Services.Services
             };
             try
             {
-                var customerID = id;
-                var customer = _shoppingService.GetCustomer(customerID);
-                var market = "US";
-                var configuration = "US";
-                var warehouseID = 1;
-                var isExistingAutoOrder = id != 0;
-                var paymentMethods = _accountService.GetCustomerBilling(id);
-
-                autoOrderViewModel.AutoOrder.StartDate = autoOrderViewModel.AutoOrder.StartDate < DateTime.Now.ToCST() ? DateTime.Now.ToCST() : autoOrderViewModel.AutoOrder.StartDate;
-                autoOrderViewModel.AutoOrder.Details = autoOrderViewModel.AutoOrder.Details.Where(d => d.Quantity > 0).ToList();
-                if (!autoOrderViewModel.AutoOrder.Details.Any())
-                {
-                }
-                //autoOrderViewModel.AvailableProducts = _shoppingService.GetItems(new GetItemsRequestAutoOrder()
-                //{
-                //    Configuration = "DS",
-                //    LanguageID = _orderConfiguration.LanguageID,
-                //    ItemCodes = autoOrderViewModel.AutoOrder.Details.Select(x => x.ItemCode).ToArray(),
-                //}).OrderBy(c => c.SortOrder).ToList();
-                foreach (var x in autoOrderViewModel.AutoOrder.Details)
-                {
-                    if (!isExistingAutoOrder)
-                    {
-                        x.PriceEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.Price).FirstOrDefault();
-                        x.TaxableEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.Price).FirstOrDefault();
-                        x.ShippingPriceEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.Price).FirstOrDefault();
-                        x.BusinessVolumeEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.BV).FirstOrDefault();
-                        x.CommissionableVolumeEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.CV).FirstOrDefault();
-                    }
-                    else if (x.PriceEachOverride == null)
-                    {
-                        x.PriceEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.Price).FirstOrDefault();
-                        x.TaxableEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.Price).FirstOrDefault();
-                        x.ShippingPriceEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.Price).FirstOrDefault();
-                        x.BusinessVolumeEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.BV).FirstOrDefault();
-                        x.CommissionableVolumeEachOverride = autoOrderViewModel.AvailableProducts.Where(y => y.ItemCode == x.ItemCode).Select(y => y.CV).FirstOrDefault();
-                    }
-                }
-                // Save New Credit Card
-                var isUsingNewCard = autoOrderViewModel.AutoOrder.AutoOrderPaymentTypeID == 0;
+                var paymentMethods = _accountService.GetCustomerBilling(AutoOrderId);
+                var isUsingNewCard = transactionRequest.CreateAutoOrderRequest.PaymentType == 0;
                 var hasPrimaryCard = paymentMethods.Result.Where(v => v.IsComplete).Count() > 0;
-                if (isUsingNewCard)
+                var market = "US";
+                var hasAutoOrder = transactionRequest.SetListItemRequest.Where(x => x.OrderType == ShoppingCartItemType.AutoOrder).ToList().Count > 0;
+                var customertype = _exigoApiContext.GetContext(false).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId }).Result.Customers[0].CustomerType;
+                if (customertype == CustomerTypes.RetailCustomer)
                 {
-                    var saveCCRequest = new SetAccountCreditCardTokenRequest();
-
-                    // If there is one or more available payment type, save the card in the secondary card slot
-                    if (hasPrimaryCard)
+                    UpdateCustomerRequest updateCustomerRequest = new()
                     {
-                        saveCCRequest.CreditCardAccountType = AccountCreditCardType.Secondary;
-                        autoOrderViewModel.AutoOrder.AutoOrderPaymentTypeID = AutoOrderPaymentTypes.SecondaryCreditCardOnFile;
-                    }
-                    else
-                    {
-                        autoOrderViewModel.AutoOrder.AutoOrderPaymentTypeID = AutoOrderPaymentTypes.PrimaryCreditCardOnFile;
-                    }
-                    saveCCRequest.CustomerID = customerID;
-                    request.TransactionRequests[3] = saveCCRequest;
-                }
-                // ToDo:  Joshua Remove after all users converted to TokenEx
-                if (!hasPrimaryCard)
-                {
-                    var updateCustomerRequest = new UpdateCustomerRequest
-                    {
-                        CustomerID = customerID,
-                        Field1 = "1"
+                        CustomerID = customerId,
+                        CustomerType = CustomerTypes.PreferredCustomer,
+                        Field1 = hasAutoOrder ? "1" : string.Empty,
+                        MainCountry = transactionRequest.CreateOrderRequest.Country,
+                        MainState = transactionRequest.CreateOrderRequest.State,
+                        OtherCountry = transactionRequest.CreateOrderRequest.Country,
+                        OtherState = transactionRequest.CreateOrderRequest.State,
+                        MailCountry = transactionRequest.CreateOrderRequest.Country,
+                        MailState = transactionRequest.CreateOrderRequest.State,
                     };
-                    var transactionResponse = _shoppingService.UpdateCustomer(updateCustomerRequest);
+                    request.TransactionRequests[0] = updateCustomerRequest;
                 }
-                else
+                if (hasAutoOrder)
                 {
-                    var updateCustomerRequest = new UpdateCustomerRequest
+                    CreateAutoOrderRequest createAutoOrderRequest = new()
                     {
-                        CustomerID = customerID,
-                        Field2 = "1"
+                        CustomerID = customerId,
+                        Frequency = FrequencyType.Weekly,
+                        StartDate = DateTime.Today,
+                        StopDate = DateTime.Today,               //Leave null if there is no stop date.
+                        SpecificDayInterval = 1,    //To be used with Frequency Type SpecificDays
+                        CurrencyCode = _orderConfiguration.CurrencyCode,
+                        WarehouseID = _orderConfiguration.WarehouseID,            //Unique location for orders
+                        ShipMethodID = _orderConfiguration.DefaultShipMethodID,
+                        PriceType = _orderConfiguration.PriceTypeID,              //Controls which price band to use
+                        PaymentType = transactionRequest.CreateAutoOrderRequest.PaymentType,//AutoOrderPaymentType.PrimaryCreditCard,
+                        ProcessType = AutoOrderProcessType.AlwaysProcess,
+                        FirstName = transactionRequest.CreateAutoOrderRequest.FirstName,
+                        LastName = transactionRequest.CreateAutoOrderRequest.LastName,
+                        Company = transactionRequest.CreateAutoOrderRequest.Company,
+                        Address1 = transactionRequest.CreateAutoOrderRequest.Address1,
+                        Address2 = transactionRequest.CreateAutoOrderRequest.Address2,
+                        Address3 = transactionRequest.CreateAutoOrderRequest.Address3,
+                        City = transactionRequest.CreateAutoOrderRequest.City,
+                        Zip = transactionRequest.CreateAutoOrderRequest.Zip,
+                        County = transactionRequest.CreateAutoOrderRequest.County,
+                        Email = transactionRequest.CreateAutoOrderRequest.Email,
+                        Phone = transactionRequest.CreateAutoOrderRequest.Phone,
+                        Notes = "Created with the API Auto - Delivery manager",
+                        Details = transactionRequest.CreateAutoOrderRequest.Details.ToArray(),
+                        Country = transactionRequest.CreateAutoOrderRequest.Country,
+                        State = transactionRequest.CreateAutoOrderRequest.State,
                     };
-                    var transactionResponse = _shoppingService.UpdateCustomer(updateCustomerRequest);
+                    request.TransactionRequests[1] = createAutoOrderRequest;
                 }
-                // Prepare the auto order
-                var autoOrder = autoOrderViewModel.AutoOrder;
-                var createAutoOrderRequest = new CreateAutoOrderRequest()
+                if (hasPrimaryCard)
                 {
-                    PriceType = 1,
-                    WarehouseID = warehouseID,
-                    Notes = !string.IsNullOrEmpty(autoOrder.Notes)
-                                    ? autoOrder.Notes
-                                    : string.Format("Created with the API Auto-Delivery manager at \"{0}\" on {1:u} at IP {2} using {3} {4} ({5}).",
-                                        DateTime.Now.ToUniversalTime()
-                                      ),
-                    CustomerID = customerID
-                };
-                request.TransactionRequests[2] = createAutoOrderRequest;
+                    SetAccountCreditCardTokenRequest setAccountCreditCardTokenRequest = new()
+                    {
+                        CustomerID = customerId,
+                        CreditCardAccountType = AccountCreditCardType.Secondary,
+                        CreditCardToken = transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,//"41X111UAXYE31111",//
+                        ExpirationMonth = Convert.ToInt32(transactionRequest.SetAccountCreditCardTokenRequest.ExpirationMonth),
+                        ExpirationYear = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationYear,
+                        CreditCardType = 1,
+                        UseMainAddress = false,
+                        //latest added code
+                        BillingName = transactionRequest.SetAccountCreditCardTokenRequest.BillingName,
+                        BillingAddress = transactionRequest.SetAccountCreditCardTokenRequest.BillingAddress,
+                        BillingAddress2 = transactionRequest.SetAccountCreditCardTokenRequest.BillingAddress2,
+                        BillingCity = transactionRequest.SetAccountCreditCardTokenRequest.BillingCity,
+                        BillingZip = transactionRequest.SetAccountCreditCardTokenRequest.BillingZip,
+                        BillingCountry = transactionRequest.SetAccountCreditCardTokenRequest.BillingCountry,
+                        BillingState = transactionRequest.SetAccountCreditCardTokenRequest.BillingState,
+                    };
+                    request.TransactionRequests[2] = setAccountCreditCardTokenRequest;
+                }
+               
 
                 request.TransactionRequests = request.TransactionRequests.Where(x => x != null).ToArray();
 
