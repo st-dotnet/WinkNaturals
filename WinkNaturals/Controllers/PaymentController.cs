@@ -100,7 +100,6 @@ namespace WinkNaturals.Controllers
                 };
                 return Ok( _shoppingService.UpdateCustomer(updateCustomerRequest));
             }
-           
         }
     }
 }
