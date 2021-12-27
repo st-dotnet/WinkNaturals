@@ -18,7 +18,9 @@ namespace WinkNatural.Web.Services.Interfaces
       //  Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId);
         Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest);
         List<dynamic> GetDistributors(int customerId);
-        object SaveNewCustomerCreditCard(int customerID, GetCreditCardRequest card);
-        GetCreditCardRequest SetCustomerCreditCard(int customerID, GetCreditCardRequest card);
+       // object SaveNewCustomerCreditCard(int customerID, GetCreditCardRequest card);
+       // GetCreditCardRequest SetCustomerCreditCard(int customerID, GetCreditCardRequest card);
+        Task<SetAccountResponse> SetCustomerCreditCard(SetAccountCreditCardTokenRequest setAccountCredit, int customerID);
+            
     }
 }

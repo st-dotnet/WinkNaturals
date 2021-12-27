@@ -79,27 +79,31 @@ namespace WinkNaturals.Controllers
         /// <returns></returns>
         /// 
         [HttpPost("SaveCreditCard")]
-        public ActionResult SaveCreditCard(GetCreditCardRequest card)
+        public async Task<IActionResult> SaveCreditCard(SetAccountCreditCardTokenRequest card)
         {
-            card = _enrollmentService.SetCustomerCreditCard(Identity.CustomerID, card);
-            if (card.Type == CreditCardType.Primary)
-            {
-                var updateCustomerRequest = new UpdateCustomerRequest
-                {
-                    CustomerID = Identity.CustomerID,
-                    Field1 = "1"
-                };
-                return Ok(_shoppingService.UpdateCustomer(updateCustomerRequest));
-            }
-            else
-            {
-                var updateCustomerRequest = new UpdateCustomerRequest
-                {
-                    CustomerID = Identity.CustomerID,
-                    Field2 = "1"
-                };
-                return Ok( _shoppingService.UpdateCustomer(updateCustomerRequest));
-            }
+            //var response = _enrollmentService.SetCustomerCreditCard(Identity.CustomerID, card);
+            //if (card.CreditCardType == CreditCardType.Primary.ToString())
+            //{
+            //    var updateCustomerRequest = new UpdateCustomerRequest
+            //    {
+            //        CustomerID = Identity.CustomerID,
+            //        Field1 = "1"
+            //    };
+            //    return Ok(_shoppingService.UpdateCustomer(updateCustomerRequest));
+            //}
+            //else
+            //{
+            //    var updateCustomerRequest = new UpdateCustomerRequest
+            //    {
+            //        CustomerID = Identity.CustomerID,
+            //        Field2 = "1"
+            //    };
+            //    return Ok( _shoppingService.UpdateCustomer(updateCustomerRequest));
+            //}
+            return Ok(await _enrollmentService.SetCustomerCreditCard(card,Identity.CustomerID));
+
         }
+
+
     }
 }
