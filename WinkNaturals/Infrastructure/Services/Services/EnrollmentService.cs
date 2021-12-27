@@ -13,6 +13,7 @@ using WinkNatural.Web.Common;
 using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Common.Utils.Enum;
 using WinkNatural.Web.Services.DTO;
+using WinkNatural.Web.Services.DTO.Customer;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Helpers;
@@ -444,20 +445,26 @@ namespace WinkNatural.Web.Services.Services
         //    return card;
         //}
 
-        public async Task<SetAccountResponse> SetCustomerCreditCard(SetAccountCreditCardTokenRequest setAccountCredit, int customerID)
+        public async Task<GetCreditCardResponse> SetCustomerCreditCard(SetAccountCreditCardTokenRequest setAccountCredit, int customerID)
         {
-            var req = new SetAccountCreditCardTokenRequest();
-            req.CustomerID = customerID;
-            req.CreditCardAccountType = AccountCreditCardType.Primary;  
-            req.CreditCardToken = setAccountCredit.TokenType.ToString();
-            req.ExpirationMonth = setAccountCredit.ExpirationMonth;  
-            req.ExpirationYear = setAccountCredit.ExpirationYear;   
-            req.CreditCardType = setAccountCredit.CreditCardType;    
-            req.UseMainAddress = true;  
-            //Send Request to Server and Get Response
-
-            var res = await _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(req);
-            return res;
+            try
+            {
+                var req = new SetAccountCreditCardTokenRequest();
+                req.CustomerID = customerID;
+                req.CreditCardAccountType = AccountCreditCardType.Primary;
+                req.CreditCardToken = setAccountCredit.TokenType.ToString();
+                req.ExpirationMonth = setAccountCredit.ExpirationMonth;
+                req.ExpirationYear = setAccountCredit.ExpirationYear;
+                req.CreditCardType = setAccountCredit.CreditCardType;
+                req.UseMainAddress = true;
+                //Send Request to Server and Get Response
+                var res = await _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(req);
+                return new GetCreditCardResponse { Success = true, ErrorMessage = null };
+            }
+            catch (Exception)
+            {
+                return new GetCreditCardResponse { Success = false, ErrorMessage = "Card Not Created." };
+            }
         }
         public class SearchResult
         {
