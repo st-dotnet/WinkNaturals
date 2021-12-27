@@ -89,7 +89,7 @@ namespace WinkNaturals.Controllers
                     CustomerID = Identity.CustomerID,
                     Field1 = "1"
                 };
-                var transactionResponse = _shoppingService.UpdateCustomer(updateCustomerRequest);
+                return Ok(_shoppingService.UpdateCustomer(updateCustomerRequest));
             }
             else
             {
@@ -98,9 +98,9 @@ namespace WinkNaturals.Controllers
                     CustomerID = Identity.CustomerID,
                     Field2 = "1"
                 };
-                var transactionResponse = _shoppingService.UpdateCustomer(updateCustomerRequest);
+                return Ok( _shoppingService.UpdateCustomer(updateCustomerRequest));
             }
-            return Ok();
+           
         }
     }
 }
