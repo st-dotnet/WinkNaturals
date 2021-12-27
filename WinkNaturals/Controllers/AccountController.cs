@@ -140,7 +140,7 @@ namespace WinkNaturals.Controllers
         {
             
             var GetOrderInvoiceResponse = await  _accountService.GetOrderInvoice(request);
-            return File(GetOrderInvoiceResponse.InvoiceData, "application/pdf", "invoice.pdf");
+            return File(GetOrderInvoiceResponse.InvoiceData, "image/png", "invoice.png");
         }
         [HttpPost("SetPrimaryAddress")]
         public IActionResult SetPrimaryAddress(AddressType type)
