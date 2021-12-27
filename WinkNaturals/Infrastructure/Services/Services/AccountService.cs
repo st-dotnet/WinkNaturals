@@ -510,20 +510,18 @@ namespace WinkNaturals.Infrastructure.Services.Services
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<GetOrderInvoiceResponse> GetOrderInvoice(GetOrderInvoiceRequest request)
+        public async Task<GetOrderInvoiceResponse> GetOrderInvoice(int orderId)
         {
             //from order file
             var res = new GetOrderInvoiceResponse();
             try
             {
                 var req = new GetOrderInvoiceRequest();
-                req.OrderID = request.OrderID;
-                req.OrderKey = request.OrderKey;
-                req.ReportlayoutID = request.ReportlayoutID;
+                req.OrderID = orderId;
+                //req.OrderKey = request.OrderKey;
+                req.ReportlayoutID = 1; //request.ReportlayoutID;
                 req.Format = InvoiceRenderFormat.HTML;
-
-               
-              
+            
                 res = await _exigoApiContext.GetContext(false).GetOrderInvoiceAsync(req);
             }
             catch (Exception e)
@@ -532,6 +530,8 @@ namespace WinkNaturals.Infrastructure.Services.Services
             }
             return res;
         }
+
+
 
         public async Task<IEnumerable<AutoOrder>> GetCustomerAutoOrders(int customerid, int? autoOrderID = null, bool includePaymentMethods = true)
         {

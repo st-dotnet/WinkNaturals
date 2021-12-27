@@ -1,5 +1,10 @@
 ﻿using Exigo.Api.Client;
+using iText.Html2pdf;
+using iText.Html2pdf.Resolver.Font;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -21,13 +26,16 @@ namespace WinkNaturals.Controllers
         private readonly ICustomerAutoOreder _customerAutoOreder;
         private readonly ICustomerService _customerService;
 
+        private readonly IWebHostEnvironment _webHostEnvironment;
         public int LoyaltyPointAccountId { get { return 1; } }
-        public AccountController(IAccountService accountService, IShoppingService shoppingService, ICustomerAutoOreder customerAutoOreder, ICustomerService customerService)
+        public AccountController(IAccountService accountService, IShoppingService shoppingService, ICustomerAutoOreder customerAutoOreder, ICustomerService customerService
+            , IWebHostEnvironment _webHostEnvironment)
         {
             _accountService = accountService;
             _shoppingService = shoppingService;
             _customerAutoOreder = customerAutoOreder;
             _customerService = customerService;
+            this._webHostEnvironment = _webHostEnvironment;
         }
         [HttpGet("Points")]
         public IActionResult Points()
@@ -136,18 +144,13 @@ namespace WinkNaturals.Controllers
         /// GetOrderInvoice
         /// </summary>
         /// <returns></returns>
-        [HttpPost("GetOrderInvoice")]
-        public async Task<IActionResult> GetOrderInvoice(GetOrderInvoiceRequest request)
+        [HttpGet("GetOrderInvoice/{orderId}")]
+        public async Task<IActionResult> GetOrderInvoice(int orderId)
         {
-            
-            var invoiceHtmlResponse = await  _accountService.GetOrderInvoice(request);
-            var html = System.Text.Encoding.UTF8.GetString(invoiceHtmlResponse.InvoiceData);
-            return new ContentResult
-            {
-                ContentType = "text/html",
-                StatusCode = (int)HttpStatusCode.OK,
-                Content = html
-            };
+            var invoiceHtmlResponse = await  _accountService.GetOrderInvoice(orderId);
+            var htmlString = System.Text.Encoding.Default.GetString(invoiceHtmlResponse.InvoiceData); 
+            return HtmlToPdf(htmlString);
+
         }
 
         [HttpPost("SetPrimaryAddress")]
@@ -173,6 +176,37 @@ namespace WinkNaturals.Controllers
         public IActionResult EditCreditCard(CreditCardType type)
         {
             return Ok(_accountService.GetCustomerBilling(Identity.CustomerID).Result.Where(c => c is CreditCard && ((CreditCard)c).Type == type).FirstOrDefault());
+        }
+
+
+        [HttpGet]
+        public ActionResult HtmlToPdf(string data)
+        {
+            var url = @"assets\slip.html";
+            System.IO.File.WriteAllText(url, data);
+            string webRootPath = _webHostEnvironment.WebRootPath;
+            var path = Path.Combine(webRootPath, url);
+            var fileName = $"Pdf\\{Guid.NewGuid()}.pdf";
+            var outputPath = Path.Combine(webRootPath, fileName);
+            try
+            {
+                using (FileStream htmlSource = System.IO.File.Open(path, FileMode.Open))
+                using (FileStream pdfDest = System.IO.File.Open(outputPath, FileMode.OpenOrCreate))
+                {
+                    ConverterProperties converterProperties = new ConverterProperties();
+                    converterProperties.SetFontProvider(new DefaultFontProvider(true, true, true));
+                    HtmlConverter.ConvertToPdf(htmlSource, pdfDest, converterProperties);
+                }
+            }
+            catch (Exception ex)
+            {
+               // _logger.LogDebug(1, ex.ToString());
+            }
+
+
+
+            var stream = System.IO.File.OpenRead(outputPath);
+            return new FileStreamResult(stream, "application/pdf");
         }
     }
 }
