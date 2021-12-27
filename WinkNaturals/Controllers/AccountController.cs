@@ -1,5 +1,4 @@
-﻿using Exigo.Api.Client;
-using iText.Html2pdf;
+﻿using iText.Html2pdf;
 using iText.Html2pdf.Resolver.Font;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;

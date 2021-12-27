@@ -1625,178 +1625,86 @@ namespace WinkNatural.Web.Services.Services
         [System.Web.Http.NonAction]
         public async Task<Address> SaveNewCustomerAddress(int customerID, Address address)
         {
-            var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
-
             try
             {
-                // Do any of the addresses on file match the one we are using?
-                // If not, save this address to the next available slot
-                if (!addressesOnFile.Any(c => c.Equals(address)))
-                {
-                    var saveAddress = false;
-                    var request = new UpdateCustomerRequest();
-                    request.CustomerID = customerID;
-
-                    // Main address
-                    if (!addressesOnFile.Any(c => c.AddressType == AddressType.Main))
-                    {
-                        saveAddress = true;
-                        address.AddressType = AddressType.Main;
-                        request.MainAddress1 = address.Address1;
-                        request.MainAddress2 = address.Address2;
-                        request.MainCity = address.City;
-                        request.MainState = address.State;
-                        request.MainZip = address.Zip;
-                        request.MainCountry = address.Country;
-                    }
-
-                    // Mailing address
-                    else if (!addressesOnFile.Any(c => c.AddressType == AddressType.Mailing))
-                    {
-                        saveAddress = true;
-                        address.AddressType = AddressType.Mailing;
-                        request.MailAddress1 = address.Address1;
-                        request.MailAddress2 = address.Address2;
-                        request.MailCity = address.City;
-                        request.MailState = address.State;
-                        request.MailZip = address.Zip;
-                        request.MailCountry = address.Country;
-                    }
-
-                    // Other address
-                    else
-                    {
-                        saveAddress = true;
-                        address.AddressType = AddressType.Other;
-                        request.OtherAddress1 = address.Address1;
-                        request.OtherAddress2 = address.Address2;
-                        request.OtherCity = address.City;
-                        request.OtherState = address.State;
-                        request.OtherZip = address.Zip;
-                        request.OtherCountry = address.Country;
-                    }
-                    if (saveAddress)
-                    {
-                       await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
-                    }
-                }
+                var request = new UpdateCustomerRequest();
+                address.AddressType = AddressType.New;
+                request.OtherAddress1 = address.Address1;
+                request.OtherAddress2 = address.Address2;
+                request.OtherCity = address.City;
+                request.OtherState = address.State;
+                request.OtherZip = address.Zip;
+                request.OtherCountry = address.Country;
+                await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
                 return address;
             }
-            catch (Exception e)
-            { 
+            catch(Exception e)
+            {
                 e.Message.ToString();
                 throw;
             }
+            //var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
+            //try
+            //{
+            //    // Do any of the addresses on file match the one we are using?
+            //    // If not, save this address to the next available slot
+            //    if (!addressesOnFile.Any(c => c.Equals(address)))
+            //    {
+            //        var saveAddress = false;
+            //        var request = new UpdateCustomerRequest();
+            //        request.CustomerID = customerID;
+
+            //        // Main address
+            //        if (!addressesOnFile.Any(c => c.AddressType == AddressType.Main))
+            //        {
+            //            saveAddress = true;
+            //            address.AddressType = AddressType.Main;
+            //            request.MainAddress1 = address.Address1;
+            //            request.MainAddress2 = address.Address2;
+            //            request.MainCity = address.City;
+            //            request.MainState = address.State;
+            //            request.MainZip = address.Zip;
+            //            request.MainCountry = address.Country;
+            //        }
+
+            //        // Mailing address
+            //        else if (!addressesOnFile.Any(c => c.AddressType == AddressType.Mailing))
+            //        {
+            //            saveAddress = true;
+            //            address.AddressType = AddressType.Mailing;
+            //            request.MailAddress1 = address.Address1;
+            //            request.MailAddress2 = address.Address2;
+            //            request.MailCity = address.City;
+            //            request.MailState = address.State;
+            //            request.MailZip = address.Zip;
+            //            request.MailCountry = address.Country;
+            //        }
+
+            //        // Other address
+            //        else
+            //        {
+            //            saveAddress = true;
+            //            address.AddressType = AddressType.Other;
+            //            request.OtherAddress1 = address.Address1;
+            //            request.OtherAddress2 = address.Address2;
+            //            request.OtherCity = address.City;
+            //            request.OtherState = address.State;
+            //            request.OtherZip = address.Zip;
+            //            request.OtherCountry = address.Country;
+            //        }
+            //        if (saveAddress)
+            //        {
+            //           await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
+            //        }
+            //    }
+            //    return address;
+            //}
+            //catch (Exception e)
+            //{ 
+            //    e.Message.ToString();
+            //    throw;
+            //}
         }
-
-        //public static List<Address> GetCustomerAddress1(int customerID)
-        //{
-        //    // Address address = new Address();
-        //    // address = DAL.GetCustomerAddresses(Identity.Customer.CustomerID)
-        //    //.Where(c => c.IsComplete)
-        //    //.Select(c => c as ShippingAddress);
-        //    using (var context = Common.Utils.DbConnection.Sql())
-        //    {
-        //        var addresses = new List<Address>();
-        //        try
-        //        {
-        //            var model = context.Query(@"
-        //                    select 
-        //                        c.FirstName,
-        //                        c.LastName,
-        //                        c.Email,
-        //                        c.Phone,
-
-        //                        c.MainAddress1,
-        //                        c.MainAddress2,
-        //                        c.MainCity,
-        //                        c.MainState,
-        //                        c.MainZip,
-        //                        c.MainCountry,
-
-        //                        c.MailAddress1,
-        //                        c.MailAddress2,
-        //                        c.MailCity,
-        //                        c.MailState,
-        //                        c.MailZip,
-        //                        c.MailCountry,
-
-        //                        c.OtherAddress1,
-        //                        c.OtherAddress2,
-        //                        c.OtherCity,
-        //                        c.OtherState,
-        //                        c.OtherZip,
-        //                        c.OtherCountry
-
-        //                    from Customers c
-        //                    where c.CustomerID = @customerID
-        //                    ", new { customerID }).FirstOrDefault();
-
-        //            addresses.Add(new ShippingAddress()
-        //            {
-        //                AddressType = AddressType.Main,
-        //                FirstName = model.FirstName,
-        //                LastName = model.LastName,
-        //                Email = model.Email,
-        //                Phone = model.Phone,
-        //                Address1 = model.MainAddress1,
-        //                Address2 = model.MainAddress2,
-        //                City = model.MainCity,
-        //                State = model.MainState,
-        //                Zip = model.MainZip,
-        //                Country = model.MainCountry
-        //            });
-
-        //            addresses.Add(new ShippingAddress()
-        //            {
-        //                AddressType = AddressType.Mailing,
-        //                FirstName = model.FirstName,
-        //                LastName = model.LastName,
-        //                Email = model.Email,
-        //                Phone = model.Phone,
-        //                Address1 = model.MailAddress1,
-        //                Address2 = model.MailAddress2,
-        //                City = model.MailCity,
-        //                State = model.MailState,
-        //                Zip = model.MailZip,
-        //                Country = model.MailCountry
-        //            });
-
-        //            addresses.Add(new ShippingAddress()
-        //            {
-        //                AddressType = AddressType.Other,
-        //                FirstName = model.FirstName,
-        //                LastName = model.LastName,
-        //                Email = model.Email,
-        //                Phone = model.Phone,
-        //                Address1 = model.OtherAddress1,
-        //                Address2 = model.OtherAddress2,
-        //                City = model.OtherCity,
-        //                State = model.OtherState,
-        //                Zip = model.OtherZip,
-        //                Country = model.OtherCountry
-        //            });
-
-        //        }
-        //        catch
-        //        {
-
-        //        }
-        //        return addresses;
-
-        //        //return addresses;
-        //        //var response = context.Query<Address>(QueryUtility.getUserAddress_Query, new
-        //        //{
-        //        //    warehouse = 1,
-        //        //    currencyCode = "usd",
-        //        //    languageID = 0,
-        //        //    priceTypeID = 1,
-        //        //    itemCodes = itemCodes
-        //        //}).ToList();
-        //        //return response[0];
-        //    }
-        //}
-
         [System.Web.Http.NonAction]
         public IEnumerable<ShopProductsResponse> GetItems(GetItemListRequest request, bool includeItemDescriptions = true)
         {
