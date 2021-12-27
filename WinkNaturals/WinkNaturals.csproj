@@ -21,6 +21,7 @@
     <PackageReference Include="Dapper" Version="2.0.90" />
     <PackageReference Include="Exigo.Api.Client" Version="1.0.3" />
     <PackageReference Include="HttpRequestExtensions" Version="1.0.0" />
+    <PackageReference Include="itext7.pdfhtml" Version="4.0.0" />
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.7" />
@@ -30,6 +31,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
+    <PackageReference Include="Microsoft.TeamFoundationServer.ExtendedClient" Version="16.170.0" />
     <PackageReference Include="NLog" Version="4.7.10" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.13.0" />
     <PackageReference Include="NPOI" Version="2.5.4" />

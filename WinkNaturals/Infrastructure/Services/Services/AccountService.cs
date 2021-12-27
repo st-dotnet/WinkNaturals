@@ -540,7 +540,7 @@ namespace WinkNaturals.Infrastructure.Services.Services
 
             var request = new GetAutoOrdersRequest
             {
-                CustomerID = 103266,
+                CustomerID = customerid,
                 AutoOrderStatus = AutoOrderStatusType.Active
             };
 
