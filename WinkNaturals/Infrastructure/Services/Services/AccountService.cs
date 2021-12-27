@@ -346,11 +346,12 @@ namespace WinkNaturals.Infrastructure.Services.Services
             var req = new GetCustomerBillingRequest();
             req.CustomerID = customerId;
             var response = await _exigoApiContext.GetContext(false).GetCustomerBillingAsync(req);
+           
             if (autoOrders == null)
             {
                 var request = new GetAutoOrdersRequest
                 {
-                    CustomerID = customerId,
+                    CustomerID = 103266,
                     AutoOrderStatus = AutoOrderStatusType.Active
                 };
                 // Get the customer's auto orders
