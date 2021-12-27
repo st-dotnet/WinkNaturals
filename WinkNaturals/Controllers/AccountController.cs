@@ -204,7 +204,7 @@ namespace WinkNaturals.Controllers
             }
 
             var stream = System.IO.File.OpenRead(outputPath);
-            System.IO.File.Delete(path);
+            //System.IO.File.Delete(path);
 
             return new FileStreamResult(stream, "application/pdf");
         }
