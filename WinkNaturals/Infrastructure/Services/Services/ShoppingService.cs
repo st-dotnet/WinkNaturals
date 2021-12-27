@@ -1628,6 +1628,7 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 var request = new UpdateCustomerRequest();
+                request.CustomerID = customerID;
                 address.AddressType = AddressType.New;
                 request.OtherAddress1 = address.Address1;
                 request.OtherAddress2 = address.Address2;
