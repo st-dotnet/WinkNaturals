@@ -150,8 +150,8 @@ namespace WinkNaturals.Controllers
         {
             var invoiceHtmlResponse = await  _accountService.GetOrderInvoice(orderId);
 
-            var htmlString = System.Text.Encoding.Default.GetString(invoiceHtmlResponse.InvoiceData);
-            return Ok(HtmlToPdf(htmlString));
+          ///  var htmlString = System.Text.Encoding.Default.GetString(invoiceHtmlResponse.InvoiceData);
+            return Ok(invoiceHtmlResponse.InvoiceData);
 
         }
 
