@@ -97,5 +97,8 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService
         {
             return base.GetHashCode();
         }
+
+       
+
     }
 }

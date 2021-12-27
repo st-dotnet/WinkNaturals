@@ -16,9 +16,14 @@ using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Helpers;
+using WinkNaturals.Infrastructure.Services;
+using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
+using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Models.Shopping.Interfaces;
 using WinkNaturals.Setting.Interfaces;
+using static WinkNaturals.Helpers.Constant;
+using CreditCard = WinkNaturals.Infrastructure.Services.ExigoService.CreditCard.CreditCard;
 
 namespace WinkNatural.Web.Services.Services
 {
@@ -32,10 +37,11 @@ namespace WinkNatural.Web.Services.Services
         private readonly ICustomerService _customerService;
         private readonly IShoppingService _shoppingService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IAccountService _accountService;
 
         public IOrderConfiguration AutoOrderConfiguration { get; set; }
 
-        public EnrollmentService(IConfiguration config, IOrderConfiguration orderConfiguration, IExigoApiContext exigoApiContext, ICustomerService customerService, IShoppingService shoppingService, IHttpContextAccessor httpContextAccessor)
+        public EnrollmentService(IConfiguration config, IOrderConfiguration orderConfiguration, IExigoApiContext exigoApiContext, ICustomerService customerService, IShoppingService shoppingService, IHttpContextAccessor httpContextAccessor, IAccountService accountService)
         {
             _config = config;
             _orderConfiguration = orderConfiguration;
@@ -44,6 +50,7 @@ namespace WinkNatural.Web.Services.Services
             _shoppingService = shoppingService;
             _httpContextAccessor = httpContextAccessor;
 
+            _accountService = accountService;
         }
         public List<EnrollmentResponse> GetItems()
         {
@@ -55,7 +62,7 @@ namespace WinkNatural.Web.Services.Services
                     //We will be requesting three items
                     ItemCodes = new string[3]
                 };
-                request.ItemCodes[0] = "SK -Q1KIT3-21";
+                request.ItemCodes[0] = "SK-Q1KIT3-21";
                 request.ItemCodes[1] = "SK-Q1KIT2-21";
                 request.ItemCodes[2] = "SK-Q1KIT1-21";
                 using (var context = DbConnection.Sql())
@@ -140,7 +147,7 @@ namespace WinkNatural.Web.Services.Services
                            itemCodes = request.ItemCodes,
                        }).ToList();
 
-                    return apiItems;
+                    return  apiItems;
                 }
             }
             catch (Exception ex)
@@ -149,11 +156,11 @@ namespace WinkNatural.Web.Services.Services
                 return new List<EnrollmentResponse> { enrollmentResponse };
             }
         }
-        public async Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId)
+        public async Task<TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest)
         {
             int arraySize = 4;
-            Exigo.Api.Client.TransactionalResponse response = new();
-            Exigo.Api.Client.TransactionalRequest request = new()
+            TransactionalResponse response = new();
+            TransactionalRequest request = new()
             {
                 TransactionRequests = new ITransactionMember[arraySize]
             };
@@ -161,50 +168,49 @@ namespace WinkNatural.Web.Services.Services
             {
                 var hasOrder = transactionRequest.SetListItemRequest.Where(x => x.OrderType == ShoppingCartItemType.Order || x.OrderType == ShoppingCartItemType.EnrollmentPack).ToList();
                 var hasAutoOrder = transactionRequest.SetListItemRequest.Where(x => x.OrderType == ShoppingCartItemType.AutoOrder || x.OrderType == ShoppingCartItemType.EnrollmentAutoOrderPack).ToList().Count > 0;
-                var customertype = _exigoApiContext.GetContext(false).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId }).Result.Customers[0].CustomerType;
-                var customerDetails = _exigoApiContext.GetContext(false).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId });
+                //  var customertype = _exigoApiContext.GetContext(false).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId }).Result.Customers[0].CustomerType;
+                //  var customerDetails = _exigoApiContext.GetContext(false).GetCustomersAsync(new GetCustomersRequest { CustomerID = customerId });
                 var autoOrderPaymentType = AutoOrderPaymentType.PrimaryCreditCard;
                 string ipaddress = string.Empty;
-                    IPAddress iP = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
-                    if (iP != null)
+                IPAddress iP = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
+                if (iP != null)
+                {
+                    if (iP.AddressFamily == AddressFamily.InterNetworkV6)
                     {
-                        if (iP.AddressFamily == AddressFamily.InterNetworkV6)
-                        {
-                            iP = Dns.GetHostEntry(iP).AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork);
-                        }
-                        ipaddress = iP.ToString();
+                        iP = Dns.GetHostEntry(iP).AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork);
                     }
-                    foreach (var itm in hasOrder)
+                    ipaddress = iP.ToString();
+                }
+                foreach (var itm in hasOrder)
+                {
+                    if (itm.OtherCheck1)
                     {
-                        if (itm.OtherCheck1)
-                        {
-                            itm.shippingPriceEachOverride = 0M;
+                        itm.shippingPriceEachOverride = 0M;
 
-                        }
                     }
-                    CreateCustomerRequest updateCustomerRequest = new()
-                    {
-                    LoginName = "abcd13",
-                    LoginPassword = "abcd13",
-                    FirstName = "abcd13",       
-                    LastName = "abcd13",          
-                    Company = "ACME, Inc.",    
-                    CustomerType = CustomerTypes.Distributor2,          
-                    CustomerStatus = 1,       
-                    Email = "joecool@me.com",
-                    Phone = "555-555-5555",
-                    MainAddress1 = "123 Some Street",
-                    MainCity = "Dallas",
-                    MainState = "TX",          
-                    MainZip = "75207",
-                    MailState = "TX",            
-                    MailCountry = "USA",        
-                    OtherState = "TX",         
-                    OtherCountry = "USA",         
-                    MiddleName = "ABCd13",         
-                    NameSuffix = "ABCd13",   
-                    MainCountry="US",
-                    MainCounty="US",
+                }
+                CreateCustomerRequest createCustomerRequest = new()
+                {
+                    FirstName = transactionRequest.CreateCustomerRequest.FirstName,//"abcd13",       
+                    LastName = transactionRequest.CreateCustomerRequest.LastName,//"abcd13",          
+                    Company = transactionRequest.CreateCustomerRequest.Company,//"ACME, Inc.",    
+                    CustomerType = CustomerTypes.Distributor2,
+                    CustomerStatus = 1,
+                    Email = transactionRequest.CreateCustomerRequest.Email,//"joecool@me.com",
+                    Phone = transactionRequest.CreateCustomerRequest.Phone,//"555-555-5555",
+                    MainAddress1 = transactionRequest.CreateCustomerRequest.MainAddress1,//"123 Some Street",
+                    MainCity = transactionRequest.CreateCustomerRequest.MainCity,//"Dallas",
+                    MainState = transactionRequest.CreateCustomerRequest.MainState,//"TX",          
+                    MainZip = transactionRequest.CreateCustomerRequest.MainZip,//"75207",
+                    //Mailing Address
+                    MailState = transactionRequest.CreateCustomerRequest.MainState,//"TX",            
+                    MailCountry = transactionRequest.CreateCustomerRequest.MainCountry,//"USA",        
+                    OtherState = transactionRequest.CreateCustomerRequest.OtherState,//"TX",         
+                    OtherCountry = transactionRequest.CreateCustomerRequest.OtherCountry,//"USA",         
+                    MiddleName = transactionRequest.CreateCustomerRequest.MiddleName,// "ABCd13",         
+                    NameSuffix = transactionRequest.CreateCustomerRequest.NameSuffix,//"ABCd13",   
+                    MainCountry = transactionRequest.CreateCustomerRequest.MainCountry,//"US",
+                    MainCounty = transactionRequest.CreateCustomerRequest.MainCounty,//"US",
                     InsertEnrollerTree = true,
                     InsertUnilevelTree = true,
                     EnrollerID = 1,
@@ -212,67 +218,64 @@ namespace WinkNatural.Web.Services.Services
                     DefaultWarehouseID = _orderConfiguration.WarehouseID,
                     CanLogin = true,
                     Notes = "Distributor was entered by Distributor 1. Created by the API Enrollment at " + _httpContextAccessor.HttpContext.Request.Host.Value + " on " + DateTime.Now.ToCST().ToString("dddd, MMMM d, yyyy h:mmtt") + " CST at IP " + ipaddress,
-                  
-                    };
-                    request.TransactionRequests[0] = updateCustomerRequest;
-               
+                };
+                request.TransactionRequests[0] = createCustomerRequest;
+                ChargeCreditCardTokenRequest chargeCreditCardTokenRequest = new()
+                {
+                    CreditCardToken = transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,//"41X111UAXYE31111",//
+                    BillingName = transactionRequest.ChargeCreditCardTokenRequest.BillingName,
+                    BillingAddress = transactionRequest.ChargeCreditCardTokenRequest.BillingAddress,
+                    BillingAddress2 = null,//transactionRequest.ChargeCreditCardTokenRequest.BillingAddress2,
+                    BillingCity = transactionRequest.ChargeCreditCardTokenRequest.BillingCity,
+                    BillingZip = transactionRequest.ChargeCreditCardTokenRequest.BillingZip,
+                    ExpirationMonth = transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth,
+                    ExpirationYear = transactionRequest.ChargeCreditCardTokenRequest.ExpirationYear,
+                    BillingCountry = transactionRequest.ChargeCreditCardTokenRequest.BillingCountry,
+                    BillingState = transactionRequest.ChargeCreditCardTokenRequest.BillingState,
+                    MaxAmount = Math.Round((decimal)transactionRequest.ChargeCreditCardTokenRequest.MaxAmount, 2),
+                    //OrderKey = "1",
+                };
+                request.TransactionRequests[1] = chargeCreditCardTokenRequest;
 
-                    ChargeCreditCardTokenRequest chargeCreditCardTokenRequest = new()
+                if (hasOrder.Count > 0)
+                {
+                    CreateOrderRequest customerOrderRequest = new()
                     {
-                        CreditCardToken = "41X111UAXYE31111",// transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
-                        BillingName = transactionRequest.ChargeCreditCardTokenRequest.BillingName,
-                        BillingAddress = transactionRequest.ChargeCreditCardTokenRequest.BillingAddress,
-                        BillingAddress2 = null,//transactionRequest.ChargeCreditCardTokenRequest.BillingAddress2,
-                        BillingCity = transactionRequest.ChargeCreditCardTokenRequest.BillingCity,
-                        BillingZip = transactionRequest.ChargeCreditCardTokenRequest.BillingZip,
-                        ExpirationMonth = transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth,
-                        ExpirationYear = transactionRequest.ChargeCreditCardTokenRequest.ExpirationYear,
-                        BillingCountry = transactionRequest.ChargeCreditCardTokenRequest.BillingCountry,
-                        BillingState = transactionRequest.ChargeCreditCardTokenRequest.BillingState,
-                        MaxAmount = Math.Round((decimal)transactionRequest.ChargeCreditCardTokenRequest.MaxAmount, 2),
-                        //OrderKey = "1",
+                        CustomerID = 0,
+                        OrderStatus = Exigo.Api.Client.OrderStatusType.Incomplete,
+                        OrderDate = DateTime.Now,
+                        CurrencyCode = _orderConfiguration.CurrencyCode,
+                        WarehouseID = _orderConfiguration.WarehouseID, // WarehouseID,
+                        ShipMethodID = _orderConfiguration.DefaultShipMethodID, //ToDo
+                        PriceType = _orderConfiguration.PriceTypeID,
+                        FirstName = transactionRequest.CreateOrderRequest.FirstName,
+                        LastName = transactionRequest.CreateOrderRequest.LastName,
+                        Company = transactionRequest.CreateOrderRequest.Company,
+                        Address1 = transactionRequest.CreateOrderRequest.Address1,
+                        Address2 = transactionRequest.CreateOrderRequest.Address2,
+                        Address3 = transactionRequest.CreateOrderRequest.Address3,
+                        City = transactionRequest.CreateOrderRequest.City,
+                        Zip = transactionRequest.CreateOrderRequest.Zip,
+                        Country = transactionRequest.CreateOrderRequest.Country,
+                        State = transactionRequest.CreateOrderRequest.State,
+                        Email = transactionRequest.CreateOrderRequest.Email,
+                        Phone = transactionRequest.CreateOrderRequest.Phone,
+                        Notes = transactionRequest.CreateOrderRequest.Notes,
+                        Other11 = null,
+                        Other12 = null,
+                        Other13 = null,
+                        Other14 = null,
+                        Other15 = null,
+                        Other16 = null,
+                        Other17 = "0.0",
+                        Other18 = null,
+                        Other19 = null,
+                        Other20 = null,
+                        OrderType = OrderType.ShoppingCart,
+                        Details = transactionRequest.CreateOrderRequest.Details.ToArray(),
                     };
-                    request.TransactionRequests[1] = chargeCreditCardTokenRequest;
-
-                    if (hasOrder.Count > 0)
-                    {
-                        CreateOrderRequest customerOrderRequest = new()
-                        {
-                            CustomerID = 0,
-                            OrderStatus = Exigo.Api.Client.OrderStatusType.Incomplete,
-                            OrderDate = DateTime.Now,
-                            CurrencyCode = _orderConfiguration.CurrencyCode,
-                            WarehouseID = _orderConfiguration.WarehouseID, // WarehouseID,
-                            ShipMethodID = _orderConfiguration.DefaultShipMethodID, //ToDo
-                            PriceType = _orderConfiguration.PriceTypeID,
-                            FirstName = transactionRequest.CreateOrderRequest.FirstName,
-                            LastName = transactionRequest.CreateOrderRequest.LastName,
-                            Company = transactionRequest.CreateOrderRequest.Company,
-                            Address1 = transactionRequest.CreateOrderRequest.Address1,
-                            Address2 = transactionRequest.CreateOrderRequest.Address2,
-                            Address3 = transactionRequest.CreateOrderRequest.Address3,
-                            City = transactionRequest.CreateOrderRequest.City,
-                            Zip = transactionRequest.CreateOrderRequest.Zip,
-                            Country = transactionRequest.CreateOrderRequest.Country,
-                            State = transactionRequest.CreateOrderRequest.State,
-                            Email = transactionRequest.CreateOrderRequest.Email,
-                            Phone = transactionRequest.CreateOrderRequest.Phone,
-                            Notes = transactionRequest.CreateOrderRequest.Notes,
-                            Other11 = null,
-                            Other12 = null,
-                            Other13 = null,
-                            Other14 = null,
-                            Other15 = null,
-                            Other16 = null,
-                            Other17 = "0.0",
-                            Other18 = null,
-                            Other19 = null,
-                            Other20 = null,
-                            OrderType = OrderType.ShoppingCart,
-                            Details = transactionRequest.CreateOrderRequest.Details.ToArray(),
-                        };
-                        request.TransactionRequests[2] = customerOrderRequest;
-                    }
+                    request.TransactionRequests[2] = customerOrderRequest;
+                }
 
                 else if (hasAutoOrder)
                 {
@@ -298,22 +301,34 @@ namespace WinkNatural.Web.Services.Services
 
                     CustomerID = 0,
                     CreditCardAccountType = AccountCreditCardType.Primary,
-                    CreditCardToken = "41X111UAXYE31111",//transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,
+                    CreditCardToken = transactionRequest.ChargeCreditCardTokenRequest.CreditCardToken,//"41X111UAXYE31111",//
                     ExpirationMonth = Convert.ToInt32(transactionRequest.ChargeCreditCardTokenRequest.ExpirationMonth),
                     ExpirationYear = transactionRequest.SetAccountCreditCardTokenRequest.ExpirationYear,
                     CreditCardType = 1,
                     UseMainAddress = true,
+                    //latest added code
+                    BillingName = transactionRequest.SetAccountCreditCardTokenRequest.BillingName,
+                    BillingAddress = transactionRequest.SetAccountCreditCardTokenRequest.BillingAddress,
+                    BillingAddress2 = transactionRequest.SetAccountCreditCardTokenRequest.BillingAddress2,
+                    BillingCity = transactionRequest.SetAccountCreditCardTokenRequest.BillingCity,
+                    BillingZip = transactionRequest.SetAccountCreditCardTokenRequest.BillingZip,
+                    BillingCountry = transactionRequest.SetAccountCreditCardTokenRequest.BillingCountry,
+                    BillingState = transactionRequest.SetAccountCreditCardTokenRequest.BillingState,
                 };
                 request.TransactionRequests[3] = setAccountCreditCardTokenRequest;
-
                 request.TransactionRequests = request.TransactionRequests.Where(x => x != null).ToArray();
 
                 //TransactionRequest
-                response = await _exigoApiContext.GetContext(true).ProcessTransactionAsync(request);
+                response = await _exigoApiContext.GetContext(false).ProcessTransactionAsync(request);
+
+
                 if (response.TransactionResponses.Length > 0)
                 {
-                    await _customerService.SendEmailVerification(customerId, customerDetails.Result.Customers[0].Email);
-
+                   // var newCustomerId= response.TransactionResponses
+                    
+                    var getCustomerRequest = new GetCustomersRequest { Email = transactionRequest.CreateCustomerRequest.Email };
+                    var customer = await _exigoApiContext.GetContext(false).GetCustomersAsync(getCustomerRequest);
+                    await _customerService.SendEmailVerification(customer.Customers[0].CustomerID, customer.Customers[0].Email);
                 }
             }
             catch (Exception ex)
@@ -389,8 +404,45 @@ namespace WinkNatural.Web.Services.Services
                 return nodeDataRecords;
             }
         }
-
-      
+        public object SaveNewCustomerCreditCard(int customerID, GetCreditCardRequest card)
+        {
+            // Get the credit cards on file
+            var creditCardsOnFile = _accountService.GetCustomerBilling(customerID);
+            // If no autoOrder-free slots exist, don't save it.
+            return card;
+        }
+        public GetCreditCardRequest SetCustomerCreditCard(int customerID, GetCreditCardRequest card)
+        {
+            return SetCustomerCreditCard(customerID, card, card.Type);
+        }
+        public GetCreditCardRequest SetCustomerCreditCard(int customerID, GetCreditCardRequest card, CreditCardType type)
+        {
+            // New credit cards
+            if (type == CreditCardType.New)
+            {
+                return (GetCreditCardRequest)SaveNewCustomerCreditCard(customerID, card);
+            }
+            // Validate that we have a token
+            var token = card.Token; //card.GetToken();
+            if (String.IsNullOrEmpty(token)) return card;
+            // Save the credit card
+            var request = new SetAccountCreditCardTokenRequest
+            {
+                CustomerID = customerID,
+                CreditCardAccountType = (card.Type == CreditCardType.Primary) ? AccountCreditCardType.Primary : AccountCreditCardType.Secondary,
+                CreditCardToken = token,
+                ExpirationMonth = card.ExpirationMonth,
+                ExpirationYear = card.ExpirationYear,
+                BillingName = card.NameOnCard,
+                //BillingAddress = card.BillingAddress.AddressDisplay,
+                //BillingCity = card.BillingAddress.City,
+                //BillingState = card.BillingAddress.State,
+                //BillingZip = card.BillingAddress.Zip,
+                //BillingCountry = card.BillingAddress.Country
+            };
+            var response = _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);//DAL.WebService().SetAccountCreditCardToken(request);
+            return card;
+        }
         public class SearchResult
         {
             public int CustomerID { get; set; }
@@ -403,7 +455,7 @@ namespace WinkNatural.Web.Services.Services
             public string AvatarURL { get; set; }
             public string WebAlias { get; set; }
             public string ReplicatedSiteUrl { get; set; }
-            
+
             public string MainState { get; set; }
             public string MainCity { get; set; }
             public string MainCountry { get; set; }

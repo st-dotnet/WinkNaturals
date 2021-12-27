@@ -11,6 +11,8 @@ using WinkNatural.Web.Common;
 using WinkNatural.Web.Common.Utils.Enum;
 using WinkNatural.Web.Services.DTO.Customer;
 using WinkNatural.Web.Services.Interfaces;
+using WinkNaturals.Infrastructure.Services.ExigoService;
+using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
@@ -29,6 +31,8 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
         private readonly IExigoApiContext _exigoApiContext;
         private readonly IGetCurrentMarket _getCurrentMarket;
         private readonly ICustomerService _customerService;
+       
+        
 
         public AuthenticationController(IAuthenticateService authenticate,
             IMapper mapper, IHttpContextAccessor httpContextAccessor,
@@ -42,6 +46,7 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
             _exigoApiContext = exigoApiContext;
             _getCurrentMarket = getCurrentMarket;
             _customerService = customerService;
+   
         }
 
         #region Customer
@@ -88,14 +93,8 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
                 {
                     await _customerService.SendEmailVerification(response.CustomerID, request.Email);
                 }
-                //281021
-                var createCustomerRequest = _mapper.Map<CreateCustomerRequest>(model);
-
-                //Create customer in Exigo service
-                await _authenticateService.CreateCustomer(createCustomerRequest);
-
                 //Authenticate customer
-                var result = await _authenticateService.SignInCustomer(new AuthenticateCustomerRequest { LoginName = model.LoginName, Password = model.LoginPassword });
+                var result = await _authenticateService.LoginCustomer(new AuthenticateCustomerRequest { LoginName = model.LoginName, Password = model.LoginPassword });
 
 
                 return Ok(result);
@@ -116,12 +115,9 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
         {
             try
             {
-                var signinRequest = _mapper.Map<AuthenticateCustomerRequest>(model);
-
+                  var signinRequest = _mapper.Map<AuthenticateCustomerRequest>(model);
                 //Signin customer in Exigo service
-                var response = await _authenticateService.SignInCustomer(signinRequest);
-
-                return Ok(await _authenticateService.SignInCustomer(signinRequest));
+                return Ok(await _authenticateService.LoginCustomer(signinRequest));
             }
             catch (Exception ex)
             {
@@ -162,7 +158,6 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
             try
             {
                 var customerUpdateRequest = _mapper.Map<CustomerUpdateRequest>(model);
-
                 //Update customer password with Exigo service
                 return Ok(await _authenticateService.UpdateCustomerPassword(customerUpdateRequest));
             }
@@ -192,7 +187,7 @@ namespace WinkNatural.Web.WinkNaturals.Controllers
                 throw new Exception(ex.ToString());
             }
         }
-
+     
         #endregion
     }
 }

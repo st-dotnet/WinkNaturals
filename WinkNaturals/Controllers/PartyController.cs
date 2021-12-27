@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
 using Exigo.Api.Client;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using WinkNatural.Web.Services.Interfaces;
+using WinkNaturals.Infrastructure.Services.DTO;
+using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
+using WinkNaturals.Infrastructure.Services.Interfaces;
 
 namespace WinkNaturals.Controllers
 {
@@ -22,45 +26,53 @@ namespace WinkNaturals.Controllers
         // To Create Party
 
         [HttpPost("CreateParty")]
-        public IActionResult CreateParty(CreatePartyRequest createPartyRequest)
+        public async Task<IActionResult> CreateParty(CreatePartyRequest createPartyRequest)
         {
-            return Ok(_partyService.CreateParty(createPartyRequest));
+            return Ok(await _partyService.CreateParty(createPartyRequest));
         }
 
         // To update party
         [HttpPost("UpdateParty")]
-        public IActionResult UpdateParty(UpdatePartyRequest updatePartyRequest)
+        public async Task<IActionResult> UpdateParty(UpdatePartyRequest updatePartyRequest)
         {
-            return Ok(_partyService.UpdateParty(updatePartyRequest));
+            return Ok(await _partyService.UpdateParty(updatePartyRequest));
         }
 
         // To Get Parties
         [HttpPost("GetParties")]
-        public IActionResult GetParties(GetPartiesRequest getPartiesRequest)
+        public async Task<IActionResult> GetParties(GetPartiesRequest getPartiesRequest)
         {
-            return Ok(_partyService.GetParties(getPartiesRequest));
+            return Ok(await _partyService.GetParties(getPartiesRequest));
         }
 
         // To Get Party Guests
         [HttpPost("GetPartyGuests")]
-        public IActionResult GetPartyGuests(GetPartyGuestsRequest getPartyGuestsRequest)
+        public async Task<IActionResult> GetPartyGuests(GetPartyGuestsRequest getPartyGuestsRequest)
         {
-            return Ok(_partyService.GetPartyGuests(getPartyGuestsRequest));
+            return Ok(await _partyService.GetPartyGuests(getPartyGuestsRequest));
         }
 
         // To Create Guest
         [HttpPost("CreateGuest")]
-        public IActionResult CreateGuest(CreateGuestRequest createGuestRequest)
+        public async Task<IActionResult> CreateGuest(CreateGuestRequest createGuestRequest)
         {
-            return Ok(_partyService.CreateGuest(createGuestRequest));
+            return Ok(await _partyService.CreateGuest(createGuestRequest));
         }
 
         // To update Guest
         [HttpPost("UpdateGuest")]
-        public IActionResult UpdateGuest(UpdateGuestRequest updateGuestRequest)
+        public async Task<IActionResult> UpdateGuest(UpdateGuestRequest updateGuestRequest)
         {
-            return Ok(_partyService.UpdateGuest(updateGuestRequest));
+            return Ok(await _partyService.UpdateGuest(updateGuestRequest));
 
         }
+
+        //// To ManageAutoOrder
+        //[HttpPost("ManageAutoOrder")]
+        //public async Task<IActionResult> ManageAutoOrder(ManageAutoOrderViewModel autoOrderViewModel, int autoOrderId)
+        //{
+        //    return Ok(await _partyService.ManageAutoOrder(autoOrderViewModel, autoOrderId));
+        //}
+
     }
 }

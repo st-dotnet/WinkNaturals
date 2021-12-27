@@ -11,9 +11,9 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.BankAccount
     {
         public BankAccount()
         {
-            this.Type = BankAccountType.New;
-            this.BillingAddress = new Address();
-            this.AutoOrderIDs = new int[0];
+            Type = BankAccountType.New;
+            BillingAddress = new Address();
+            AutoOrderIDs = new int[0];
         }
         public BankAccount(BankAccountType type)
         {
@@ -80,6 +80,6 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.BankAccount
             }
         }
 
-        Exigo.Api.Client.AutoOrderPaymentType IAutoOrderPaymentMethod.AutoOrderPaymentType => throw new NotImplementedException();
+
     }
 }
