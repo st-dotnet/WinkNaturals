@@ -100,6 +100,7 @@ namespace WinkNaturals.Controllers
             //    };
             //    return Ok( _shoppingService.UpdateCustomer(updateCustomerRequest));
             //}
+
             return Ok(await _enrollmentService.SetCustomerCreditCard(card,Identity.CustomerID));
 
         }
