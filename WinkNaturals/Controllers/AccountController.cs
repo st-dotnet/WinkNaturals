@@ -149,9 +149,9 @@ namespace WinkNaturals.Controllers
         public async Task<IActionResult> GetOrderInvoice(int orderId)
         {
             var invoiceHtmlResponse = await  _accountService.GetOrderInvoice(orderId);
-
+            return Ok(Base64Decode(Convert.ToBase64String(invoiceHtmlResponse.InvoiceData)));
           ///  var htmlString = System.Text.Encoding.Default.GetString(invoiceHtmlResponse.InvoiceData);
-            return Ok(invoiceHtmlResponse.InvoiceData);
+           // return Ok(invoiceHtmlResponse.InvoiceData);
 
         }
 
@@ -179,6 +179,13 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_accountService.GetCustomerBilling(Identity.CustomerID).Result.Where(c => c is CreditCard && ((CreditCard)c).Type.ToString() == type).FirstOrDefault());
         }
+
+        private string Base64Decode(string base64EncodedData)
+        {
+            var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
+            return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+        }
+
         [HttpGet]
         private ActionResult HtmlToPdf(string data)
         {
