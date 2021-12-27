@@ -172,12 +172,10 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("EditCreditCard")]
-        public IActionResult EditCreditCard(CreditCardType type)
+        public IActionResult EditCreditCard(string type)
         {
-            return Ok(_accountService.GetCustomerBilling(Identity.CustomerID).Result.Where(c => c is CreditCard && ((CreditCard)c).Type == type).FirstOrDefault());
+            return Ok(_accountService.GetCustomerBilling(Identity.CustomerID).Result.Where(c => c is CreditCard && ((CreditCard)c).Type.ToString() == type).FirstOrDefault());
         }
-
-
         [HttpGet]
         public ActionResult HtmlToPdf(string data)
         {

@@ -9253,3 +9253,19 @@
 2021-12-27 18:15:14.3204 Info Validating config: TargetNames=logfile, otherFile-web, ConfigItems=38, FilePath=D:\surjit\WinkNaturals\NewWink13-12-2021\WinkNaturals\bin\Debug\net5.0\nlog.config
 2021-12-27 18:15:14.3204 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: logfile
 2021-12-27 18:15:14.3204 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: otherFile-web
+2021-12-27 18:45:44.4893 Info Message Template Auto Format enabled
+2021-12-27 18:45:44.5010 Info Loading assembly: NLog.Web.AspNetCore
+2021-12-27 18:45:44.5251 Info Adding target FileTarget(Name=logfile)
+2021-12-27 18:45:44.5448 Info Adding target FileTarget(Name=otherFile-web)
+2021-12-27 18:45:44.5448 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'alldata' not found for logging rule: *.
+2021-12-27 18:45:44.5704 Info Validating config: TargetNames=logfile, otherFile-web, ConfigItems=38, FilePath=D:\surjit\WinkNaturals\NewWink13-12-2021\WinkNaturals\bin\Debug\net5.0\nlog.config
+2021-12-27 18:45:44.5704 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: logfile
+2021-12-27 18:45:44.5704 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: otherFile-web
+2021-12-27 19:04:59.5333 Info Message Template Auto Format enabled
+2021-12-27 19:04:59.5537 Info Loading assembly: NLog.Web.AspNetCore
+2021-12-27 19:04:59.5868 Info Adding target FileTarget(Name=logfile)
+2021-12-27 19:04:59.6026 Info Adding target FileTarget(Name=otherFile-web)
+2021-12-27 19:04:59.6026 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'alldata' not found for logging rule: *.
+2021-12-27 19:04:59.6348 Info Validating config: TargetNames=logfile, otherFile-web, ConfigItems=38, FilePath=D:\surjit\WinkNaturals\NewWink13-12-2021\WinkNaturals\bin\Debug\net5.0\nlog.config
+2021-12-27 19:04:59.6348 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: logfile
+2021-12-27 19:04:59.6348 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: otherFile-web
