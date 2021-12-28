@@ -160,9 +160,6 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, type));
         }
-
-
-        [AllowAnonymous]
         [HttpPost("SaveAddress")]
         public async Task<IActionResult> SaveAddress(Address address, bool? makePrimary)
         {
