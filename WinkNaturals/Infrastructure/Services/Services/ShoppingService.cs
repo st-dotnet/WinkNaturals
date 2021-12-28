@@ -1650,19 +1650,32 @@ namespace WinkNatural.Web.Services.Services
             //    e.Message.ToString();
             //    throw;
             //}
+
             var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
             try
             {
-              
+                var saveAddress = false;
+                var request = new UpdateCustomerRequest
+                {
+                    CustomerID = customerID
+                };
+                //Add new address 
+                if (address.AddressType == AddressType.New)
+                {
+                    saveAddress = true;
+                    address.AddressType = AddressType.Other;
+                    request.OtherAddress1 = address.Address1;
+                    request.OtherAddress2 = address.Address2;
+                    request.OtherCity = address.City;
+                    request.OtherState = address.State;
+                    request.OtherZip = address.Zip;
+                    request.OtherCountry = address.Country;
+                }
 
                 // Do any of the addresses on file match the one we are using?
                 // If not, save this address to the next available slot
-                if (!addressesOnFile.Any(c => c.Equals(address)))
-                {
-                    var saveAddress = false;
-                    var request = new UpdateCustomerRequest();
-                    request.CustomerID = customerID;
-
+                else if (!addressesOnFile.Any(c => c.Equals(address)))
+                { 
                     // Main address
                     if (!addressesOnFile.Any(c => c.AddressType == AddressType.Main))
                     {
@@ -1700,13 +1713,13 @@ namespace WinkNatural.Web.Services.Services
                         request.OtherState = address.State;
                         request.OtherZip = address.Zip;
                         request.OtherCountry = address.Country;
-                    }
-
-                    if (saveAddress)
-                    {
-                        await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
-                    }
+                    } 
                 }
+                if (saveAddress)
+                {
+                    await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
+                }
+
                 return address;
             }
             catch (Exception e)
