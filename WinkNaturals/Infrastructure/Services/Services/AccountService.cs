@@ -577,7 +577,8 @@ namespace WinkNaturals.Infrastructure.Services.Services
                     TaxTotal = autoOrder.TaxTotal,
                     WarehouseID = autoOrder.WarehouseID,
                     AutoOrderPaymentTypeID = (int)autoOrder.PaymentType,
-                    AutoOrderProcessTypeID = (int)autoOrder.ProcessType
+                    AutoOrderProcessTypeID = (int)autoOrder.ProcessType,
+                    AutoOrderStatus=autoOrder.AutoOrderStatus
                 });
             }
             // was getting all item.Where(x => x.ParentItemCode == null)  maybe this is not needed?

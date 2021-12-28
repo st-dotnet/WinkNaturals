@@ -2477,8 +2477,6 @@ namespace WinkNatural.Web.Services.Services
                 return pointAccount;
         }
 
-        
-
         /// <summary>
         /// DeleteCustomerAddress
         /// </summary>
@@ -2583,12 +2581,14 @@ namespace WinkNatural.Web.Services.Services
         }
         public async Task SetCustomerPrimaryAddress(int customerID, AddressType type)
         {
-            if (type == AddressType.Main || type == AddressType.New) return; var addressesOnFile = GetCustomerAddress(customerID)
-            .Where(c => c.IsComplete); var oldPrimaryAddress = addressesOnFile
-            .Where(c => c.AddressType == AddressType.Main)
-            .FirstOrDefault(); var newPrimaryAddress = addressesOnFile
-            .Where(c => c.AddressType == type)
-            .FirstOrDefault(); if (oldPrimaryAddress == null || newPrimaryAddress == null) return; // Swap the addresses
+            if (type == AddressType.Main || type == AddressType.New) return; 
+
+            var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete); 
+            var oldPrimaryAddress = addressesOnFile.Where(c => c.AddressType == AddressType.Main).FirstOrDefault(); 
+            var newPrimaryAddress = addressesOnFile.Where(c => c.AddressType == type).FirstOrDefault(); 
+            if (oldPrimaryAddress == null || newPrimaryAddress == null) 
+                return; // Swap the addresses
+           
             await SetCustomerAddressOnFile(customerID, (Address)newPrimaryAddress, AddressType.Main);
             await SetCustomerAddressOnFile(customerID, (Address)oldPrimaryAddress, type);
         }

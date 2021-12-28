@@ -16,7 +16,7 @@ namespace WinkNatural.Web.Services.Interfaces
         Task<bool> SendEmailVerification(int customerId, string email);
 
         // Task<SetAccountResponse> DeleteCustomerCreditCard(int customerID, CreditCardType type);
-        Task DeleteCustomerAutoOrder(int customerID, int autoOrderID);
+        Task<ChangeAutoOrderStatusResponse> DeleteCustomerAutoOrder(int autoOrderID);
         Task<SetAccountResponse> DeleteCustomerCreditCard(int customerID, string type);
 
 

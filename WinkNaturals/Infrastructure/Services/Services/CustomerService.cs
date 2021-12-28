@@ -341,15 +341,34 @@ namespace WinkNatural.Web.Services.Services
             res = await _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);
             return res;
         }
-        public async Task DeleteCustomerAutoOrder(int customerID, int autoOrderID)
+        public async Task<ChangeAutoOrderStatusResponse> DeleteCustomerAutoOrder(int autoOrderID)
         {
-            // Make sure the autoorder exists
-            if (!IsValidAutoOrderID(customerID, autoOrderID)) return;
-            var response = await _exigoApiContext.GetContext(false).ChangeAutoOrderStatusAsync(new ChangeAutoOrderStatusRequest
+            try
             {
-                AutoOrderID = autoOrderID,
-                AutoOrderStatus = AutoOrderStatusType.Deleted
-            });
+                return await _exigoApiContext.GetContext(false).ChangeAutoOrderStatusAsync(new ChangeAutoOrderStatusRequest
+                {
+                    
+                    AutoOrderID = autoOrderID,
+                    AutoOrderStatus = AutoOrderStatusType.Deleted
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            } 
+
+
+
+            // Make sure the autoorder exists
+            // if (!IsValidAutoOrderID(customerID, autoOrderID)) 
+            //    return;
+
+
+            //var response = await _exigoApiContext.GetContext(false).ChangeAutoOrderStatusAsync(new ChangeAutoOrderStatusRequest
+            //{
+            //    AutoOrderID = autoOrderID,
+            //    AutoOrderStatus = AutoOrderStatusType.Deleted
+            //});
         }
         private bool IsValidAutoOrderID(int customerID, int autoOrderID, bool showOnlyActiveAutoOrders = false)
         {

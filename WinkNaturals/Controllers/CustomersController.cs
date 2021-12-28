@@ -50,9 +50,9 @@ namespace WinkNaturals.Controllers
             }
         }
         [HttpDelete("DeleteAutoOrder")]
-        public IActionResult DeleteAutoOrder(int id)
+        public async Task<IActionResult> DeleteAutoOrder(int id)
         {
-            return Ok(_customerService.DeleteCustomerAutoOrder(Identity.CustomerID, id));
+            return Ok( await _customerService.DeleteCustomerAutoOrder(id));
         }
 
         //[HttpPost("DeleteCreditCard")]
