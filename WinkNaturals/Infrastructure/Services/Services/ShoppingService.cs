@@ -1650,45 +1650,47 @@ namespace WinkNatural.Web.Services.Services
             //    e.Message.ToString();
             //    throw;
             //}
-            var addressesOnFile = GetCustomerAddress(customerID);/*.Where(c => c.IsComplete)*/;
+            var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
             try
             {
+              
+
                 // Do any of the addresses on file match the one we are using?
                 // If not, save this address to the next available slot
                 if (!addressesOnFile.Any(c => c.Equals(address)))
                 {
-                    var saveAddress = true;
+                    var saveAddress = false;
                     var request = new UpdateCustomerRequest();
                     request.CustomerID = customerID;
 
                     // Main address
-                    //if (!addressesOnFile.Any(c => c.AddressType == AddressType.Main))
-                    //{
-                    //    saveAddress = true;
-                    //    address.AddressType = AddressType.Main;
-                    //    request.MainAddress1 = address.Address1;
-                    //    request.MainAddress2 = address.Address2;
-                    //    request.MainCity = address.City;
-                    //    request.MainState = address.State;
-                    //    request.MainZip = address.Zip;
-                    //    request.MainCountry = address.Country;
-                    //}
+                    if (!addressesOnFile.Any(c => c.AddressType == AddressType.Main))
+                    {
+                        saveAddress = true;
+                        address.AddressType = AddressType.Main;
+                        request.MainAddress1 = address.Address1;
+                        request.MainAddress2 = address.Address2;
+                        request.MainCity = address.City;
+                        request.MainState = address.State;
+                        request.MainZip = address.Zip;
+                        request.MainCountry = address.Country;
+                    }
 
-                    //// Mailing address
-                    //else if (!addressesOnFile.Any(c => c.AddressType == AddressType.Mailing))
-                    //{
-                    //    saveAddress = true;
-                    //    address.AddressType = AddressType.Mailing;
-                    //    request.MailAddress1 = address.Address1;
-                    //    request.MailAddress2 = address.Address2;
-                    //    request.MailCity = address.City;
-                    //    request.MailState = address.State;
-                    //    request.MailZip = address.Zip;
-                    //    request.MailCountry = address.Country;
-                    //}
+                    // Mailing address
+                    else if (!addressesOnFile.Any(c => c.AddressType == AddressType.Mailing))
+                    {
+                        saveAddress = true;
+                        address.AddressType = AddressType.Mailing;
+                        request.MailAddress1 = address.Address1;
+                        request.MailAddress2 = address.Address2;
+                        request.MailCity = address.City;
+                        request.MailState = address.State;
+                        request.MailZip = address.Zip;
+                        request.MailCountry = address.Country;
+                    }
 
                     // Other address
-                   // else
+                    else
                     {
                         saveAddress = true;
                         address.AddressType = AddressType.Other;
@@ -1699,6 +1701,7 @@ namespace WinkNatural.Web.Services.Services
                         request.OtherZip = address.Zip;
                         request.OtherCountry = address.Country;
                     }
+
                     if (saveAddress)
                     {
                         await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);

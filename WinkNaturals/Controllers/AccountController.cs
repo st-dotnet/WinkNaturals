@@ -148,9 +148,9 @@ namespace WinkNaturals.Controllers
         [HttpGet("GetOrderInvoice/{orderId}")]
         public async Task<IActionResult> GetOrderInvoice(int orderId)
         {
-            var invoiceHtmlResponse = await  _accountService.GetOrderInvoice(orderId);
-          //  return Ok(Base64Decode(Convert.ToBase64String(invoiceHtmlResponse.InvoiceData)));
-          ///  var htmlString = System.Text.Encoding.Default.GetString(invoiceHtmlResponse.InvoiceData);
+            var invoiceHtmlResponse = await _accountService.GetOrderInvoice(orderId);
+            //  return Ok(Base64Decode(Convert.ToBase64String(invoiceHtmlResponse.InvoiceData)));
+            ///  var htmlString = System.Text.Encoding.Default.GetString(invoiceHtmlResponse.InvoiceData);
             return Ok(invoiceHtmlResponse.InvoiceData);
 
         }
@@ -160,6 +160,9 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, type));
         }
+
+
+        [AllowAnonymous]
         [HttpPost("SaveAddress")]
         public async Task<IActionResult> SaveAddress(Address address, bool? makePrimary)
         {
