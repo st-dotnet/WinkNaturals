@@ -1657,7 +1657,7 @@ namespace WinkNatural.Web.Services.Services
                 // If not, save this address to the next available slot
                 if (!addressesOnFile.Any(c => c.Equals(address)))
                 {
-                    var saveAddress = false;
+                    var saveAddress = true;
                     var request = new UpdateCustomerRequest();
                     request.CustomerID = customerID;
 
@@ -1691,7 +1691,7 @@ namespace WinkNatural.Web.Services.Services
                    // else
                     {
                         saveAddress = true;
-                        address.AddressType = AddressType.New;
+                        address.AddressType = AddressType.Other;
                         request.OtherAddress1 = address.Address1;
                         request.OtherAddress2 = address.Address2;
                         request.OtherCity = address.City;
