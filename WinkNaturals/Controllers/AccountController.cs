@@ -99,9 +99,9 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetCustomerAutoOrders")]
-        public async Task<IActionResult> GetCustomerAutoOrders(int autoOrderID)
+        public async Task<IActionResult> GetCustomerAutoOrders()
         {
-            return Ok(await _accountService.GetCustomerAutoOrders(Identity.CustomerID, autoOrderID));
+            return Ok(await _accountService.GetCustomerAutoOrdersList(Identity.CustomerID));
         }
 
         /// <summary>

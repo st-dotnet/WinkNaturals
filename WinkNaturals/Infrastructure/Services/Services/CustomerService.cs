@@ -347,7 +347,6 @@ namespace WinkNatural.Web.Services.Services
             {
                 return await _exigoApiContext.GetContext(false).ChangeAutoOrderStatusAsync(new ChangeAutoOrderStatusRequest
                 {
-                    
                     AutoOrderID = autoOrderID,
                     AutoOrderStatus = AutoOrderStatusType.Deleted
                 });

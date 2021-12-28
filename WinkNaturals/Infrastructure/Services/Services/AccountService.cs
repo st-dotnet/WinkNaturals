@@ -578,7 +578,7 @@ namespace WinkNaturals.Infrastructure.Services.Services
                     WarehouseID = autoOrder.WarehouseID,
                     AutoOrderPaymentTypeID = (int)autoOrder.PaymentType,
                     AutoOrderProcessTypeID = (int)autoOrder.ProcessType,
-                    AutoOrderStatus=autoOrder.AutoOrderStatus
+                    AutoOrderStatus = autoOrder.AutoOrderStatus
                 });
             }
             // was getting all item.Where(x => x.ParentItemCode == null)  maybe this is not needed?
@@ -673,6 +673,13 @@ namespace WinkNaturals.Infrastructure.Services.Services
             return "/shopping/productimages/";
         }
 
-       
+        public async Task<GetAutoOrdersResponse> GetCustomerAutoOrdersList(int customerId)
+        {
+            var req = new GetAutoOrdersRequest();
+            req.CustomerID = customerId;
+            req.AutoOrderStatus = AutoOrderStatusType.Active;
+            var res = await _exigoApiContext.GetContext(false).GetAutoOrdersAsync(req);
+            return res;
         }
+    }
     }
