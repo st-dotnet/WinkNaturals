@@ -1625,7 +1625,7 @@ namespace WinkNatural.Web.Services.Services
         [System.Web.Http.NonAction]
         public async Task<Address> SaveNewCustomerAddress(int customerID, Address address)
         {
-          //  var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
+            //  var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
             //try
             //{
             //    if (!addressesOnFile.Any(c => c.Equals(address)))
@@ -1640,7 +1640,7 @@ namespace WinkNatural.Web.Services.Services
             //        request.OtherState = address.State;
             //        request.OtherZip = address.Zip;
             //        request.OtherCountry = address.Country;
-                  
+
             //    }
             //    await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
             //    return address;
@@ -1650,7 +1650,7 @@ namespace WinkNatural.Web.Services.Services
             //    e.Message.ToString();
             //    throw;
             //}
-            var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
+            var addressesOnFile = GetCustomerAddress(customerID);/*.Where(c => c.IsComplete)*/;
             try
             {
                 // Do any of the addresses on file match the one we are using?
