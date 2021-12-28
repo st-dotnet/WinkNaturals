@@ -2482,14 +2482,15 @@ namespace WinkNatural.Web.Services.Services
         /// </summary>
         /// <param name="customerID"></param>
         /// <param name="type"></param>
-        public async Task<Address> DeleteCustomerAddress(int customerID, Address address)
+        public async Task<UpdateCustomerResponse> DeleteCustomerAddress(int customerID, string type)
         {
-            var type = address.AddressType;
+
+            var response = new UpdateCustomerResponse();
             var deleteAddress = false;
             var request = new UpdateCustomerRequest();
             request.CustomerID = customerID;
             // Main address
-            if (type == AddressType.Main)
+            if (type == AddressType.Main.ToString())
             {
                 deleteAddress = true;
                 request.MainAddress1 = string.Empty;
@@ -2500,7 +2501,7 @@ namespace WinkNatural.Web.Services.Services
                 request.MainCountry = string.Empty;
             }
             // Mailing address
-            else if (type == AddressType.Mailing)
+            else if (type == AddressType.Mailing.ToString())
             {
                 deleteAddress = true;
                 request.MailAddress1 = string.Empty;
@@ -2511,7 +2512,7 @@ namespace WinkNatural.Web.Services.Services
                 request.MailCountry = string.Empty;
             }
             // Other address
-            else if (type == AddressType.Other)
+            else if (type == AddressType.Other.ToString())
             {
                 deleteAddress = true;
                 request.OtherAddress1 = string.Empty;
@@ -2524,9 +2525,9 @@ namespace WinkNatural.Web.Services.Services
             if (deleteAddress)
             {
 
-                await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
+                response= await  _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
             }
-            return address;
+            return response;
         }
       
         public async Task<Address> SetCustomerAddressOnFile(int customerID, Address address)

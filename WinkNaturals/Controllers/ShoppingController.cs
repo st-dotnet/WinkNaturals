@@ -852,9 +852,9 @@ namespace WinkNaturals.Controllers
         /// 
         [AllowAnonymous]
         [HttpDelete("DeleteCustomer")]
-        public async Task<IActionResult> DeleteCustomer(Address address)
+        public async Task<IActionResult> DeleteCustomer(string type)
         {
-            return Ok(await _shoppingService.DeleteCustomerAddress(Identity.CustomerID, address));
+            return Ok(await _shoppingService.DeleteCustomerAddress(Identity.CustomerID, type));
         }
 
         [HttpPost("AddUpdateCustomerAddress/{CustomerID:int}")]
