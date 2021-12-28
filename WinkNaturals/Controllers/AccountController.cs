@@ -105,7 +105,6 @@ namespace WinkNaturals.Controllers
 
             return Ok(await _accountService.GetCustomerAutoOrders(Identity.CustomerID));
         }
-
         /// <summary>
         /// CancelledCustomerOrders_SQL
         /// </summary>
