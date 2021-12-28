@@ -26,6 +26,7 @@ using ShippingAddress = WinkNatural.Web.Services.DTO.Shopping.ShippingAddress;
 using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 using static WinkNaturals.Helpers.Constant;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WinkNaturals.Controllers
 {
@@ -848,8 +849,10 @@ namespace WinkNaturals.Controllers
         /// DeleteCustomerAddress
         /// </summary>
         /// <returns></returns>
+        /// 
+        [AllowAnonymous]
         [HttpDelete("DeleteCustomer")]
-        public async Task<IActionResult> DeleteCustomer(ShippingAddress address)
+        public async Task<IActionResult> DeleteCustomer(Address address)
         {
             return Ok(await _shoppingService.DeleteCustomerAddress(Identity.CustomerID, address));
         }
