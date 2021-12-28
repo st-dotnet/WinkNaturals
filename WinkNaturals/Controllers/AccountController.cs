@@ -149,9 +149,9 @@ namespace WinkNaturals.Controllers
         public async Task<IActionResult> GetOrderInvoice(int orderId)
         {
             var invoiceHtmlResponse = await  _accountService.GetOrderInvoice(orderId);
-            return Ok(Base64Decode(Convert.ToBase64String(invoiceHtmlResponse.InvoiceData)));
+          //  return Ok(Base64Decode(Convert.ToBase64String(invoiceHtmlResponse.InvoiceData)));
           ///  var htmlString = System.Text.Encoding.Default.GetString(invoiceHtmlResponse.InvoiceData);
-           // return Ok(invoiceHtmlResponse.InvoiceData);
+            return Ok(invoiceHtmlResponse.InvoiceData);
 
         }
 
