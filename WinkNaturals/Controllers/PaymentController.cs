@@ -81,24 +81,24 @@ namespace WinkNaturals.Controllers
         [HttpPost("SaveCreditCard")]
         public async Task<IActionResult> SaveCreditCard(SetAccountCreditCardTokenRequest card)
         {
-            if (card.CreditCardType == 1)
-            {
-                var updateCustomerRequest = new UpdateCustomerRequest
-                {
-                    CustomerID = Identity.CustomerID,
-                    Field1 = "1"
-                };
-                var transactionResponse = _customerService.UpdateCustomer(updateCustomerRequest);
-            }
-            else
-            {
-                var updateCustomerRequest = new UpdateCustomerRequest
-                {
-                    CustomerID = Identity.CustomerID,
-                    Field2 = "1"
-                };
-                var transactionResponse = _customerService.UpdateCustomer(updateCustomerRequest);
-            }
+            //if (card.CreditCardType == 1)
+            //{
+            //    var updateCustomerRequest = new UpdateCustomerRequest
+            //    {
+            //        CustomerID = Identity.CustomerID,
+            //        Field1 = "1"
+            //    };
+            //    var transactionResponse = _customerService.UpdateCustomer(updateCustomerRequest);
+            //}
+            //else
+            //{
+            //    var updateCustomerRequest = new UpdateCustomerRequest
+            //    {
+            //        CustomerID = Identity.CustomerID,
+            //        Field2 = "1"
+            //    };
+            //    var transactionResponse = _customerService.UpdateCustomer(updateCustomerRequest);
+            //}
             return Ok(await _enrollmentService.SetCustomerCreditCard(card, Identity.CustomerID));
         }
 
