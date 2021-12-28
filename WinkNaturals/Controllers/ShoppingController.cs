@@ -848,7 +848,7 @@ namespace WinkNaturals.Controllers
         /// DeleteCustomerAddress
         /// </summary>
         /// <returns></returns>
-        [HttpGet("DeleteCustomer")]
+        [HttpDelete("DeleteCustomer")]
         public async Task<IActionResult> DeleteCustomer(ShippingAddress address)
         {
             return Ok(await _shoppingService.DeleteCustomerAddress(Identity.CustomerID, address));
