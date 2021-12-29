@@ -1645,7 +1645,7 @@ namespace WinkNatural.Web.Services.Services
                         request.OtherCity = address.City;
                         request.OtherState = address.State;
                         request.OtherZip = address.Zip;
-                        request.OtherCountry = address.Country;
+                        request.OtherCountry = address.Country=="United States"?"US": address.Country;
                     }
                     else if (address.SaveType == "Mail")
                     {
@@ -1656,7 +1656,7 @@ namespace WinkNatural.Web.Services.Services
                         request.MailCity = address.City;
                         request.MailState = address.State;
                         request.MailZip = address.Zip;
-                        request.MailCountry = address.Country;
+                        request.MailCountry = address.Country == "United States" ? "US" : address.Country;
                     }
 
                     else
@@ -1668,7 +1668,7 @@ namespace WinkNatural.Web.Services.Services
                         request.MainCity = address.City;
                         request.MainState = address.State;
                         request.MainZip = address.Zip;
-                        request.MainCountry = address.Country;
+                        request.MainCountry = address.Country == "United States" ? "US" : address.Country;
 
                     }
                 }
@@ -1687,7 +1687,7 @@ namespace WinkNatural.Web.Services.Services
                         request.MainCity = address.City;
                         request.MainState = address.State;
                         request.MainZip = address.Zip;
-                        request.MainCountry = address.Country;
+                        request.MainCountry = address.Country == "United States" ? "US" : address.Country;
                     }
 
                     // Mailing address
@@ -1700,7 +1700,7 @@ namespace WinkNatural.Web.Services.Services
                         request.MailCity = address.City;
                         request.MailState = address.State;
                         request.MailZip = address.Zip;
-                        request.MailCountry = address.Country;
+                        request.MailCountry = address.Country == "United States" ? "US" : address.Country;
                     }
 
                     // Other address
@@ -1713,7 +1713,7 @@ namespace WinkNatural.Web.Services.Services
                         request.OtherCity = address.City;
                         request.OtherState = address.State;
                         request.OtherZip = address.Zip;
-                        request.OtherCountry = address.Country;
+                        request.OtherCountry = address.Country == "United States" ? "US" : address.Country;
                     } 
                 }
                 if (saveAddress)
@@ -2553,7 +2553,7 @@ namespace WinkNatural.Web.Services.Services
                 request.MainCity = address.City;
                 request.MainState = address.State;
                 request.MainZip = address.Zip;
-                request.MainCountry = address.Country;
+                request.MainCountry = address.Country == "United States" ? "US" : address.Country;
             } // Mailing address
             if (type == AddressType.Mailing)
             {
@@ -2563,7 +2563,7 @@ namespace WinkNatural.Web.Services.Services
                 request.MailCity = address.City;
                 request.MailState = address.State;
                 request.MailZip = address.Zip;
-                request.MailCountry = address.Country;
+                request.MailCountry = address.Country == "United States" ? "US" : address.Country;
             } // Other address
             if (type == AddressType.Other)
             {
@@ -2573,7 +2573,7 @@ namespace WinkNatural.Web.Services.Services
                 request.OtherCity = address.City;
                 request.OtherState = address.State;
                 request.OtherZip = address.Zip;
-                request.OtherCountry = address.Country;
+                request.OtherCountry = address.Country == "United States" ? "US" : address.Country;
             }
             if (saveAddress)
             {
