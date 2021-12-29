@@ -439,7 +439,7 @@ namespace WinkNatural.Web.Services.Services
 
                 // Validate that we have a token
                 var token = card.Token;     //card.GetToken();
-                if (string.IsNullOrEmpty(token)) return card;
+                if (string.IsNullOrEmpty(token)) return null;
 
                 // Save the credit card
                 var request = new SetAccountCreditCardTokenRequest

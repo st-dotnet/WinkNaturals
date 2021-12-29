@@ -2557,8 +2557,8 @@ namespace WinkNatural.Web.Services.Services
             if (type == AddressType.Mailing)
             {
                 saveAddress = true;
-                request.MailAddress1 = address.Address1;
-                request.MailAddress2 = address.Address2 ?? string.Empty;
+                request.MailAddress1 = address.MailingAddress1;
+                request.MailAddress2 = address.MailingAddress2 ?? string.Empty;
                 request.MailCity = address.City;
                 request.MailState = address.State;
                 request.MailZip = address.Zip;
@@ -2567,8 +2567,8 @@ namespace WinkNatural.Web.Services.Services
             if (type == AddressType.Other)
             {
                 saveAddress = true;
-                request.OtherAddress1 = address.Address1;
-                request.OtherAddress2 = address.Address2 ?? string.Empty;
+                request.OtherAddress1 = address.OtherAddress1;
+                request.OtherAddress2 = address.OtherAddress2 ?? string.Empty;
                 request.OtherCity = address.City;
                 request.OtherState = address.State;
                 request.OtherZip = address.Zip;
