@@ -1664,12 +1664,12 @@ namespace WinkNatural.Web.Services.Services
                 {
                     saveAddress = true;
                     address.AddressType = AddressType.Mailing;
-                    request.OtherAddress1 = address.Address1;
-                    request.OtherAddress2 = address.Address2;
-                    request.OtherCity = address.City;
-                    request.OtherState = address.State;
-                    request.OtherZip = address.Zip;
-                    request.OtherCountry = address.Country;
+                    request.MailAddress1 = address.Address1;
+                    request.MailAddress2 = address.Address2;
+                    request.MailCity = address.City;
+                    request.MailState = address.State;
+                    request.MailZip = address.Zip;
+                    request.MailCountry = address.Country;
                 }
 
                 // Do any of the addresses on file match the one we are using?
