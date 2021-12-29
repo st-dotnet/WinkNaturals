@@ -830,7 +830,7 @@ namespace WinkNaturals.Controllers
         [HttpGet("GetCustomer")]
         public async Task<IActionResult> GetCustomer(int partyId)
         {
-            return Ok(await _shoppingService.GetCustomer(partyId));
+            return Ok( _shoppingService.GetCustomerAddress(partyId));
         }
         /// <summary>
         /// GetProductDetailById by itemCode
