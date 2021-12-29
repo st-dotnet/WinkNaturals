@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Infrastructure.Services;
+using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 using WinkNaturals.Models.BraintreeService;
 using WinkNaturals.Setting;
 using static WinkNaturals.Helpers.Constant;
+using CreditCard = WinkNaturals.Infrastructure.Services.ExigoService.CreditCard.CreditCard;
 
 namespace WinkNaturals.Controllers
 {
@@ -78,30 +80,34 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <returns></returns>
         /// 
-        [HttpPost("SaveCreditCard")]
-        public async Task<IActionResult> SaveCreditCard(SetAccountCreditCardTokenRequest card)
-        {
-            //if (card.CreditCardType == 1)
-            //{
-            //    var updateCustomerRequest = new UpdateCustomerRequest
-            //    {
-            //        CustomerID = Identity.CustomerID,
-            //        Field1 = "1"
-            //    };
-            //    var transactionResponse = _customerService.UpdateCustomer(updateCustomerRequest);
-            //}
-            //else
-            //{
-            //    var updateCustomerRequest = new UpdateCustomerRequest
-            //    {
-            //        CustomerID = Identity.CustomerID,
-            //        Field2 = "1"
-            //    };
-            //    var transactionResponse = _customerService.UpdateCustomer(updateCustomerRequest);
-            //}
-            return Ok(await _enrollmentService.SetCustomerCreditCard(card, Identity.CustomerID));
+        //[HttpPost("SaveCreditCard")]
+        ////   public async Task<IActionResult> SaveCreditCard(SetAccountCreditCardTokenRequest card)
+        //public async Task<IActionResult> SaveCreditCard(CreditCard card)
+        //{
+        //    card =  _enrollmentService.SetCustomerCreditCard(Identity.CustomerID, card);
+        //    if (card.Type==CreditCardType.Primary)
+        //    {
+        //        var updateCustomerRequest = new UpdateCustomerRequest
+        //        {
+        //            CustomerID = Identity.CustomerID,
+        //            Field1 = "1"
+        //        };
+        //        var transactionResponse = _customerService.UpdateCustomer(updateCustomerRequest);
+        //    }
+        //    else
+        //    {
+        //        var updateCustomerRequest = new UpdateCustomerRequest
+        //        {
+        //            CustomerID = Identity.CustomerID,
+        //            Field2 = "1"
+        //        };
+        //        var transactionResponse = _customerService.UpdateCustomer(updateCustomerRequest);
+        //    }
+
+            
+            //  return Ok(await _enrollmentService.SetCustomerCreditCard(card, Identity.CustomerID));
         }
 
 
     }
-}
+

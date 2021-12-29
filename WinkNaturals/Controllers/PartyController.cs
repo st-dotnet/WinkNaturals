@@ -52,7 +52,6 @@ namespace WinkNaturals.Controllers
         {
             return Ok(await _partyService.GetPartyGuests(getPartyGuestsRequest));
         }
-
         // To Create Guest
         [HttpPost("CreateGuest")]
         public async Task<IActionResult> CreateGuest(CreateGuestRequest createGuestRequest)

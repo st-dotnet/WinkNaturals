@@ -372,6 +372,7 @@ namespace WinkNaturals.Infrastructure.Services.Services
                     State = response.BankAccount.BillingState,
                     Zip = response.BankAccount.BillingZip,
                     Country = response.BankAccount.BillingCountry
+                    
                 }
             });
             methods.Add(new CreditCard(CreditCardType.Primary)
