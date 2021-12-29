@@ -407,11 +407,11 @@ namespace WinkNaturals.Infrastructure.Services.Services
             // Filter out invalid or incomplete methods if applicable
             //if (request.ExcludeInvalidMethods)
             //{
-                methods = methods.Where(c => c.IsValid).ToList();
+               // methods = methods.Where(c => c.IsValid).ToList();
             //}
             //if (request.ExcludeIncompleteMethods)
             //{
-                methods = methods.Where(c => c.IsComplete).ToList();
+               // methods = methods.Where(c => c.IsComplete).ToList();
             //}
             //if (request.ExcludeNonAutoOrderPaymentMethods)
            // {
