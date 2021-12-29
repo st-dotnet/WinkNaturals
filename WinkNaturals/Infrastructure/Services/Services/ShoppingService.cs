@@ -1487,8 +1487,8 @@ namespace WinkNatural.Web.Services.Services
                         LastName = model.LastName,
                         Email = model.Email,
                         Phone = model.Phone,
-                        Address1 = model.MailAddress1,
-                        Address2 = model.MailAddress2,
+                        MailingAddress1 = model.MailAddress1,
+                        MailingAddress2 = model.MailAddress2,
                         City = model.MailCity,
                         State = model.MailState,
                         Zip = model.MailZip,
@@ -1502,8 +1502,8 @@ namespace WinkNatural.Web.Services.Services
                         LastName = model.LastName,
                         Email = model.Email,
                         Phone = model.Phone,
-                        Address1 = model.OtherAddress1,
-                        Address2 = model.OtherAddress2,
+                        OtherAddress1 = model.OtherAddress1,
+                        OtherAddress2 = model.OtherAddress2,
                         City = model.OtherCity,
                         State = model.OtherState,
                         Zip = model.OtherZip,
@@ -2587,7 +2587,7 @@ namespace WinkNatural.Web.Services.Services
             {
                 if (type == AddressType.Main || type == AddressType.New) return false;
 
-                var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
+                var addressesOnFile = GetCustomerAddress(customerID);//.Where(c => c.IsComplete);
                 var oldPrimaryAddress = addressesOnFile.Where(c => c.AddressType == AddressType.Main).FirstOrDefault();
                 var newPrimaryAddress = addressesOnFile.Where(c => c.AddressType == type).FirstOrDefault();
                 if (oldPrimaryAddress == null || newPrimaryAddress == null)
