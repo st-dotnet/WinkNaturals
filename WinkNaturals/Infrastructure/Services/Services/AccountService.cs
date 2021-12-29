@@ -676,29 +676,27 @@ namespace WinkNaturals.Infrastructure.Services.Services
             var res = await _exigoApiContext.GetContext(false).GetAutoOrdersAsync(req);
             return res;
         }
-
         public async Task<WinkNatural.Web.Services.DTO.Shopping.Address> MakeAddressAsPrimary(int customerId, WinkNatural.Web.Services.DTO.Shopping.Address address)
         {
-            
-                try
+            try
+            {
+                var request = new UpdateCustomerRequest
                 {
-                    var request = new UpdateCustomerRequest
-                    {
-                        CustomerID = customerId,
-                        MainAddress1 = address.Address1,
-                        MainAddress2 = address.Address2 ?? string.Empty,
-                        MainCity = address.City,
-                        MainState = address.State,
-                        MainZip = address.Zip,
-                        MainCountry = address.Country
-                    };
-                    await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
-                    return address;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
+                    CustomerID = customerId,
+                    MainAddress1 = address.Address1,
+                    MainAddress2 = address.Address2 ?? string.Empty,
+                    MainCity = address.City,
+                    MainState = address.State,
+                    MainZip = address.Zip,
+                    MainCountry = address.Country
+                };
+                await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
+                return address;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         /// <summary>
