@@ -1663,7 +1663,7 @@ namespace WinkNatural.Web.Services.Services
                 if (address.AddressType == AddressType.New)
                 {
                     saveAddress = true;
-                    address.AddressType = AddressType.Other;
+                    address.AddressType = AddressType.Mailing;
                     request.OtherAddress1 = address.Address1;
                     request.OtherAddress2 = address.Address2;
                     request.OtherCity = address.City;
