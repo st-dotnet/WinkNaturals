@@ -460,33 +460,43 @@ namespace WinkNatural.Web.Services.Services
         {
             try
             {
+                if (card.MakeItPrimary)
+                {
+                    card.Type = CreditCardType.Primary;
+                    return await SetCustomerCreditCard(customerID, card);
+                }
+                else
+                {
+                    card.Type = CreditCardType.Secondary;
+                    return await SetCustomerCreditCard(customerID, card);
+                }
                 // Get the credit cards on file
-                var data =await _accountService.GetCustomerBilling(customerID);
-                var creditCardsOnFile = data.Where(c => c is CreditCard).Select(c => (CreditCard)c);
+                //var data =await _accountService.GetCustomerBilling(customerID);
+                //var creditCardsOnFile = data.Where(c => c is CreditCard).Select(c => (CreditCard)c);
 
-                // Do we have any empty slots? If so, save this card to the next available slot
-                if (!creditCardsOnFile.Any(c => c.Type == CreditCardType.Primary))
-                {
-                    card.Type = CreditCardType.Primary;
-                    return await SetCustomerCreditCard(customerID, card);
-                }
-                if (!creditCardsOnFile.Any(c => c.Type == CreditCardType.Secondary))
-                {
-                    card.Type = CreditCardType.Secondary;
-                    return await SetCustomerCreditCard(customerID, card);
-                } 
+                //// Do we have any empty slots? If so, save this card to the next available slot
+                //if (!creditCardsOnFile.Any(c => c.Type == CreditCardType.Primary))
+                //{
+                //    card.Type = CreditCardType.Primary;
+                //    return await SetCustomerCreditCard(customerID, card);
+                //}
+                //if (!creditCardsOnFile.Any(c => c.Type == CreditCardType.Secondary))
+                //{
+                //    card.Type = CreditCardType.Secondary;
+                //    return await SetCustomerCreditCard(customerID, card);
+                //} 
 
-                // If not, try to save it to a card slot that does not have any autoOrder bound to it.
-                if (!creditCardsOnFile.Where(c => c.Type == CreditCardType.Primary).Single().IsUsedInAutoOrders)
-                {
-                    card.Type = CreditCardType.Primary;
-                    return await SetCustomerCreditCard(customerID, card);
-                }
-                if (!creditCardsOnFile.Where(c => c.Type == CreditCardType.Secondary).Single().IsUsedInAutoOrders)
-                {
-                    card.Type = CreditCardType.Secondary;
-                    return await SetCustomerCreditCard(customerID, card);
-                }
+                //// If not, try to save it to a card slot that does not have any autoOrder bound to it.
+                //if (!creditCardsOnFile.Where(c => c.Type == CreditCardType.Primary).Single().IsUsedInAutoOrders)
+                //{
+                //    card.Type = CreditCardType.Primary;
+                //    return await SetCustomerCreditCard(customerID, card);
+                //}
+                //if (!creditCardsOnFile.Where(c => c.Type == CreditCardType.Secondary).Single().IsUsedInAutoOrders)
+                //{
+                //    card.Type = CreditCardType.Secondary;
+                //    return await SetCustomerCreditCard(customerID, card);
+                //}
 
                 // If no autoOrder-free slots exist, don't save it.
                 return card;
