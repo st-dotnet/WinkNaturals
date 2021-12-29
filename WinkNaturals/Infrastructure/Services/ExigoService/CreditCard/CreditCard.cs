@@ -71,7 +71,8 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.CreditCard
 
         public int[] AutoOrderIDs { get; set; }
 
-        public bool MakeItPrimary { get; set; }    
+        public bool MakeItPrimary { get; set; }
+        public bool Success { get; set; } 
         public DateTime ExpirationDate
         {
             get { return new DateTime(this.ExpirationYear, this.ExpirationMonth, DateTime.DaysInMonth(this.ExpirationYear, this.ExpirationMonth)); }

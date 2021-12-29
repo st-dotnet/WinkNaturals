@@ -129,6 +129,7 @@ namespace WinkNaturals.Controllers
                         CustomerID = Identity.CustomerID,
                         Field1 = "1"
                     };
+                    
                     var transactionResponse = await _shoppingService.UpdateCustomer(updateCustomerRequest);
                 }
                 else
@@ -140,6 +141,7 @@ namespace WinkNaturals.Controllers
                     };
                     var transactionResponse = await _shoppingService.UpdateCustomer(updateCustomerRequest);
                 }
+                card.Success = true;
                 return Ok(card);
             }
             catch (Exception ex)
