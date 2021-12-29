@@ -157,7 +157,7 @@ namespace WinkNaturals.Controllers
 
         }
 
-        [HttpPost("SetPrimaryAddress")]
+        [HttpGet("SetPrimaryAddress/{type}")]
         public async Task<IActionResult> SetPrimaryAddress(AddressType type)
         { 
             return Ok(await _shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, type));
