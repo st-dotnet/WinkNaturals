@@ -2585,13 +2585,13 @@ namespace WinkNatural.Web.Services.Services
         {
             try
             {
-                if (type == AddressType.Main || type == AddressType.New) return true;
+                if (type == AddressType.Main || type == AddressType.New) return false;
 
                 var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
                 var oldPrimaryAddress = addressesOnFile.Where(c => c.AddressType == AddressType.Main).FirstOrDefault();
                 var newPrimaryAddress = addressesOnFile.Where(c => c.AddressType == type).FirstOrDefault();
                 if (oldPrimaryAddress == null || newPrimaryAddress == null)
-                    return false; // Swap the addresses
+                    return true; // Swap the addresses
 
                 await SetCustomerAddressOnFile(customerID, (Address)newPrimaryAddress, AddressType.Main);
                 await SetCustomerAddressOnFile(customerID, (Address)oldPrimaryAddress, type);
