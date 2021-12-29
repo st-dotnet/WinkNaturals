@@ -1640,8 +1640,8 @@ namespace WinkNatural.Web.Services.Services
                     {
                         saveAddress = true;
                         address.AddressType = AddressType.Mailing;
-                        request.OtherAddress1 = address.Address1;
-                        request.OtherAddress2 = address.Address2;
+                        request.OtherAddress1 = address.OtherAddress1;
+                        request.OtherAddress2 = address.OtherAddress2;
                         request.OtherCity = address.City;
                         request.OtherState = address.State;
                         request.OtherZip = address.Zip;
@@ -1651,8 +1651,8 @@ namespace WinkNatural.Web.Services.Services
                     {
                         saveAddress = true;
                         address.AddressType = AddressType.Mailing;
-                        request.MailAddress1 = address.Address1;
-                        request.MailAddress2 = address.Address2;
+                        request.MailAddress1 = address.MailingAddress1;
+                        request.MailAddress2 = address.MailingAddress2;
                         request.MailCity = address.City;
                         request.MailState = address.State;
                         request.MailZip = address.Zip;
