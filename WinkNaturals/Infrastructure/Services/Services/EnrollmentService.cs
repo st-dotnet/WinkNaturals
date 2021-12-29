@@ -499,7 +499,7 @@ namespace WinkNatural.Web.Services.Services
                 //}
 
                 // If no autoOrder-free slots exist, don't save it.
-                return card;
+                //return card;
             }
             catch (Exception ex)
             {
