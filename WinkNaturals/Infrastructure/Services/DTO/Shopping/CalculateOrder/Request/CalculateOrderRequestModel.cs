@@ -43,6 +43,10 @@ namespace WinkNatural.Web.Services.DTO.Shopping
 
         public string Address1 { get; set; }
         public string Address2 { get; set; }
+        public string MailingAddress1 { get; set; }
+        public string MailingAddress2 { get; set; }
+        public string OtherAddress1 { get; set; }
+        public string OtherAddress2 { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public string Zip { get; set; }
