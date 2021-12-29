@@ -163,13 +163,13 @@ namespace WinkNaturals.Controllers
         }
 
         [HttpPost("SaveAddress")]
-        public async Task<IActionResult> SaveAddress(Address address, bool? makePrimary)
+        public async Task<IActionResult> SaveAddress(Address address, bool makePrimary)
         {
-            address = await _shoppingService.SetCustomerAddressOnFile(Identity.CustomerID, address);
-            if (makePrimary != null && makePrimary == true)
-            {
+            //if need to make the address as primary address
+            if (makePrimary)
                 await _shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, address.AddressType);
-            }
+            else // save the address
+                address = await _shoppingService.SetCustomerAddressOnFile(Identity.CustomerID, address);
             return Ok(address);
         }
         /// <summary>
