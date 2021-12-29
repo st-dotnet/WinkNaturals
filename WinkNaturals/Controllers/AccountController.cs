@@ -158,11 +158,9 @@ namespace WinkNaturals.Controllers
         }
 
         [HttpPost("SetPrimaryAddress")]
-        public IActionResult SetPrimaryAddress(string type)
-        {
-            AddressType addresstype;
-            Enum.TryParse<AddressType>(type, out addresstype);
-            return Ok(_shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, addresstype));
+        public IActionResult SetPrimaryAddress(AddressType type)
+        { 
+            return Ok(_shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, type));
         }
 
         [HttpPost("SaveAddress")]
