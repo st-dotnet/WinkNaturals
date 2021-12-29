@@ -163,14 +163,26 @@ namespace WinkNaturals.Controllers
             return Ok(_shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, type));
         }
 
+        //[HttpPost("MakeCreditCArdPrimary")]
+        //public IActionResult MakeCreditCArdPrimary()
+        //{
+
+        //}
+
         [HttpPost("SaveAddress")]
         public async Task<IActionResult> SaveAddress(Address address, bool makePrimary)
         { 
             //if need to make the address as primary address
             if (makePrimary)
+            {
+                address.PrimaryCard = true;
                 await _shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, address.AddressType);
+            } 
             else // save the address
+            {
+                address.PrimaryCard = false;
                 address = await _shoppingService.SetCustomerAddressOnFile(Identity.CustomerID, address);
+            } 
             return Ok(address);
         }
         /// <summary>
