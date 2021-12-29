@@ -158,10 +158,9 @@ namespace WinkNaturals.Controllers
         }
 
         [HttpPost("SetPrimaryAddress")]
-        public async Task<IActionResult> SetPrimaryAddress(int type)
-        {
-            var addressType = (AddressType)type;
-            return Ok(await _shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, addressType));
+        public async Task<IActionResult> SetPrimaryAddress(AddressType type)
+        { 
+            return Ok(await _shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, type));
         }
 
         [HttpPost("MakeCreditCArdPrimary")]
