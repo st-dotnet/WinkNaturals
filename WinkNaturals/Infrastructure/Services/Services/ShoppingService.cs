@@ -2585,7 +2585,7 @@ namespace WinkNatural.Web.Services.Services
         {
             try
             {
-                if (type == AddressType.Main || type == AddressType.New) return false;
+                if (type == AddressType.Main || type == AddressType.New) return true;
 
                 var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
                 var oldPrimaryAddress = addressesOnFile.Where(c => c.AddressType == AddressType.Main).FirstOrDefault();
@@ -2595,7 +2595,7 @@ namespace WinkNatural.Web.Services.Services
 
                 await SetCustomerAddressOnFile(customerID, (Address)newPrimaryAddress, AddressType.Main);
                 await SetCustomerAddressOnFile(customerID, (Address)oldPrimaryAddress, type);
-                return true;
+                return false;
             }
             catch (Exception ex)
             {
