@@ -461,7 +461,8 @@ namespace WinkNatural.Web.Services.Services
             try
             {
                 // Get the credit cards on file
-                var creditCardsOnFile = _accountService.GetCustomerBilling(customerID).Result.Where(c => c is CreditCard).Select(c => (CreditCard)c);
+                var data =await _accountService.GetCustomerBilling(customerID);
+                var creditCardsOnFile = data.Where(c => c is CreditCard).Select(c => (CreditCard)c);
 
                 // Do we have any empty slots? If so, save this card to the next available slot
                 if (!creditCardsOnFile.Any(c => c.Type == CreditCardType.Primary))
