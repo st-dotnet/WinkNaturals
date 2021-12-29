@@ -55,6 +55,7 @@ namespace WinkNatural.Web.Services.DTO.Shopping
         // public string AddressDisplay { get; }
         public string Error { get; set; }
         public bool IsComplete { get; }
+        public string SaveType { get; set; }
     }
 
     public class ShippingAddress : Address

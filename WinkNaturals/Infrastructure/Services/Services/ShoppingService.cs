@@ -1625,32 +1625,6 @@ namespace WinkNatural.Web.Services.Services
         [System.Web.Http.NonAction]
         public async Task<Address> SaveNewCustomerAddress(int customerID, Address address)
         {
-            //  var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
-            //try
-            //{
-            //    if (!addressesOnFile.Any(c => c.Equals(address)))
-            //    {
-            //        var request = new UpdateCustomerRequest();
-            //        request.CustomerID = customerID;
-
-            //        address.AddressType = AddressType.New;
-            //        request.OtherAddress1 = address.Address1;
-            //        request.OtherAddress2 = address.Address2;
-            //        request.OtherCity = address.City;
-            //        request.OtherState = address.State;
-            //        request.OtherZip = address.Zip;
-            //        request.OtherCountry = address.Country;
-
-            //    }
-            //    await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
-            //    return address;
-            //}
-            //catch(Exception e)
-            //{
-            //    e.Message.ToString();
-            //    throw;
-            //}
-
             var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
             try
             {
@@ -1662,6 +1636,41 @@ namespace WinkNatural.Web.Services.Services
                 //Add new address 
                 if (address.AddressType == AddressType.New)
                 {
+                    if (address.SaveType == "Other")
+                    {
+                        saveAddress = true;
+                        address.AddressType = AddressType.Mailing;
+                        request.OtherAddress1 = address.Address1;
+                        request.OtherAddress2 = address.Address2;
+                        request.OtherCity = address.City;
+                        request.OtherState = address.State;
+                        request.OtherZip = address.Zip;
+                        request.OtherCountry = address.Country;
+                    }
+                    else if (address.SaveType == "Mail")
+                    {
+                        saveAddress = true;
+                        address.AddressType = AddressType.Mailing;
+                        request.MailAddress1 = address.Address1;
+                        request.MailAddress2 = address.Address2;
+                        request.MailCity = address.City;
+                        request.MailState = address.State;
+                        request.MailZip = address.Zip;
+                        request.MailCountry = address.Country;
+                    }
+
+                    else
+                    {
+                        saveAddress = true;
+                        address.AddressType = AddressType.Mailing;
+                        request.MainAddress1 = address.Address1;
+                        request.MainAddress2 = address.Address2;
+                        request.MainCity = address.City;
+                        request.MainState = address.State;
+                        request.MainZip = address.Zip;
+                        request.MainCountry = address.Country;
+
+                    }
                     saveAddress = true;
                     address.AddressType = AddressType.Mailing;
                     request.MailAddress1 = address.Address1;
