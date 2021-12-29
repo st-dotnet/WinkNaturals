@@ -421,11 +421,21 @@ namespace WinkNatural.Web.Services.Services
         {
             try
             {
-                // New credit cards
-                if (type == CreditCardType.New)
+                if (card.MakeItPrimary)
                 {
-                    return await SaveNewCustomerCreditCard(customerID, card);
+                    card.Type = CreditCardType.Primary;
+                    //return await SetCustomerCreditCard(customerID, card);
                 }
+                else
+                {
+                    card.Type = CreditCardType.Secondary;
+                    //return await SetCustomerCreditCard(customerID, card);
+                }
+                // New credit cards
+                //if (type == CreditCardType.New)
+                //{
+                //    return await SaveNewCustomerCreditCard(customerID, card);
+                //}
 
                 // Validate that we have a token
                 var token = card.Token;     //card.GetToken();
@@ -447,7 +457,7 @@ namespace WinkNatural.Web.Services.Services
                     BillingZip = card.BillingAddress.Zip,
                     BillingCountry = card.BillingAddress.Country
                 };
-                var response = _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);
+                var response =await _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);
                 return card;
             }
             catch (Exception ex)

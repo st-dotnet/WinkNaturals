@@ -121,17 +121,7 @@ namespace WinkNaturals.Controllers
         {
             try
             {
-                if (card.MakeItPrimary)
-                {
-                    card.Type = CreditCardType.Primary;
-                   // return await SetCustomerCreditCard(customerID, card);
-                }
-                else
-                {
-                    card.Type = CreditCardType.Secondary;
-                    //return await SetCustomerCreditCard(customerID, card);
-                }
-               // card = await _enrollmentService.SetCustomerCreditCard(Identity.CustomerID, card);
+                card = await _enrollmentService.SetCustomerCreditCard(Identity.CustomerID, card);
                 if (card.Type == CreditCardType.Primary)
                 {
                     var updateCustomerRequest = new UpdateCustomerRequest
