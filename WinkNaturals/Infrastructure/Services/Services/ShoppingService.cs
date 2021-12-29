@@ -2581,18 +2581,27 @@ namespace WinkNatural.Web.Services.Services
             }
             return address;
         }
-        public async Task SetCustomerPrimaryAddress(int customerID, AddressType type)
+        public async Task<bool> SetCustomerPrimaryAddress(int customerID, AddressType type)
         {
-            if (type == AddressType.Main || type == AddressType.New) return; 
+            try
+            {
+                if (type == AddressType.Main || type == AddressType.New) return false;
 
-            var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete); 
-            var oldPrimaryAddress = addressesOnFile.Where(c => c.AddressType == AddressType.Main).FirstOrDefault(); 
-            var newPrimaryAddress = addressesOnFile.Where(c => c.AddressType == type).FirstOrDefault(); 
-            if (oldPrimaryAddress == null || newPrimaryAddress == null) 
-                return; // Swap the addresses
-           
-            await SetCustomerAddressOnFile(customerID, (Address)newPrimaryAddress, AddressType.Main);
-            await SetCustomerAddressOnFile(customerID, (Address)oldPrimaryAddress, type);
+                var addressesOnFile = GetCustomerAddress(customerID).Where(c => c.IsComplete);
+                var oldPrimaryAddress = addressesOnFile.Where(c => c.AddressType == AddressType.Main).FirstOrDefault();
+                var newPrimaryAddress = addressesOnFile.Where(c => c.AddressType == type).FirstOrDefault();
+                if (oldPrimaryAddress == null || newPrimaryAddress == null)
+                    return false; // Swap the addresses
+
+                await SetCustomerAddressOnFile(customerID, (Address)newPrimaryAddress, AddressType.Main);
+                await SetCustomerAddressOnFile(customerID, (Address)oldPrimaryAddress, type);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
         public async Task<Address> AddUpdateCustomerAddress(int customerID, Address address)
         {

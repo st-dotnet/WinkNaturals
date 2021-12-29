@@ -22,6 +22,7 @@ using WinkNaturals.Models.Shopping.Interfaces;
 using WinkNaturals.Setting.Interfaces;
 using static WinkNaturals.Helpers.Constant;
 using CreditCard = WinkNaturals.Infrastructure.Services.ExigoService.CreditCard.CreditCard;
+using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
 
 namespace WinkNatural.Web.Services.Services
 {
@@ -520,6 +521,14 @@ namespace WinkNatural.Web.Services.Services
         }
         #endregion
 
+        #region Make card primary
+
+        public async Task<IPaymentMethod> MakeCreditCardAsPrimary()
+        {
+            return null;
+        }
+
+        #endregion
 
         public class SearchResult
         {

@@ -78,7 +78,7 @@ namespace WinkNatural.Web.Services.Interfaces
         Task<UpdateCustomerResponse> DeleteCustomerAddress(int customerID, string type);
         Task<Address> SaveNewCustomerAddress(int customerID, Address address);
         Task<Address> SetCustomerAddressOnFile(int customerID, Address address);
-        Task SetCustomerPrimaryAddress(int customerID, AddressType type);
+        Task<bool> SetCustomerPrimaryAddress(int customerID, AddressType type);
        
     }
 }
