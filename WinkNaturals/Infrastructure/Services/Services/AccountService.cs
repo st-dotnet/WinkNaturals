@@ -4,24 +4,17 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using WinkNatural.Web.Common.Utils;
 using WinkNatural.Web.Services.Interfaces;
-using WinkNaturals.Infrastructure.Services.DTO;
 using WinkNaturals.Infrastructure.Services.ExigoService;
 using WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder;
 using WinkNaturals.Infrastructure.Services.ExigoService.BankAccount;
-using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
-using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard.Interfaces;
 using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Models.ShipMethod;
 using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
 using WinkNaturals.Models.Shopping.Interfaces;
-using WinkNaturals.Models.Shopping.Orders;
-using WinkNaturals.Models.Shopping.PointAccount.Request;
 using WinkNaturals.Setting;
 using WinkNaturals.Setting.Interfaces;
 using WinkNaturals.Utilities.Common;
@@ -29,6 +22,7 @@ using static WinkNaturals.Helpers.Constant;
 using static WinkNaturals.Models.Shopping.PointAccount.PointAccountRepo;
 using BankAccountType = WinkNaturals.Helpers.Constant.BankAccountType;
 using PointTransactionType = WinkNaturals.Models.PointTransactionType;
+using CreditCard = WinkNaturals.Infrastructure.Services.ExigoService.CreditCard.CreditCard;
 
 namespace WinkNaturals.Infrastructure.Services.Services
 {
@@ -682,5 +676,109 @@ namespace WinkNaturals.Infrastructure.Services.Services
             var res = await _exigoApiContext.GetContext(false).GetAutoOrdersAsync(req);
             return res;
         }
+        
+        /// <summary>
+        /// MakeAddressAsPrimary
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public async Task<Address> MakeAddressAsPrimary(int customerId, Address address)
+        {
+            try
+            {
+                var request = new UpdateCustomerRequest
+                {
+                    CustomerID = customerId,
+                    MainAddress1 = address.Address1,
+                    MainAddress2 = address.Address2 ?? string.Empty,
+                    MainCity = address.City,
+                    MainState = address.State,
+                    MainZip = address.Zip,
+                    MainCountry = address.Country
+                };
+
+
+
+                await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
+                return address;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        //#region Save cradit card
+
+        //public async Task<CreditCard> SetCustomerCreditCard(int customerID, CreditCard card)
+        //{
+        //    return await SetCustomerCreditCard(customerID, card, card.Type);
+        //}
+
+        //private async Task<CreditCard> SetCustomerCreditCard(int customerID, CreditCard card, CreditCardType type)
+        //{
+        //    // New credit cards
+        //    if (type == CreditCardType.New)
+        //    {
+        //        return await SaveNewCustomerCreditCard(customerID, card);
+        //    }
+
+        //    // Validate that we have a token
+        //    var token = card.Token;     //card.GetToken();
+        //    if (string.IsNullOrEmpty(token)) return card; 
+
+        //    // Save the credit card
+        //    var request = new SetAccountCreditCardTokenRequest
+        //    {
+        //        CustomerID = customerID,
+        //        CreditCardAccountType = (card.Type == CreditCardType.Primary) ? AccountCreditCardType.Primary : AccountCreditCardType.Secondary,
+        //        CreditCardToken = token,
+        //        ExpirationMonth = card.ExpirationMonth,
+        //        ExpirationYear = card.ExpirationYear,
+
+        //        BillingName = card.NameOnCard,
+        //        BillingAddress = card.BillingAddress.AddressDisplay,
+        //        BillingCity = card.BillingAddress.City,
+        //        BillingState = card.BillingAddress.State,
+        //        BillingZip = card.BillingAddress.Zip,
+        //        BillingCountry = card.BillingAddress.Country
+        //    };
+        //    var response = _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request); 
+        //    return card;
+        //}
+
+        //private async Task<CreditCard> SaveNewCustomerCreditCard(int customerID, CreditCard card)
+        //{
+        //    // Get the credit cards on file
+        //    var creditCardsOnFile = GetCustomerBilling(customerID).Result.Where(c=>c is CreditCard).Select(c => (CreditCard)c);
+
+        //    // Do we have any empty slots? If so, save this card to the next available slot
+        //    if (!creditCardsOnFile.Any(c => c.Type == CreditCardType.Primary))
+        //    {
+        //        card.Type = CreditCardType.Primary;
+        //        return await SetCustomerCreditCard(customerID, card);
+        //    }
+        //    if (!creditCardsOnFile.Any(c => c.Type == CreditCardType.Secondary))
+        //    {
+        //        card.Type = CreditCardType.Secondary;
+        //        return await SetCustomerCreditCard(customerID, card);
+        //    }
+
+
+        //    // If not, try to save it to a card slot that does not have any autoOrder bound to it.
+        //    if (!creditCardsOnFile.Where(c => c.Type == CreditCardType.Primary).Single().IsUsedInAutoOrders)
+        //    {
+        //        card.Type = CreditCardType.Primary;
+        //        return await SetCustomerCreditCard(customerID, card);
+        //    }
+        //    if (!creditCardsOnFile.Where(c => c.Type == CreditCardType.Secondary).Single().IsUsedInAutoOrders)
+        //    {
+        //        card.Type = CreditCardType.Secondary;
+        //        return await SetCustomerCreditCard(customerID, card);
+        //    } 
+
+        //    // If no autoOrder-free slots exist, don't save it.
+        //    return card;
+        //}
+        //#endregion
     }
-    }
+}

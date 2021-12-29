@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Exigo.Api.Client;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,10 @@ using System.Threading.Tasks;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNatural.Web.Services.Utilities;
+using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 using WinkNaturals.Infrastructure.Services.Interfaces;
+using static WinkNaturals.Helpers.Constant;
+
 namespace WinkNaturals.Controllers
 {
     [Route("api/[controller]")]
@@ -107,6 +111,42 @@ namespace WinkNaturals.Controllers
             items = _shoppingService.GetItems(itemsRequest, false).OrderBy(c => c.SortOrder).ToList();
             return items;
         }
-        
+        /// <summary>
+        /// SaveCreditCard
+        /// </summary>
+        /// <returns></returns>
+        /// 
+        [HttpPost("SaveCreditCard")]
+        public async Task<IActionResult> SaveCreditCard(CreditCard card)
+        {
+            try
+            {
+                card = await _enrollmentService.SetCustomerCreditCard(Identity.CustomerID, card);
+                if (card.Type == CreditCardType.Primary)
+                {
+                    var updateCustomerRequest = new UpdateCustomerRequest
+                    {
+                        CustomerID = Identity.CustomerID,
+                        Field1 = "1"
+                    };
+                    var transactionResponse = await _shoppingService.UpdateCustomer(updateCustomerRequest);
+                }
+                else
+                {
+                    var updateCustomerRequest = new UpdateCustomerRequest
+                    {
+                        CustomerID = Identity.CustomerID,
+                        Field2 = "1"
+                    };
+                    var transactionResponse = await _shoppingService.UpdateCustomer(updateCustomerRequest);
+                }
+                return Ok(card);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
     }
 }

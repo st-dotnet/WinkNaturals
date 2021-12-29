@@ -1,4 +1,5 @@
-﻿using iText.Html2pdf;
+﻿using Exigo.Api.Client;
+using iText.Html2pdf;
 using iText.Html2pdf.Resolver.Font;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -164,7 +165,7 @@ namespace WinkNaturals.Controllers
 
         [HttpPost("SaveAddress")]
         public async Task<IActionResult> SaveAddress(Address address, bool makePrimary)
-        {
+        { 
             //if need to make the address as primary address
             if (makePrimary)
                 await _shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, address.AddressType);
@@ -182,11 +183,6 @@ namespace WinkNaturals.Controllers
             return Ok(_accountService.GetCustomerBilling(Identity.CustomerID).Result.Where(c => c is CreditCard && ((CreditCard)c).Type.ToString() == type).FirstOrDefault());
         }
 
-        private string Base64Decode(string base64EncodedData)
-        {
-            var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
-            return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
-        }
 
         [HttpGet]
         private ActionResult HtmlToPdf(string data)
@@ -218,6 +214,58 @@ namespace WinkNaturals.Controllers
             //System.IO.File.Delete(path);
 
             return new FileStreamResult(stream, "application/pdf");
+        }
+
+        ///// <summary>
+        ///// SaveCreditCard
+        ///// </summary>
+        ///// <returns></returns>
+        ///// 
+        //[HttpPost("SaveCreditCard")]
+        //public async Task<IActionResult> SaveCreditCard(CreditCard card)
+        //{
+        //    try
+        //    {
+        //        card = await _accountService.SetCustomerCreditCard(Identity.CustomerID, card);
+        //        if (card.Type == CreditCardType.Primary)
+        //        {
+        //            var updateCustomerRequest = new UpdateCustomerRequest
+        //            {
+        //                CustomerID = Identity.CustomerID,
+        //                Field1 = "1"
+        //            };
+        //            var transactionResponse = await _customerService.UpdateCustomer(updateCustomerRequest);
+        //        }
+        //        else
+        //        {
+        //            var updateCustomerRequest = new UpdateCustomerRequest
+        //            {
+        //                CustomerID = Identity.CustomerID,
+        //                Field2 = "1"
+        //            };
+        //            var transactionResponse = await _customerService.UpdateCustomer(updateCustomerRequest);
+        //        }
+        //        return Ok(card);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
+        /// <summary>
+        /// MakeAddressPrimary
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        [HttpPost("MakeAddressPrimary")]
+        public async Task<IActionResult> MakeAddressPrimary(Address address)
+        {
+            //Make address as Primary address
+            return Ok(await _accountService.MakeAddressAsPrimary(Identity.CustomerID, address));
+            //Get all
+
+
+
         }
     }
 }

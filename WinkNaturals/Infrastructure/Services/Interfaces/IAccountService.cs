@@ -2,7 +2,9 @@
 using Exigo.Api.Client;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNaturals.Infrastructure.Services.ExigoService.AutoOrder;
+using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 using WinkNaturals.Models;
 using WinkNaturals.Models.ShipMethod;
 using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
@@ -29,5 +31,8 @@ namespace WinkNaturals.Infrastructure.Services.Interfaces
 
         Task<GetAutoOrdersResponse> GetCustomerAutoOrdersList(int customerid);
 
+        //Save cradit card
+        // Task<CreditCard> SetCustomerCreditCard(int customerID, CreditCard card);
+        Task<Address> MakeAddressAsPrimary(int customerId, Address address);
     }
 }

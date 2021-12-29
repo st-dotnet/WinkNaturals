@@ -9,7 +9,7 @@ namespace WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces
     public interface IPaymentMethod
     {
         bool IsComplete { get; }
-        bool IsValid { get; }
+        bool IsValid { get; } 
     }
 
     public class DeviceModelBinderProvider : IModelBinderProvider

@@ -8,12 +8,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using System.Web.Http.Results;
 using WinkNatural.Web.Common;
 using WinkNatural.Web.Common.Utils;
-using WinkNatural.Web.Common.Utils.Enum;
 using WinkNatural.Web.Services.DTO;
-using WinkNatural.Web.Services.DTO.Customer;
 using WinkNatural.Web.Services.DTO.Shopping;
 using WinkNatural.Web.Services.Interfaces;
 using WinkNaturals.Helpers;
@@ -22,7 +19,6 @@ using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 using WinkNaturals.Infrastructure.Services.Interfaces;
 using WinkNaturals.Models;
 using WinkNaturals.Models.Shopping.Interfaces;
-using WinkNaturals.Models.Shopping.PointAccount.Request;
 using WinkNaturals.Setting.Interfaces;
 using static WinkNaturals.Helpers.Constant;
 using CreditCard = WinkNaturals.Infrastructure.Services.ExigoService.CreditCard.CreditCard;
@@ -406,86 +402,24 @@ namespace WinkNatural.Web.Services.Services
                 return nodeDataRecords;
             }
         }
-        //public object SaveNewCustomerCreditCard(int customerID, GetCreditCardRequest card)
-        //{
-        //    // Get the credit cards on file
-        //    var creditCardsOnFile = _accountService.GetCustomerBilling(customerID);
-        //    // If no autoOrder-free slots exist, don't save it.
-        //    return card;
-        //}
-        //public GetCreditCardRequest SetCustomerCreditCard(int customerID, GetCreditCardRequest card)
-        //{
-        //    return SetCustomerCreditCard(customerID, card, card.Type);
-        //}
-        //public GetCreditCardRequest SetCustomerCreditCard(int customerID, GetCreditCardRequest card, CreditCardType type)
-        //{
-        //    // New credit cards
-        //    if (type == CreditCardType.New)
-        //    {
-        //        return (GetCreditCardRequest)SaveNewCustomerCreditCard(customerID, card);
-        //    }
-        //    // Validate that we have a token
-        //    var token = card.Token; //card.GetToken();
-        //    if (String.IsNullOrEmpty(token)) return card;
-        //    // Save the credit card
-        //    var request = new SetAccountCreditCardTokenRequest
-        //    {
-        //        CustomerID = customerID,
-        //        CreditCardAccountType = (card.Type == CreditCardType.Primary) ? AccountCreditCardType.Primary : AccountCreditCardType.Secondary,
-        //        CreditCardToken = token,
-        //        ExpirationMonth = card.ExpirationMonth,
-        //        ExpirationYear = card.ExpirationYear,
-        //        BillingName = card.NameOnCard,
-        //        //BillingAddress = card.BillingAddress.AddressDisplay,
-        //        //BillingCity = card.BillingAddress.City,
-        //        //BillingState = card.BillingAddress.State,
-        //        //BillingZip = card.BillingAddress.Zip,
-        //        //BillingCountry = card.BillingAddress.Country
-        //    };
-        //    var response = _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);//DAL.WebService().SetAccountCreditCardToken(request);
-        //    return card;
-        //}
+       
+        #region Save cradit card
 
-        public async Task<GetCreditCardResponse> SetCustomerCreditCard(SetAccountCreditCardTokenRequest setAccountCredit, int customerID)
+        public async Task<CreditCard> SetCustomerCreditCard(int customerID, CreditCard card)
         {
-            try
-            {
-                var req = new SetAccountCreditCardTokenRequest();
-                req.CustomerID = customerID;
-                req.CreditCardAccountType = (AccountCreditCardType)setAccountCredit.CreditCardType;
-                req.CreditCardToken = setAccountCredit.TokenType.ToString();
-                req.ExpirationMonth = setAccountCredit.ExpirationMonth;
-                req.ExpirationYear = setAccountCredit.ExpirationYear;
-                req.CreditCardType = setAccountCredit.CreditCardType;
-                req.BillingName = setAccountCredit.BillingName; 
-                req.UseMainAddress = true;
-                //Send Request to Server and Get Response
-                var res = await _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(req);
-                return new GetCreditCardResponse { Success = true, ErrorMessage = null };
-            }
-            catch (Exception)
-            {
-                return new GetCreditCardResponse { Success = false, ErrorMessage = "Card Not Created." };
-            }
+            return await SetCustomerCreditCard(customerID, card, card.Type);
         }
-
-        public CreditCard SetCustomerCreditCard(int customerID, CreditCard card)
+        private async Task<CreditCard> SetCustomerCreditCard(int customerID, CreditCard card, CreditCardType type)
         {
-            return SetCustomerCreditCard(customerID, card, card.Type);
-        }
-
-        private CreditCard SetCustomerCreditCard(int customerID, CreditCard card, CreditCardType type)
-        {
+            // New credit cards
             if (type == CreditCardType.New)
             {
-                return SaveNewCustomerCreditCard(customerID, card);
+                return await SaveNewCustomerCreditCard(customerID, card);
             }
 
             // Validate that we have a token
             var token = card.Token;     //card.GetToken();
-            if (!string.IsNullOrEmpty(token)) 
-                return card;
-
+            if (string.IsNullOrEmpty(token)) return card;
 
             // Save the credit card
             var request = new SetAccountCreditCardTokenRequest
@@ -504,60 +438,44 @@ namespace WinkNatural.Web.Services.Services
                 BillingCountry = card.BillingAddress.Country
             };
             var response = _exigoApiContext.GetContext(false).SetAccountCreditCardTokenAsync(request);
-
-
             return card;
         }
 
-        private CreditCard SaveNewCustomerCreditCard(int customerID, CreditCard card)
+        private async Task<CreditCard> SaveNewCustomerCreditCard(int customerID, CreditCard card)
         {
-
-            //var req = new GetCustomerPaymentMethodsRequest();
-            //req.ExcludeInvalidMethods = true;
-            //req.CustomerID = customerID;
-
-            //var creditCardsOnFile= _accountService.GetCustomerBilling(req);
-
-
-
-            //var creditCardsOnFile = GetCustomerPaymentMethods(new GetCustomerPaymentMethodsRequest
-            //     {
-            //         CustomerID = customerID,
-            //         ExcludeInvalidMethods = true
-            //     }).Where(c => c is CreditCard).Select(c => (CreditCard)c);
-
-
-          //  var creditCardsOnFile = _accountService.GetCustomerBilling(customerID);
+            // Get the credit cards on file
+            var creditCardsOnFile = _accountService.GetCustomerBilling(customerID).Result.Where(c => c is CreditCard).Select(c => (CreditCard)c);
 
             // Do we have any empty slots? If so, save this card to the next available slot
-            //if (!creditCardsOnFile.Result.Any(c => c. == CreditCardType.Primary))
-            //{
-            //    card.Type = CreditCardType.Primary;
-            //    return SetCustomerCreditCard(customerID, card);
-            //}
-            //if (!creditCardsOnFile.Result.Any(c => c. == CreditCardType.Secondary))
-            //{
-            //    card.Type = CreditCardType.Secondary;
-            //    return SetCustomerCreditCard(customerID, card);
-            //}
+            if (!creditCardsOnFile.Any(c => c.Type == CreditCardType.Primary))
+            {
+                card.Type = CreditCardType.Primary;
+                return await SetCustomerCreditCard(customerID, card);
+            }
+            if (!creditCardsOnFile.Any(c => c.Type == CreditCardType.Secondary))
+            {
+                card.Type = CreditCardType.Secondary;
+                return await SetCustomerCreditCard(customerID, card);
+            }
 
 
-            //// If not, try to save it to a card slot that does not have any autoOrder bound to it.
-            //if (!creditCardsOnFile.Result.Where(c => c.Type == CreditCardType.Primary).Single().IsUsedInAutoOrders)
-            //{
-            //    card.Type = CreditCardType.Primary;
-            //    return SetCustomerCreditCard(customerID, card);
-            //}
-            //if (!creditCardsOnFile.Result.Where(c => c.Type == CreditCardType.Secondary).Single().IsUsedInAutoOrders)
-            //{
-            //    card.Type = CreditCardType.Secondary;
-            //    return SetCustomerCreditCard(customerID, card);
-            //}
-
+            // If not, try to save it to a card slot that does not have any autoOrder bound to it.
+            if (!creditCardsOnFile.Where(c => c.Type == CreditCardType.Primary).Single().IsUsedInAutoOrders)
+            {
+                card.Type = CreditCardType.Primary;
+                return await SetCustomerCreditCard(customerID, card);
+            }
+            if (!creditCardsOnFile.Where(c => c.Type == CreditCardType.Secondary).Single().IsUsedInAutoOrders)
+            {
+                card.Type = CreditCardType.Secondary;
+                return await SetCustomerCreditCard(customerID, card);
+            }
 
             // If no autoOrder-free slots exist, don't save it.
             return card;
         }
+        #endregion
+
 
         public class SearchResult
         {
