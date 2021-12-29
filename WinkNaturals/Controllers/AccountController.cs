@@ -158,9 +158,11 @@ namespace WinkNaturals.Controllers
         }
 
         [HttpPost("SetPrimaryAddress")]
-        public IActionResult SetPrimaryAddress(AddressType type)
+        public IActionResult SetPrimaryAddress(string type)
         {
-            return Ok(_shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, type));
+            AddressType addresstype;
+            Enum.TryParse<AddressType>(type, out addresstype);
+            return Ok(_shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, addresstype));
         }
 
         [HttpPost("SaveAddress")]
@@ -182,7 +184,6 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_accountService.GetCustomerBilling(Identity.CustomerID).Result.Where(c => c is CreditCard && ((CreditCard)c).Type.ToString() == type).FirstOrDefault());
         }
-
 
         [HttpGet]
         private ActionResult HtmlToPdf(string data)
