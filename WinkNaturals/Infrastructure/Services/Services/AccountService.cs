@@ -404,6 +404,20 @@ namespace WinkNaturals.Infrastructure.Services.Services
 
             });
 
+            // Filter out invalid or incomplete methods if applicable
+            //if (request.ExcludeInvalidMethods)
+            //{
+            //    methods = methods.Where(c => c.IsValid).ToList();
+            //}
+            //if (request.ExcludeIncompleteMethods)
+            //{
+            //    methods = methods.Where(c => c.IsComplete).ToList();
+            //}
+            //if (request.ExcludeNonAutoOrderPaymentMethods)
+            //{
+            //    methods = methods.Where(c => c is IAutoOrderPaymentMethod).ToList();
+            //}
+
             return methods.ToList();
         }
 
