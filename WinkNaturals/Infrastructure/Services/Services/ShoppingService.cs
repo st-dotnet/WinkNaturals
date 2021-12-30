@@ -2591,11 +2591,11 @@ namespace WinkNatural.Web.Services.Services
                 var oldPrimaryAddress = addressesOnFile.Where(c => c.AddressType == AddressType.Main).FirstOrDefault();
                 var newPrimaryAddress = addressesOnFile.Where(c => c.AddressType == type).FirstOrDefault();
                 if (oldPrimaryAddress == null || newPrimaryAddress == null)
-                    return true; // Swap the addresses
+                    return false; // Swap the addresses
 
                 await SetCustomerAddressOnFile(customerID, (Address)newPrimaryAddress, AddressType.Main);
                 await SetCustomerAddressOnFile(customerID, (Address)oldPrimaryAddress, type);
-                return false;
+                return true;
             }
             catch (Exception ex)
             {
