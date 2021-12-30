@@ -2581,7 +2581,7 @@ namespace WinkNatural.Web.Services.Services
             }
             if (saveAddress)
             {
-                await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
+               await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
             }
             return address;
         }
@@ -2596,7 +2596,8 @@ namespace WinkNatural.Web.Services.Services
                 var newPrimaryAddress = addressesOnFile.Where(c => c.AddressType == type).FirstOrDefault();
                 if (oldPrimaryAddress == null || newPrimaryAddress == null)
                     return false; // Swap the addresses
-
+                if (newPrimaryAddress.AddressType != type)
+                    return false;
                 await SetCustomerAddressOnFile(customerID, (Address)newPrimaryAddress, AddressType.Main, true);
                 await SetCustomerAddressOnFile(customerID, (Address)oldPrimaryAddress, type, true);
                 return true;
