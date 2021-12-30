@@ -225,39 +225,7 @@ namespace WinkNaturals.Controllers
         {
             return Ok(_accountService.GetCustomerBilling(Identity.CustomerID).Result.Where(c => c is CreditCard && ((CreditCard)c).Type.ToString() == type).FirstOrDefault());
         }
-
-        [HttpGet]
-        private ActionResult HtmlToPdf(string data)
-        {
-            var newFileGuid = Guid.NewGuid();
-            var url = $"{newFileGuid}.html";
-            //System.IO.File.WriteAllText(url, data);
-            string webRootPath = _webHostEnvironment.WebRootPath;
-            var path = Path.Combine(webRootPath, url);
-            System.IO.File.WriteAllText(path, data);
-            var fileName = $"{Guid.NewGuid()}.pdf";
-            var outputPath = Path.Combine(webRootPath, fileName);
-            try
-            {
-                using (FileStream htmlSource = System.IO.File.Open(path, FileMode.Open))
-                using (FileStream pdfDest = System.IO.File.Open(outputPath, FileMode.OpenOrCreate))
-                {
-                    ConverterProperties converterProperties = new ConverterProperties();
-                    converterProperties.SetFontProvider(new DefaultFontProvider(true, true, true));
-                    HtmlConverter.ConvertToPdf(htmlSource, pdfDest, converterProperties);
-                }
-            }
-            catch (Exception ex)
-            {
-               // _logger.LogDebug(1, ex.ToString());
-            }
-
-            var stream = System.IO.File.OpenRead(outputPath);
-            //System.IO.File.Delete(path);
-
-            return new FileStreamResult(stream, "application/pdf");
-        }
-
+                
         /// <summary>
         /// MakeAddressPrimary
         /// </summary>
@@ -276,7 +244,8 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <param name="autoOrderId"></param>
         /// <returns></returns>
-        [HttpGet("EditSubcription")]
+        [HttpGet]
+        [Route("EditSubcription/{autoOrderId:int}")]
         public async Task<IActionResult> EditSubcription(int autoOrderId)
         {
             return Ok(await _accountService.EditSubcription(Identity.CustomerID, autoOrderId));
