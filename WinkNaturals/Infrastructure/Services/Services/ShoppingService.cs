@@ -2539,11 +2539,11 @@ namespace WinkNatural.Web.Services.Services
         {
             var saveAddress = false;
             var request = new UpdateCustomerRequest { CustomerID = customerID };
-            
-            //if(makeAddressPrimary)
-            //{
-            //    address = SetAddressByType(address, type);
-            //}
+
+            if (makeAddressPrimary)
+            {
+                address = SetAddressByType(address, type);
+            }
 
             if (type == AddressType.New)
             {
@@ -2605,8 +2605,7 @@ namespace WinkNatural.Web.Services.Services
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
-            }
-
+            } 
         }
         public async Task<Address> AddUpdateCustomerAddress(int customerID, Address address)
         {
@@ -2672,8 +2671,10 @@ namespace WinkNatural.Web.Services.Services
             var addresResponse = new Address();
             if (type == AddressType.Main)
             {
-                addresResponse.Address1 = address.Address1;
-                addresResponse.Address2 = address.Address2 ?? string.Empty;
+                addresResponse.Address1 = !string.IsNullOrEmpty(address.Address1) ? address.Address1 :
+                    !string.IsNullOrEmpty(address.MailingAddress1) ? address.MailingAddress1 :
+                    !string.IsNullOrEmpty(address.OtherAddress1) ? address.OtherAddress1 : address.Address1;
+                addresResponse.Address2 =address.Address2 ?? string.Empty;
                 addresResponse.City = address.City;
                 addresResponse.State = address.State;
                 addresResponse.Zip = address.Zip;
@@ -2682,7 +2683,9 @@ namespace WinkNatural.Web.Services.Services
             // Mailing address
             if (type == AddressType.Mailing)
             {
-                addresResponse.MailingAddress1 = address.Address1;
+                addresResponse.MailingAddress1 = !string.IsNullOrEmpty(address.Address1) ? address.Address1 :
+                    !string.IsNullOrEmpty(address.MailingAddress1) ? address.MailingAddress1 :
+                    !string.IsNullOrEmpty(address.OtherAddress1) ? address.OtherAddress1 : address.Address1;
                 addresResponse.MailingAddress2 = address.Address2 ?? string.Empty;
                 addresResponse.City = address.City;
                 addresResponse.State = address.State;
@@ -2692,7 +2695,9 @@ namespace WinkNatural.Web.Services.Services
             // Other address
             if (type == AddressType.Other)
             {
-                addresResponse.OtherAddress1 = address.Address1;
+                addresResponse.OtherAddress1 = !string.IsNullOrEmpty(address.Address1) ? address.Address1 :
+                    !string.IsNullOrEmpty(address.MailingAddress1) ? address.MailingAddress1 :
+                    !string.IsNullOrEmpty(address.OtherAddress1) ? address.OtherAddress1 : address.Address1;
                 addresResponse.OtherAddress2 = address.Address2 ?? string.Empty;
                 addresResponse.City = address.City;
                 addresResponse.State = address.State;
