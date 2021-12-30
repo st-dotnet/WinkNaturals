@@ -63,7 +63,7 @@ namespace WinkNaturals.Infrastructure.Services.ExigoService.CreditCard
             //    this.ExpirationYear);
         }
 
-        [Required, Display(Name = "CVV")]
+        [Display(Name = "CVV")]
         public string CVV { get; set; }
 
         [Required, DataType("Address")]
