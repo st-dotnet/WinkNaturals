@@ -375,6 +375,7 @@ namespace WinkNaturals.Infrastructure.Services.Services
                 CardNumber = response.PrimaryCreditCard.CreditCardNumberDisplay,
                 ExpirationMonth = response.PrimaryCreditCard.ExpirationMonth,
                 ExpirationYear = response.PrimaryCreditCard.ExpirationYear,
+                Token=response.PrimaryCreditCard.CreditCardToken,
                 AutoOrderIDs = autoOrders.AutoOrders.Where(c => c.PaymentType == AutoOrderPaymentType.PrimaryCreditCard).Select(c => c.AutoOrderID).ToArray(),
                 BillingAddress = new Address()
                 {
@@ -392,6 +393,7 @@ namespace WinkNaturals.Infrastructure.Services.Services
                 CardNumber = response.SecondaryCreditCard.CreditCardNumberDisplay,
                 ExpirationMonth = response.SecondaryCreditCard.ExpirationMonth,
                 ExpirationYear = response.SecondaryCreditCard.ExpirationYear,
+                Token = response.SecondaryCreditCard.CreditCardToken,
                 AutoOrderIDs = autoOrders.AutoOrders.Where(c => c.PaymentType == AutoOrderPaymentType.SecondaryCreditCard).Select(c => c.AutoOrderID).ToArray(),
                 BillingAddress = new Address()
                 {
