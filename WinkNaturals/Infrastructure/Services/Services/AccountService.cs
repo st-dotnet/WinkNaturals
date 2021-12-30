@@ -726,10 +726,10 @@ namespace WinkNaturals.Infrastructure.Services.Services
         {
             try
             {
-                if (card.MakeItPrimary)
-                    card.Type = CreditCardType.Primary;
-                else
+                if (card.Type==CreditCardType.Primary)
                     card.Type = CreditCardType.Secondary;
+                else
+                    card.Type = CreditCardType.Primary;
 
                 // Validate that we have a token
                 var token = card.Token;
