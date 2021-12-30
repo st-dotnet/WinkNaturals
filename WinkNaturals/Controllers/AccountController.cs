@@ -247,10 +247,18 @@ namespace WinkNaturals.Controllers
         {
             //Make address as Primary address
             return Ok(await _accountService.MakeAddressAsPrimary(Identity.CustomerID, address));
-            //Get all
+            //Get all 
+        }
 
-
-
+        /// <summary>
+        /// Edit Subcription
+        /// </summary>
+        /// <param name="autoOrderId"></param>
+        /// <returns></returns>
+        [HttpPost("EditSubcription")]
+        public async Task<IActionResult> EditSubcription(int autoOrderId)
+        {
+            return Ok(await _accountService.EditSubcription(Identity.CustomerID, autoOrderId));
         }
     }
 }

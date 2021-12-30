@@ -33,18 +33,16 @@ namespace WinkNaturals.Infrastructure.Services.Services
         private readonly IAuthenticateService _authenticateService;
         private readonly IOptions<ConfigSettings> _config;
         private readonly ICustomerAutoOreder _customerAutoOrder;
-        private readonly IAccountService _accountService;
         private readonly ICustomerService _customerService;
 
         public AccountService(IShoppingService shoppingService, IExigoApiContext exigoApiContext, IAuthenticateService authenticateService, IOptions<ConfigSettings> config, ICustomerAutoOreder customerAutoOrder
-            , IAccountService accountService, ICustomerService customerService)
+            , ICustomerService customerService)
         {
             _shoppingService = shoppingService;
             _exigoApiContext = exigoApiContext;
             _authenticateService = authenticateService;
             _config = config;
             _customerAutoOrder = customerAutoOrder;
-            _accountService = accountService;
             _customerService = customerService;
         }
         public IEnumerable<PointTransaction> GetCustomerPointTransactions(int customerID, int pointAccountID)
@@ -733,7 +731,7 @@ namespace WinkNaturals.Infrastructure.Services.Services
             try
             {
                 //get credit cards
-                var existingPrimaryCard = _accountService.GetCustomerBilling(customerID).Result
+                var existingPrimaryCard = GetCustomerBilling(customerID).Result
                                 .FirstOrDefault(c => c is CreditCard && ((CreditCard)c).Type.ToString() == CreditCardType.Primary.ToString());
 
                 //delete cards 
@@ -787,5 +785,31 @@ namespace WinkNaturals.Infrastructure.Services.Services
         }
 
         #endregion
+
+        /// <summary>
+        /// Edit Subcription
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="autoOrderId"></param>
+        /// <returns></returns>
+        public async Task<GetAutoOrdersResponse> EditSubcription(int customerId, int autoOrderId)
+        {
+            try
+            {
+                var request = new GetAutoOrdersRequest
+                {
+                    CustomerID = customerId,
+                    AutoOrderID = autoOrderId,
+                    AutoOrderStatus = AutoOrderStatusType.Active
+                };
+                var aoResponse = await _exigoApiContext.GetContext(false).GetAutoOrdersAsync(request);
+                return aoResponse;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+          
+        }
     }
 }
