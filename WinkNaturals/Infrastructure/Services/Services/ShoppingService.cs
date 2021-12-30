@@ -2539,10 +2539,11 @@ namespace WinkNatural.Web.Services.Services
         {
             var saveAddress = false;
             var request = new UpdateCustomerRequest { CustomerID = customerID };
-            if(makeAddressPrimary)
-            {
-                address = SetAddressByType(address, type);
-            }
+            
+            //if(makeAddressPrimary)
+            //{
+            //    address = SetAddressByType(address, type);
+            //}
 
             if (type == AddressType.New)
             {
@@ -2664,6 +2665,7 @@ namespace WinkNatural.Web.Services.Services
             return address;
         }
 
+        //Set address
         private static Address SetAddressByType(Address address, AddressType type)
         {
             var addresResponse = new Address();
