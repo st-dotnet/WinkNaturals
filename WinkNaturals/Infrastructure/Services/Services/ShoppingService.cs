@@ -29,8 +29,8 @@ namespace WinkNatural.Web.Services.Services
         private readonly IExigoApiContext _exigoApiContext;
         private readonly IOptions<ConfigSettings> _config;
         private readonly ICustomerAutoOreder _customerAuto;
-        private readonly IOrderConfiguration _orderConfiguration;        
-        public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext, ICustomerAutoOreder customerAuto,IOrderConfiguration orderConfiguration)
+        private readonly IOrderConfiguration _orderConfiguration;
+        public ShoppingService(IOptions<ConfigSettings> config, IExigoApiContext exigoApiContext, ICustomerAutoOreder customerAuto, IOrderConfiguration orderConfiguration)
         {
             _config = config;
             _exigoApiContext = exigoApiContext;
@@ -168,7 +168,7 @@ namespace WinkNatural.Web.Services.Services
             return items;
         }
 
-       
+
         /// <summary>
         /// GetProductDetailById
         /// </summary>
@@ -185,7 +185,7 @@ namespace WinkNatural.Web.Services.Services
                     currencyCode = "usd",
                     languageID = 0,
                     priceTypeID = 1,
-                    itemCodes = itemCodes 
+                    itemCodes = itemCodes
                 }).ToList();
                 return response[0];
             }
@@ -269,7 +269,7 @@ namespace WinkNatural.Web.Services.Services
         /// </summary>
         /// <param name="TransactionalRequestModel"></param>
         /// <returns>TransactionalResponse</returns>
-        public async Task<Exigo.Api.Client.TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId,string email)
+        public async Task<Exigo.Api.Client.TransactionalResponse> SubmitCheckout(TransactionalRequestModel transactionRequest, int customerId, string email)
         {
             int arraySize = 5;
             Exigo.Api.Client.TransactionalResponse response = new();
@@ -296,7 +296,7 @@ namespace WinkNatural.Web.Services.Services
                         OtherState = transactionRequest.CreateOrderRequest.State,
                         MailCountry = transactionRequest.CreateOrderRequest.Country,
                         MailState = transactionRequest.CreateOrderRequest.State,
-                       
+
                     };
                     request.TransactionRequests[0] = updateCustomerRequest;
                 }
@@ -379,7 +379,7 @@ namespace WinkNatural.Web.Services.Services
                         Address3 = transactionRequest.CreateAutoOrderRequest.Address3,
                         City = transactionRequest.CreateAutoOrderRequest.City,
                         Zip = transactionRequest.CreateAutoOrderRequest.Zip,
-                        County =transactionRequest.CreateAutoOrderRequest.County,
+                        County = transactionRequest.CreateAutoOrderRequest.County,
                         Email = transactionRequest.CreateAutoOrderRequest.Email,
                         Phone = transactionRequest.CreateAutoOrderRequest.Phone,
                         Notes = transactionRequest.CreateAutoOrderRequest.Notes,
@@ -412,7 +412,7 @@ namespace WinkNatural.Web.Services.Services
 
                 request.TransactionRequests = request.TransactionRequests.Where(x => x != null).ToArray();
 
-               // arraySize = Convert.ToInt32(request.TransactionRequests);
+                // arraySize = Convert.ToInt32(request.TransactionRequests);
                 //TransactionRequest
                 response = await _exigoApiContext.GetContext(false).ProcessTransactionAsync(request);
             }
@@ -1420,7 +1420,7 @@ namespace WinkNatural.Web.Services.Services
             return verifyAddressResponse;
         }
 
-        
+
 
         public List<Address> GetCustomerAddress(int customerID)
         {
@@ -1645,7 +1645,7 @@ namespace WinkNatural.Web.Services.Services
                         request.OtherCity = address.City;
                         request.OtherState = address.State;
                         request.OtherZip = address.Zip;
-                        request.OtherCountry = address.Country=="United States"?"US": address.Country;
+                        request.OtherCountry = address.Country == "United States" ? "US" : address.Country;
                     }
                     else if (address.SaveType == "Mail")
                     {
@@ -1676,14 +1676,14 @@ namespace WinkNatural.Web.Services.Services
                 // Do any of the addresses on file match the one we are using?
                 // If not, save this address to the next available slot
                 else if (!addressesOnFile.Any(c => c.Equals(address)))
-                { 
+                {
                     // Main address
                     if (!addressesOnFile.Any(c => c.AddressType == AddressType.Main))
                     {
                         saveAddress = true;
                         address.AddressType = AddressType.Main;
                         request.MainAddress1 = address.Address1;
-                        request.MainAddress2 = address.Address2??string.Empty;
+                        request.MainAddress2 = address.Address2 ?? string.Empty;
                         request.MainCity = address.City;
                         request.MainState = address.State;
                         request.MainZip = address.Zip;
@@ -1714,7 +1714,7 @@ namespace WinkNatural.Web.Services.Services
                         request.OtherState = address.State;
                         request.OtherZip = address.Zip;
                         request.OtherCountry = address.Country == "United States" ? "US" : address.Country;
-                    } 
+                    }
                 }
                 if (saveAddress)
                 {
@@ -1763,7 +1763,7 @@ namespace WinkNatural.Web.Services.Services
 
                 using (var context = Common.Utils.DbConnection.Sql())
                 {
-                    categoryItemCodes =  context.Query<string>(QueryUtility.categoryItemCodesList_Query, new
+                    categoryItemCodes = context.Query<string>(QueryUtility.categoryItemCodesList_Query, new
                     {
                         webid = 1,
                         webcategoryids = categoryIDs
@@ -1798,7 +1798,7 @@ namespace WinkNatural.Web.Services.Services
             // get the item information             
             var priceTypeID = request.PriceTypeID;
 
-            var items =   GetItemInformation(request, priceTypeID);  //: GetItemList(request, priceTypeID);
+            var items = GetItemInformation(request, priceTypeID);  //: GetItemList(request, priceTypeID);
 
             // Populate the group members and dynamic kits
             if (items.Any())
@@ -1968,7 +1968,7 @@ namespace WinkNatural.Web.Services.Services
             //dynamic response;
             using (var context = Common.Utils.DbConnection.Sql())
             {
-                 // var cCodes = context.Query<PromoCode>(QueryUtility.GetCoupenCodes).ToList();
+                // var cCodes = context.Query<PromoCode>(QueryUtility.GetCoupenCodes).ToList();
                 var coupon = context.Query<PromoCode>(QueryUtility.GetCoupenCode_Query, new
                 {
                     Code = promoCode
@@ -2418,10 +2418,10 @@ namespace WinkNatural.Web.Services.Services
             req.CustomerID = customerId;
             req.OrderID = 268403;
             var response = await _exigoApiContext.GetContext(false).GetOrdersAsync(req);
-           
-            int shipMethodId=response.Orders[0].ShipMethodID;
 
-            var responseShipmethod= GetShipMethodsRequest(shipMethodId,response.Orders[0].WarehouseID);
+            int shipMethodId = response.Orders[0].ShipMethodID;
+
+            var responseShipmethod = GetShipMethodsRequest(shipMethodId, response.Orders[0].WarehouseID);
             var currentShipmethodId = responseShipmethod.Where(x => x.ShipMethodID == shipMethodId).ToList();
             response.Orders[0].Other11 = currentShipmethodId.ToString();
             return response;
@@ -2429,8 +2429,8 @@ namespace WinkNatural.Web.Services.Services
         private List<ShipMethodsResponse> GetShipMethodsRequest(int shipMethodId, int warehouseId)
         {
             var shipMethods = new List<ShipMethodsResponse>();
-                using (var sql = Common.Utils.DbConnection.Sql())
-                {
+            using (var sql = Common.Utils.DbConnection.Sql())
+            {
                 shipMethods = sql.Query<ShipMethodsResponse>(@"
                                         SELECT 
                                             [ShipMethodID]
@@ -2445,17 +2445,17 @@ namespace WinkNatural.Web.Services.Services
                                         {
                                             wid = warehouseId
                                         }).ToList();
-                }
+            }
 
             return shipMethods;
         }
 
         public CustomerPointAccount GetCustomerLoyaltyPointAccount(int customerId, int LoyaltyPointAccountId)
         {
-                var pointAccount = new CustomerPointAccount();
-                using (var context = DbConnection.Sql())
-                {
-                    pointAccount = context.Query<CustomerPointAccount>(@"
+            var pointAccount = new CustomerPointAccount();
+            using (var context = DbConnection.Sql())
+            {
+                pointAccount = context.Query<CustomerPointAccount>(@"
                                 SELECT cpa.PointAccountID
                                       , cpa.CustomerID
                                       , cpa.PointBalance AS Balance
@@ -2467,15 +2467,15 @@ namespace WinkNatural.Web.Services.Services
                                 WHERE cpa.CustomerID = @CustomerID
                                     AND cpa.PointAccountID = @PointAccountID
                     ", new
-                    {
-                        CustomerID = customerId,
-                        PointAccountID = LoyaltyPointAccountId
-                    }).FirstOrDefault();
-                }
+                {
+                    CustomerID = customerId,
+                    PointAccountID = LoyaltyPointAccountId
+                }).FirstOrDefault();
+            }
 
-                if (pointAccount == null) return null;
+            if (pointAccount == null) return null;
 
-                return pointAccount;
+            return pointAccount;
         }
 
         /// <summary>
@@ -2526,21 +2526,24 @@ namespace WinkNatural.Web.Services.Services
             if (deleteAddress)
             {
 
-                response= await  _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
+                response = await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
             }
             return response;
         }
-      
+
         public async Task<Address> SetCustomerAddressOnFile(int customerID, Address address)
         {
             return await SetCustomerAddressOnFile(customerID, address, address.AddressType);
         }
-        public async Task<Address> SetCustomerAddressOnFile(int customerID, Address address, AddressType type)
+        public async Task<Address> SetCustomerAddressOnFile(int customerID, Address address, AddressType type, bool makeAddressPrimary = false)
         {
             var saveAddress = false;
-            var request = new UpdateCustomerRequest();
-            request.CustomerID = customerID; // Attempt to validate the user's entered address if US address
-           // address = await _authenticateService.ValidateAddress(address) as Address; // New Addresses
+            var request = new UpdateCustomerRequest { CustomerID = customerID };
+            if(makeAddressPrimary)
+            {
+                address = SetAddressByType(address, type);
+            }
+
             if (type == AddressType.New)
             {
                 return await SaveNewCustomerAddress(customerID, address);
@@ -2593,15 +2596,15 @@ namespace WinkNatural.Web.Services.Services
                 if (oldPrimaryAddress == null || newPrimaryAddress == null)
                     return false; // Swap the addresses
 
-                await SetCustomerAddressOnFile(customerID, (Address)newPrimaryAddress, AddressType.Main);
-                await SetCustomerAddressOnFile(customerID, (Address)oldPrimaryAddress, type);
+                await SetCustomerAddressOnFile(customerID, (Address)newPrimaryAddress, AddressType.Main, true);
+                await SetCustomerAddressOnFile(customerID, (Address)oldPrimaryAddress, type, true);
                 return true;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            
+
         }
         public async Task<Address> AddUpdateCustomerAddress(int customerID, Address address)
         {
@@ -2661,6 +2664,39 @@ namespace WinkNatural.Web.Services.Services
             return address;
         }
 
-       
+        private static Address SetAddressByType(Address address, AddressType type)
+        {
+            var addresResponse = new Address();
+            if (type == AddressType.Main)
+            {
+                addresResponse.Address1 = address.Address1;
+                addresResponse.Address2 = address.Address2 ?? string.Empty;
+                addresResponse.City = address.City;
+                addresResponse.State = address.State;
+                addresResponse.Zip = address.Zip;
+                addresResponse.Country = address.Country == "United States" ? "US" : address.Country;
+            }
+            // Mailing address
+            if (type == AddressType.Mailing)
+            {
+                addresResponse.MailingAddress1 = address.Address1;
+                addresResponse.MailingAddress2 = address.Address2 ?? string.Empty;
+                addresResponse.City = address.City;
+                addresResponse.State = address.State;
+                addresResponse.Zip = address.Zip;
+                addresResponse.Country = address.Country == "United States" ? "US" : address.Country;
+            } 
+            // Other address
+            if (type == AddressType.Other)
+            {
+                addresResponse.OtherAddress1 = address.Address1;
+                addresResponse.OtherAddress2 = address.Address2 ?? string.Empty;
+                addresResponse.City = address.City;
+                addresResponse.State = address.State;
+                addresResponse.Zip = address.Zip;
+                addresResponse.Country = address.Country == "United States" ? "US" : address.Country;
+            }
+            return addresResponse;
+        }
     }
 }
