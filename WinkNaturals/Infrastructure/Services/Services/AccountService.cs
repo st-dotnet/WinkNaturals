@@ -802,8 +802,7 @@ namespace WinkNaturals.Infrastructure.Services.Services
                     AutoOrderID = autoOrderId,
                     AutoOrderStatus = AutoOrderStatusType.Active
                 };
-                var aoResponse = await _exigoApiContext.GetContext(false).GetAutoOrdersAsync(request);
-                return aoResponse;
+               return await _exigoApiContext.GetContext(false).GetAutoOrdersAsync(request);
             }
             catch (Exception ex)
             {

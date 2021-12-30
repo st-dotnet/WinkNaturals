@@ -179,6 +179,13 @@ namespace WinkNaturals.Controllers
                 return Ok(false);
         }
 
+        /// <summary>
+        /// Save customer address
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="makePrimary"></param>
+        /// <param name="isEdit"></param>
+        /// <returns></returns>
         [HttpPost("SaveAddress")]
         public async Task<IActionResult> SaveAddress(Address address, bool makePrimary)
         { 
@@ -195,6 +202,20 @@ namespace WinkNaturals.Controllers
             } 
             return Ok(address);
         }
+
+        /// <summary>
+        /// Update customer address
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="makePrimary"></param>
+        /// <param name="isEdit"></param>
+        /// <returns></returns>
+        [HttpPost("UpdateAddress")]
+        public async Task<IActionResult> UpdateAddress(Address address, bool isEdit)
+        {
+           return Ok(await _shoppingService.SetCustomerAddressOnFile(Identity.CustomerID, address, isEdit));
+        }
+
         /// <summary>
         /// EditCreditCard
         /// </summary>
@@ -255,7 +276,7 @@ namespace WinkNaturals.Controllers
         /// </summary>
         /// <param name="autoOrderId"></param>
         /// <returns></returns>
-        [HttpPost("EditSubcription")]
+        [HttpGet("EditSubcription")]
         public async Task<IActionResult> EditSubcription(int autoOrderId)
         {
             return Ok(await _accountService.EditSubcription(Identity.CustomerID, autoOrderId));

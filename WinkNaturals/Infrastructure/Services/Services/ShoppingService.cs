@@ -2531,15 +2531,20 @@ namespace WinkNatural.Web.Services.Services
             return response;
         }
 
-        public async Task<Address> SetCustomerAddressOnFile(int customerID, Address address)
+        public async Task<Address> SetCustomerAddressOnFile(int customerID, Address address,bool isEdit = false)
         {
-            return await SetCustomerAddressOnFile(customerID, address, address.AddressType);
+            return await SetCustomerAddressOnFile(customerID, address, address.AddressType,false, isEdit);
         }
-        public async Task<Address> SetCustomerAddressOnFile(int customerID, Address address, AddressType type, bool makeAddressPrimary = false)
+
+        public async Task<Address> SetCustomerAddressOnFile(int customerID, Address address, AddressType type, bool makeAddressPrimary = false, bool isEdit=false)
         {
             var saveAddress = false;
             var request = new UpdateCustomerRequest { CustomerID = customerID };
 
+            if (isEdit)
+            {
+                return await EditAddress(customerID, address, address.AddressType);
+            }
             if (makeAddressPrimary)
             {
                 address = SetAddressByType(address, type);
@@ -2585,6 +2590,7 @@ namespace WinkNatural.Web.Services.Services
             }
             return address;
         }
+       
         public async Task<bool> SetCustomerPrimaryAddress(int customerID, AddressType type)
         {
             try
@@ -2607,6 +2613,7 @@ namespace WinkNatural.Web.Services.Services
                 throw new Exception(ex.Message);
             } 
         }
+       
         public async Task<Address> AddUpdateCustomerAddress(int customerID, Address address)
         {
             var type = address.AddressType;
@@ -2706,5 +2713,55 @@ namespace WinkNatural.Web.Services.Services
             }
             return addresResponse;
         }
+
+        //Edit address
+        private async Task<Address> EditAddress(int customerID, Address address, AddressType type)
+        {
+            try
+            {
+                var editAddress = false;
+                var request = new UpdateCustomerRequest { CustomerID = customerID };
+                if (type == AddressType.Main)
+                {
+                    editAddress = true;
+                    request.MainAddress1 = address.Address1;
+                    request.MainAddress2 = address.Address2 ?? string.Empty;
+                    request.MainCity = address.City;
+                    request.MainState = address.State;
+                    request.MainZip = address.Zip;
+                    request.MainCountry = address.Country == "United States" ? "US" : address.Country;
+                } // Mailing address
+                if (type == AddressType.Mailing)
+                {
+                    editAddress = true;
+                    request.MailAddress1 = address.MailingAddress1;
+                    request.MailAddress2 = address.MailingAddress2 ?? string.Empty;
+                    request.MailCity = address.City;
+                    request.MailState = address.State;
+                    request.MailZip = address.Zip;
+                    request.MailCountry = address.Country == "United States" ? "US" : address.Country;
+                } // Other address
+                if (type == AddressType.Other)
+                {
+                    editAddress = true;
+                    request.OtherAddress1 = address.OtherAddress1;
+                    request.OtherAddress2 = address.OtherAddress2 ?? string.Empty;
+                    request.OtherCity = address.City;
+                    request.OtherState = address.State;
+                    request.OtherZip = address.Zip;
+                    request.OtherCountry = address.Country == "United States" ? "US" : address.Country;
+                }
+                if (editAddress)
+                {
+                    await _exigoApiContext.GetContext(false).UpdateCustomerAsync(request);
+                }
+                return address;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
+        } 
     }
 }
