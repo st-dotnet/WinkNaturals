@@ -8,6 +8,7 @@ using WinkNaturals.Infrastructure.Services.ExigoService.CreditCard;
 using WinkNaturals.Models;
 using WinkNaturals.Models.ShipMethod;
 using WinkNaturals.Models.Shopping.Checkout.Coupon.Interfaces;
+using static WinkNaturals.Helpers.Constant;
 
 namespace WinkNaturals.Infrastructure.Services.Interfaces
 {
@@ -34,5 +35,8 @@ namespace WinkNaturals.Infrastructure.Services.Interfaces
         //Save cradit card
         // Task<CreditCard> SetCustomerCreditCard(int customerID, CreditCard card);
         Task<Address> MakeAddressAsPrimary(int customerId, Address address);
+
+        //Make credit card primary
+        Task<bool> MakeCreditCardAsPrimary(int customerID, CreditCard card, CreditCardType type);
     }
 }

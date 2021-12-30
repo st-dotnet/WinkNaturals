@@ -519,16 +519,7 @@ namespace WinkNatural.Web.Services.Services
             }
             
         }
-        #endregion
-
-        #region Make card primary
-
-        public async Task<IPaymentMethod> MakeCreditCardAsPrimary()
-        {
-            return null;
-        }
-
-        #endregion
+        #endregion 
 
         public class SearchResult
         {

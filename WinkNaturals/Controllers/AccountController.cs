@@ -163,10 +163,19 @@ namespace WinkNaturals.Controllers
             return Ok(await _shoppingService.SetCustomerPrimaryAddress(Identity.CustomerID, type));
         }
 
+        /// <summary>
+        /// Make CreditCard Primary
+        /// </summary>
+        /// <param name="card"></param>
+        /// <returns></returns>
         [HttpPost("MakeCreditCardPrimary")]
-        public async Task<IActionResult> MakeCreditCardPrimary(CreditCardType type)
+        public async Task<IActionResult> MakeCreditCardPrimary(CreditCard card)
         {
-            return Ok();
+            var response = await _accountService.MakeCreditCardAsPrimary(Identity.CustomerID, card, card.Type);
+            if (response)
+                return Ok(_accountService.GetCustomerBilling(Identity.CustomerID));
+            else
+                return Ok(false);
         }
 
         [HttpPost("SaveAddress")]
@@ -227,42 +236,6 @@ namespace WinkNaturals.Controllers
             return new FileStreamResult(stream, "application/pdf");
         }
 
-        ///// <summary>
-        ///// SaveCreditCard
-        ///// </summary>
-        ///// <returns></returns>
-        ///// 
-        //[HttpPost("SaveCreditCard")]
-        //public async Task<IActionResult> SaveCreditCard(CreditCard card)
-        //{
-        //    try
-        //    {
-        //        card = await _accountService.SetCustomerCreditCard(Identity.CustomerID, card);
-        //        if (card.Type == CreditCardType.Primary)
-        //        {
-        //            var updateCustomerRequest = new UpdateCustomerRequest
-        //            {
-        //                CustomerID = Identity.CustomerID,
-        //                Field1 = "1"
-        //            };
-        //            var transactionResponse = await _customerService.UpdateCustomer(updateCustomerRequest);
-        //        }
-        //        else
-        //        {
-        //            var updateCustomerRequest = new UpdateCustomerRequest
-        //            {
-        //                CustomerID = Identity.CustomerID,
-        //                Field2 = "1"
-        //            };
-        //            var transactionResponse = await _customerService.UpdateCustomer(updateCustomerRequest);
-        //        }
-        //        return Ok(card);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception(ex.Message);
-        //    }
-        //}
         /// <summary>
         /// MakeAddressPrimary
         /// </summary>
