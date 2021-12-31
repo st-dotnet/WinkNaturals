@@ -39,6 +39,6 @@ namespace WinkNaturals.Infrastructure.Services.Interfaces
         //Make credit card primary
         Task<bool> MakeCreditCardAsPrimary(int customerID, CreditCard card, CreditCardType type);
 
-        Task<GetAutoOrdersResponse> EditSubcription(int customerId, int autoOrderId);
+        Task<List<AutoOrder>> EditSubcription(int customerId, int autoOrderId);
     }
 }

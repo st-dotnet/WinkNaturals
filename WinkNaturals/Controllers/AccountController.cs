@@ -248,7 +248,7 @@ namespace WinkNaturals.Controllers
         [Route("EditSubcription/{autoOrderId:int}")]
         public async Task<IActionResult> EditSubcription(int autoOrderId)
         {
-            return Ok(await _accountService.EditSubcription(Identity.CustomerID, autoOrderId));
+            return Ok(await _accountService.GetCustomerAutoOrders(Identity.CustomerID, autoOrderId));
         }
     }
 }

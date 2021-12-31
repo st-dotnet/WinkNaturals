@@ -23,6 +23,9 @@ using static WinkNaturals.Models.Shopping.PointAccount.PointAccountRepo;
 using BankAccountType = WinkNaturals.Helpers.Constant.BankAccountType;
 using PointTransactionType = WinkNaturals.Models.PointTransactionType;
 using CreditCard = WinkNaturals.Infrastructure.Services.ExigoService.CreditCard.CreditCard;
+using WinkNatural.Web.Services.Utilities;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WinkNaturals.Infrastructure.Services.Services
 {
@@ -34,9 +37,10 @@ namespace WinkNaturals.Infrastructure.Services.Services
         private readonly IOptions<ConfigSettings> _config;
         private readonly ICustomerAutoOreder _customerAutoOrder;
         private readonly ICustomerService _customerService;
+        private readonly IMapper _mapper;
 
         public AccountService(IShoppingService shoppingService, IExigoApiContext exigoApiContext, IAuthenticateService authenticateService, IOptions<ConfigSettings> config, ICustomerAutoOreder customerAutoOrder
-            , ICustomerService customerService)
+            , ICustomerService customerService, IMapper mapper)
         {
             _shoppingService = shoppingService;
             _exigoApiContext = exigoApiContext;
@@ -44,6 +48,7 @@ namespace WinkNaturals.Infrastructure.Services.Services
             _config = config;
             _customerAutoOrder = customerAutoOrder;
             _customerService = customerService;
+            _mapper = mapper;
         }
         public IEnumerable<PointTransaction> GetCustomerPointTransactions(int customerID, int pointAccountID)
         {
@@ -792,22 +797,83 @@ namespace WinkNaturals.Infrastructure.Services.Services
         /// <param name="customerId"></param>
         /// <param name="autoOrderId"></param>
         /// <returns></returns>
-        public async Task<GetAutoOrdersResponse> EditSubcription(int customerId, int autoOrderId)
+        public async Task<List<AutoOrder>> EditSubcription(int customerId, int autoOrderId)
         {
-            try
-            {
-                var request = new GetAutoOrdersRequest
-                {
-                    CustomerID = customerId,
-                    AutoOrderID = autoOrderId,
-                    AutoOrderStatus = AutoOrderStatusType.Active
-                };
-               return await _exigoApiContext.GetContext(false).GetAutoOrdersAsync(request);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return null;
+            //try
+            //{
+            //    var listImageURLs = new List<FileContentResult>();
+            //    var autoOrders = new List<AutoOrder>();
+            //    var detailItemCodes = new List<string>();
+            //    var request = new GetAutoOrdersRequest
+            //    {
+            //        CustomerID = customerId,
+            //        AutoOrderID = autoOrderId,
+            //        AutoOrderStatus = AutoOrderStatusType.Active
+            //    };
+            //   var response= await _exigoApiContext.GetContext(false).GetAutoOrdersAsync(request);
+            //    foreach (var autoOrder in response.AutoOrders)
+            //    {
+            //       var aOrder= _mapper.Map<AutoOrder>(autoOrder);
+            //        autoOrders.Add(aOrder);
+            //    }
+            //    detailItemCodes = autoOrders.SelectMany(a => a.Details.Select(d => d.ItemCode)).Distinct().ToList();
+            //    var autoOrderIds = autoOrders.Select(a => a.AutoOrderID).ToList();
+            //    var createdDateNodes = new List<AutoOrderCreatedDate>();
+            //    var aoDetailInfo = new List<AutoOrderDetailInfo>();
+
+            //    using (var context = DbConnection.Sql())
+            //    {
+            //        var nodeResults = context.QueryMultiple(@"
+            //        SELECT
+            //            AutoOrderID,
+            //            CreatedDate
+            //        FROM
+            //            AutoOrders
+            //        WHERE
+            //            AutoOrderID in @ids
+
+            //        SELECT
+            //            ItemCode,
+            //            SmallImageName,
+            //            IsVirtual
+            //        FROM Items
+            //        WHERE ItemCode in @itemcodes
+            //        ",
+            //            new
+            //            {
+            //                ids = autoOrderIds,
+            //                itemcodes = detailItemCodes
+            //            });
+
+            //        createdDateNodes = nodeResults.Read<AutoOrderCreatedDate>().ToList();
+            //        aoDetailInfo = nodeResults.Read<AutoOrderDetailInfo>().ToList();
+            //    }
+
+            //    foreach (var ao in autoOrders)
+            //    {
+            //        ao.CreatedDate = createdDateNodes.Where(n => n.AutoOrderID == ao.AutoOrderID).Select(n => n.CreatedDate).FirstOrDefault();
+
+            //        foreach (var detail in ao.Details)
+            //        {
+            //            var detailInfo = aoDetailInfo.Where(i => i.ItemCode == detail.ItemCode).FirstOrDefault();
+            //            listImageURLs.Add(ProductImageUtility.GetProductImageUtility(detailInfo.ImageUrl));
+            //           // detail.IsVirtual = detailInfo.IsVirtual;
+            //        }
+            //    }
+            //    autoOrders.Select(x=>x.ProductImage)
+            //    foreach (var item in autoOrders)
+            //    {
+            //        item.ProductImage= ProductImageUtility.GetProductImageUtility(detailInfo.ImageUrl);
+            //        //get product images
+
+            //    }
+            //    return autoOrders;
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new Exception(ex.Message);
+            //}
           
         }
     }
